@@ -1,0 +1,87 @@
+---
+title: "Homework 8 Key"
+author: "Subrata Paul"
+date: "11/5/2020"
+output: pdf_document
+---
+
+## 10.1
+
+(a) The best model from the backward selection approach is the model including the predictors `lcavol`, `lweight`, and, `svi`. 
+
+
+
+```{r}
+library(faraway)
+data(prostate, package = 'faraway')
+lmod <- lm(lpsa ~., data = prostate)
+sumary(lmod)
+```
+
+```{r}
+lmod <- update(lmod, .~. -gleason)
+sumary(lmod)
+```
+
+```{r}
+lmod <- update(lmod, .~. -lcp)
+sumary(lmod)
+```
+```{r}
+lmod <- update(lmod, .~. -age)
+sumary(lmod)
+```
+
+```{r}
+lmod <- update(lmod, .~. -pgg45)
+sumary(lmod)
+```
+
+```{r}
+lmod <- update(lmod, .~. -lbph)
+sumary(lmod)
+```
+
+(b) According to the AIC criterion, the best model has the predictors `lcavol`, `lweight`, `age`, `lbph`, and `svi`. 
+
+```{r}
+library(leaps)
+rc <- regsubsets(lpsa ~ ., data = prostate)
+rcs <- summary(rc)
+aic <- rcs$bic - 2:9*log(nobs(lmod)) + 2:9*2
+plot(aic ~ I(2:9), xlab = 'Parameters')
+rcs$which[which.min(aic),]
+```
+
+(c) According to the adjusted r-squared criterion, the best model includes all predictors except gleason. 
+
+```{r}
+rcs$which[which.max(rcs$adjr2),]
+```
+
+(d) According to Mallow's $C_p$ criterion, the best model has the predictors `lcavol`, `lweight`, `age`, `lbph`, and `svi`. 
+
+```{r}
+car::subsets(rc, statistic = 'cp', legend = F)
+abline(1,1)
+```
+
+
+## 10.4 
+
+Comparing the second-order model to the first-order model (using the F-test, AIC, BIC, and adjusted $R^2$ criteria), the second-order model is preferred. We shouldn't simplify the model. 
+
+```{r}
+data(trees)
+lmod1 = lm(log(Volume) ~ Girth + Height, data = trees)
+lmod2 = lm(log(Volume) ~ Girth + Height + I(Girth^2) + I(Height^2) + Girth:Height, data = trees)
+anova(lmod1, lmod2)
+```
+
+```{r}
+comp = data.frame(AIC = c(AIC(lmod1),AIC(lmod2)), BIC = c(BIC(lmod1),BIC(lmod2)),
+                  AR2 = c(summary(lmod1)$adj, summary(lmod2)$adj))
+row.names(comp) = c('Linear','Quadratic')
+knitr::kable(comp)
+```
+

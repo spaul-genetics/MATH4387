@@ -1,0 +1,254 @@
+---
+title: "Homework 3"
+author: "Subrata Paul"
+date: "9/7/2020"
+output: pdf_document
+---
+
+```{r simulate_data, echo=F, eval=F, include=F}
+n = 1000
+x1 = rbeta(n, 1, 15)
+x2 = rgamma(n, 5)
+x3 = x2 + rnorm(n, mean = 0, sd = 0.00001)
+y = 3 - 2*x1 + 4*x2 + 3*x3+ rnorm(n, 0, 0.1)
+dat = data.frame(x1 = x1, x2 = x2, x3 = x3, y = y)
+write.table(dat,'./data/simu_hw3.txt', row.names = F, col.names = T, sep = '\t')
+```
+
+## Problem 1
+
+Download the `simu_hw3.txt` data from canvas and read it in R. The data has four columns `x1, x2, x3` and `y`. Print the summary of the linear regression model $$y = \beta_0 + \beta_1x_1+\beta_2x_2 + \beta_3x_3+\epsilon$$
+
+```{r p1_1}
+dat = read.table('../data/simu_hw3.txt',header = T)
+summary(lm(y~x1 + x2 + x3, data = dat))
+```
+
+* Is there something that surprise you? What it is?
+The estimate and standard error of $x_2$ and $x_3$ are very high. A possible reason is collinearity. 
+* Why do you thing it might happend? Justify your answer. (You can use plots or some statistic for justification.)
+
+```{r}
+plot(dat$x2, dat$x3)
+```
+
+The plot of $x_3$ versus $x_2$ shows that the two variables are highly correlated. The correlation between the two variables can be calculated using the `cor` function. 
+
+```{r}
+cor(dat$x2,dat$x3)
+```
+R reported that the correlation between the two variables is one but in such case R should automatically remove one of the two predictors from the model due to singularity of $X^TX$. In this case it did not do that because the correlation is not exactly equal to 1.
+
+```{r}
+cor(dat$x2,dat$x3)==1
+```
+
+Printing more decimal points would make it clear.
+
+```{r}
+sprintf("%.20f", cor(dat$x2, dat$x3))
+```
+
+So, $x_2$ and $x_3$ are not exactly equal rather one is a perturbed version of another that's why the $X^TX$ matrix is not singular but ill-conditioned.  
+
+```{r}
+lmod = lm(y~x1 + x2 + x3, data = dat)
+X = model.matrix(lmod) # Design matrix (with one on the first column)
+kappa(t(X)%*%X) # Condition number 
+```
+
+* What model do you recommend? Run the recommended model and print the summary. 
+
+I would recommend any of the two variables. 
+
+```{r}
+summary(lm(y~x1+x2, data = dat))
+```
+
+
+## Problem 2
+
+Fit $y = \beta_0 + \beta_1x_1$ model and populate the following table without using the `anova` function. 
+
+```{r}
+lmod1 = lm(y~x1, data = dat)
+RSS = sum(lmod1$residuals^2)
+ybar = mean(dat$y) 
+TSS = sum((dat$y - ybar)^2) 
+SS_reg = TSS - RSS
+c(SS_reg, RSS, TSS) #SS
+c(SS_reg, RSS, TSS)/c(1,998,999) #MS
+```
+
+
+```{r results='asis'}
+library(xtable)
+options(xtable.comment = FALSE)
+tab = data.frame(Source = c("$SS_{reg}(X_1)$", "$RSS(X_1)$", "TSS" ),
+                 SS = c(SS_reg, RSS, TSS), 
+                 df = c(1,998,999), 
+                 MS = c(SS_reg, RSS, TSS)/c(1,998,999))
+print(xtable(tab), sanitize.text.function = function(x) {x})
+```
+
+
+`SS`, `df`, and `MS` represent the sum of squares, degrees of freedom, and mean sum of squares, respectively. `MS` = `SS`/`df`.
+
+## Problem 3
+
+Fit $y = \beta_0 + \beta_1x_1 + \beta_2x_2$ model. Now, if you want, you can use the `anova` function. 
+
+```{r}
+lmod2 = lm(y~x1+x2, data = dat)
+summary(lmod2)
+RSS = sum(lmod2$residuals^2)
+ybar = mean(dat$y) 
+TSS = sum((dat$y - ybar)^2) 
+SS_reg = TSS - RSS
+c(SS_reg, RSS, TSS) #SS
+c(SS_reg, RSS, TSS)/c(2,997,999) #MS
+```
+
+
+```{r results='asis'}
+library(xtable)
+tab = data.frame(Source = c("$SS_{reg}(X_1, X_2)$", "$RSS(X_1, X_2)$", "TSS" ), 
+                 SS = c(SS_reg, RSS, TSS), 
+                 df = c(2,997,999), 
+                 MS = c(SS_reg, RSS, TSS)/c(2,997,999))
+print(xtable(tab), sanitize.text.function = function(x) {x})
+```
+
+
+## Problem 4
+
+Define $SS_{reg}(X_2|X_1) = RSS(X_1) - RSS(X_1,X_2)$. $SS_{reg}(X_2|X_1)$ is called the extra sum of squares. Calculate $SS_{reg}(X_2|X_1)$. Can you write $SS_{reg}(X_2|X_1)$ in terms of $SS_{reg}$ of the above models?
+
+$$SS_{reg}(X_2|X_1) = 244215.036 - 10.39203 = 244204.6$$
+
+$$SS_{reg}(X_2|X_1) = SS_{reg}(X_1,X_2) - SS_{reg}(X_1) = 245634.72687 - 1430.083 = 244204.6$$
+
+## Problem 5
+
+The dataset `teengamb` from `faraway` package concerns a study of teenage gambling in Britain. Fit a regression model with the expenditure on gambling as the response and the sex, status, income and verbal score as predictors. Present the output.
+
+```{r}
+data(teengamb, package = 'faraway')
+lmod = lm(gamble ~., data = teengamb)
+summary(lmod)
+```
+
+(a) What percentage of variation in the response is explained by these predictors?
+
+The percentage of variation explained is 52.67%.
+
+```{r}
+plot(lmod$fitted.values,lmod$residuals, xlab = 'Fitted values', ylab = 'Residuals')
+```
+
+The plot of the responses versus the fitted value doesn’t look terribly linear, so $R^2$ may not be a very useful measure of model fit.
+
+(b) Which observation has the largest (positive) residual? Give the case number.
+
+```{r}
+which.max(lmod$residuals)
+lmod$residuals[which.max(lmod$residuals)]
+
+```
+
+The largest residual is obtained for 24th observation and it is 94.25222. 
+
+
+
+(c) Compute the mean and median of the residuals.
+
+Mean of the residuals should be zero as the OLS method is used for model fit. Why?
+
+```{r}
+mean(lmod$residuals)
+median(lmod$residuals)
+```
+
+(d) Compute the correlation of the residuals with the fitted values.
+
+According to the theory the correlation between residuals and the fitted values should be zero. 
+
+```{r}
+cor(lmod$residuals, lmod$fitted.values)
+```
+
+(e) Compute the correlation of the residuals with the income.
+
+```{r}
+cor(lmod$residuals, teengamb$income)
+```
+
+(f) For all other predictors held constant, what would be the difference in predicted
+expenditure on gambling for a male compared to a female?
+
+```{r}
+coef(lmod)[2]
+```
+
+Females are estimated to spend about 22 pounds less per year on gambling than their male counterparts, holding other factors constant.
+
+
+## Problem 6
+
+In this question, we investigate the relative merits of methods for computing the coefficients. Generate some artificial data by:
+
+```{r, eval=F}
+x<-1:20
+y <- x+ rnorm(20)
+```
+
+Fit a polynomial in $x$ for predicting $y$. Compute $\hat{\beta}$ in two ways — by `lm()` and by using the direct calculation described in the chapter. At what degree of polynomial does the direct calculation method fail? (Note the need for the `I()` function in fitting the polynomial, that is, `lm(y ~ x + I(x^2))`.
+
+The direct solve method fails at degree 6 (for me). 
+
+```{r error = T}
+set.seed(1)
+x <- 1:20
+y <- x + rnorm(20)
+# Compute betahat using lm function for polynomials up to 5
+lmod1 <- lm(y ~ x)
+lmod2 <- lm(y ~ x + I(x^2))
+lmod3 <- lm(y ~ x + I(x^2) + I(x^3))
+lmod4 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4))
+lmod5 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5))
+lmod6 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5) + I(x^6))
+X = model.matrix(lmod1) # extract X matrix from model
+solve(t(X) %*% X, t(X) %*% y) # compute coefficients manually
+coef(lmod1) # pull out coefficients estimated by lm function
+X = model.matrix(lmod6)
+solve(t(X) %*% X, t(X) %*% y)
+```
+
+```{r}
+coef(lmod6)
+```
+
+## Problem 7
+
+The dataset `prostate` in the `faraway` package comes from a study on 97 men with prostate cancer who were due to receive a radical prostatectomy. Fit a model with `lpsa` as the response and `lcavol` as the predictor. Record the residual standard error and the $R^2$. Now add `lweight`, `svi`, `lbph`, `age`, `lcp`, `pgg45` and `gleason` to the model one at a time. For each model record the residual standard error and the $R^2$. Plot the trends in these two statistics.
+
+```{r}
+library(ggplot2)
+data(prostate, package = 'faraway')
+pred = c('lweight', 'svi','lbph','age','lcp','pgg45','gleason')
+r_squared<-c()
+rse <- c()
+for(i in 1:length(pred)){
+  model_formula = as.formula(paste0('lpsa ~ ', paste(pred[1:i], collapse = '+')))
+  lmod = lm(model_formula, data = prostate)
+  r_squared[i]<-summary(lmod)$r.squared
+  rse[i]<-summary(lmod)$sigma
+}
+plot_dat = reshape2::melt(data.frame(p = seq(1,length(pred)),rsq = r_squared, rse = rse), id.vars = 'p') 
+ggplot(data = plot_dat, aes(x = p, y = value, color = variable))+
+  geom_line()+
+  scale_color_discrete(labels = c(expression(R^2), expression(hat(sigma))))
+plot(r_squared ~ rse, xlab = 'Residual Standard Error', ylab = expression(R^2))
+```
+
+$R^2=1-\frac{RSS}{TSS}$, and the residual standard error is $\hat{sigma} = \sqrt{RSS/(n-p)}$.  As we add more regressor variables to our regression model, RSS will decrease.  When RSS decreases, we EXPECT $\hat{\sigma}$ to decrease and $R^2$ must increase (since TSS is a constant).  Note:  I say we expect $\hat{\sigma}$ to decrease because $n-p$ in the denominator of $\hat{\sigma}$ also changes as we add regressors.  It is possible that $\hat{\sigma}$ could in fact increase, though this is generally not the case for well-chosen models.  

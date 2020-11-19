@@ -1,0 +1,116 @@
+---
+title: "Homework 7-Key"
+author: "Subrata Paul"
+date: "10/30/2020"
+output: pdf_document
+---
+
+```{r setup, echo=F, include=F}
+options(digits = 5, scipen = 2, show.signif.stars = FALSE)
+knitr::opts_chunk$set(echo = F)
+library(faraway)
+library(lmtest)
+library(car)
+library(ggplot2)
+```
+
+## Problem 6.2 (a, b)
+
+Using the teengamb dataset, fit a model with gamble as the response and the other variables as predictors. Answer the questions posed in the previous question.
+
+### (a)
+
+The residual plots show increasing variability of the residuals as the fitted values get larger, so there is evidence the error variability is not constant.
+
+```{r}
+# fit model
+data(teengamb)
+lm1 <- lm(gamble ~ ., data = teengamb)
+plot_dat = data.frame(fit = fitted(lm1), res = residuals(lm1), sqrt_res = sqrt(abs(residuals(lm1))))
+plot_dat = reshape2::melt(plot_dat, id.vars = 'fit')
+plot_dat$variable = factor(plot_dat$variable,
+                              labels = c("Residuals", "SQRT( |Residuals|)"))
+ggplot(data = plot_dat, aes(x = fit, y = value))+
+  geom_point()+
+  facet_wrap(vars(variable), scales = 'free')+
+  xlab('Fitted Values')
+```
+
+
+### (b)
+
+The q-q plot of the residuals has some values deviating outside the confidence bands in the upper tail, so there should be some concern that the errors are not from a normal distribution.
+
+```{r}
+qqPlot(residuals(lm1))
+```
+
+
+## 6.4 
+
+Using the swiss dataset, fit a model with Fertility as the response and the other variables as predictors. Perform regression diagnostics on this model to answer the following questions. Display any plots that are relevant. Do not provide any plots about which you have nothing to say.
+
+### (a)  
+
+Check the constant variance assumption for the errors.
+
+The plot of the absolute value of the residuals vs the fitted values appears to be a constant thickness as we move along the x-axis, so there is no indication of problems with nonconstant variance.
+
+```{r}
+#data(swiss, package = "faraway")
+data(swiss)
+lm1 <- lm(Fertility ~ ., data = swiss)
+
+plot_dat = data.frame(fit = fitted(lm1), res = residuals(lm1), sqrt_res = sqrt(abs(residuals(lm1))))
+plot_dat = reshape2::melt(plot_dat, id.vars = 'fit')
+plot_dat$variable = factor(plot_dat$variable,
+                              labels = c("Residuals", "SQRT( |Residuals|)"))
+ggplot(data = plot_dat, aes(x = fit, y = value))+
+  geom_point()+
+  facet_wrap(vars(variable), scales = 'free')+
+  xlab('Fitted Values')
+```
+
+
+### (b)
+
+The q-q plot of the residuals follows close to a straight line, so there are no problems with nonnormal errors.  
+
+```{r}
+qqPlot(residuals(lm1))
+```
+
+## 6.8 
+
+For the divusa data, fit a model with divorce as the response and the other variables, except year as predictors. Check for serial correlation.
+
+There is clear evidence of positive serial correlation of the residuals.  The sign of the residuals tends to run in streaks, i.e., there are lots of positive residuals in a row, then a lot of negative residuals in a row, etc.  This is clear seen in the index plot of the residuals.
+
+```{r}
+data(divusa)
+lmod <- lm(divorce ~ unemployed + femlab + marriage + birth + military, data = divusa)
+# index plot of residuals
+plot(residuals(lmod), type = "l", ylab = 'Residuals')
+abline(h = 0)
+```
+
+A plot of the lagged residuals shows clear evidence of positive serial correlation based on the upward slope of the plot.  
+
+```{r}
+n = nobs(lmod)
+e = residuals(lmod)
+plot(tail(e, n - 1), head(e, n - 1), xlab = "residual i", ylab = "residual i + 1")
+```
+The Durbin-Watson test confirms this belief.
+
+$H_0:\ \rho=0$ versus $H_a:\ \rho>0$
+
+p-value $\approx$ 0
+
+There is convincing evidence of positive spatial correlation among the errors.
+
+
+```{r}
+dwtest(divorce ~ unemployed + femlab + marriage + birth + military, data = divusa)
+```
+

@@ -1,0 +1,4652 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Problems with the Predictors</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Problems with the Predictors',
+                        subtitle: 'Chapter 7 of LMWR2',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+  <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/3/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Errors in the Predictors</h2></hgroup><article  id="errors-in-the-predictors">
+
+<p>Our standard regression model allows for errors in the response by including the \(\epsilon\) term, but what if the predictors are measured with error?</p>
+
+<ul>
+<li>i.e., What if the observed \(X\) is not the one used to generate \(Y\)?</li>
+<li>e.g., what if the predictor were the amount of exposure to secondhand tobacco smoke? This would be very difficult to measure.</li>
+</ul>
+
+<p>We (generally) don’t want to treat X as a random variable.</p>
+
+<ul>
+<li>This is possible for observational data, but not experimental.</li>
+<li>Regression inference proceeds on a fixed value of X (though we may not be able to measure X accurately).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Account for errors in predictors</h2></hgroup><article  id="account-for-errors-in-predictors">
+
+<p>Suppose that we observe \((x_i^o,y_i^o)\) for \(i=1,2,\dots,n\), which are related to the true values \((x_i^a,y_i^a)\):</p>
+
+<p>\[y_i^o=y_i^a+\epsilon_i\] \[x_i^o=x_i^a+\delta_i\]</p>
+
+<p>where the errors \(\epsilon\) and \(\delta\) are independent.</p>
+
+</article></slide><slide class=""><hgroup><h2>In graphics</h2></hgroup><article  id="in-graphics">
+
+<p align="center">
+
+<img width="600" height="450" src="images/pred_prob1.png">
+
+</p>
+
+</article></slide><slide class=""><hgroup><h2>Problems</h2></hgroup><article  id="problems">
+
+<p>The true underlying relationship is</p>
+
+<p>\[y_i^a=\beta_0+\beta_1 x_i^a,\]</p>
+
+<p>but we only see \((x_i^o,y_i^o)\). They are related though the equation:</p>
+
+<p>\[y_i^o=beta_0+\beta_1 x_i^o+(\epsilon_i-\beta_1 \delta_i ).\]</p>
+
+<p>Assume that \(E(\epsilon)=E(\delta)=0\) and \(var(\epsilon)=\sigma_\epsilon^2 I and var(δ)=\sigma_\delta^2 I\). Define</p>
+
+<p>\[\sigma_x^2=\frac{\sum(x_i^a-\overline{x^a})^2}{n},\quad \sigma_{x\delta}=cov(x^a,\delta).\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Problems</h2></hgroup><article  id="problems-1">
+
+<p>For observational data, \(\sigma_x^2\) is (essentially) the sample variance of \(X^a\), while for a controlled experiment, it is just a numerical measure of the spread of the design.</p>
+
+<p>We can often assume \(cov(x^a,\delta)=0\).</p>
+
+<p>The least squares estimator of \(\beta_1\) is</p>
+
+<p>\[\hat{\beta}_1=\frac{\sum(x_i-\overline{x}) y_i}{\sum(x_i-\overline{x})^2 },\]</p>
+
+<p>and we can derive that</p>
+
+<p>\[E(\hat{\beta}_1 )=\beta_1  \frac{\sigma_x^2+\sigma_{x\delta}}{\sigma_x^2+\sigma_\delta^2+2\sigma_{x\delta}}.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Special case I</h2></hgroup><article  id="special-case-i">
+
+<p>If there is no relation between \(X^a\) and \(\delta\), then \(\sigma_{x\delta}=0\), and the expected value simplifies to</p>
+
+<p>\[E(\hat{\beta}_1 )=β_1 \frac{1}{1+ \sigma_\delta^2/\sigma_x^2}.\]</p>
+
+<ul>
+<li>In this case, the estimate will be biased toward zero, though this won’t be a problem as long as \(σ_δ^2\ll \sigma_x^2\).</li>
+<li>We typically see the same pattern for multiple predictors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Special case II</h2></hgroup><article  id="special-case-ii">
+
+<p>In controlled experiments, there are two ways in which errors may arise.</p>
+
+<ul>
+<li><p>In the first case, we measure \(x\), but instead of observing \(x^a\), we observe \(x^o\). If we measure \(x\) again, we will get a different \(x^o\).</p></li>
+<li><p>In the second case, we fix \(x^o\) (e.g., we make a chemical solution with concentration \(x^o\)). However, the true concentration would be \(x^a\). If we repeated this process, we would get the same \(x^o\) but a different \(x^a\) (since we are trying to make the solution at the same concentration).</p>
+
+<ul>
+<li><p>In this case, \(\sigma_{xδ}=cov(X^o-\delta,\delta)=-\sigma_\delta^2\), and we would have that \(E(\hat{\beta}_1 )=\beta_1\).</p></li>
+<li><p>This case essentially reverses the role of \(x^a\) and \(x^o\), and if you get to observe the true \(X\), then you will get an unbiased estimate of \(\beta_1\).</p></li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Solution</h2></hgroup><article  id="solution">
+
+<p>When the error in \(X\) cannot be ignored, we should consider alternatives to the least squares estimation of \(\beta\).</p>
+
+<ul>
+<li>Two possibilities are to consider the geometric mean functional relationship or the SIMEX method.</li>
+<li>Read the book for more details.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Change of Scale</h2></hgroup><article  id="change-of-scale">
+
+<p>Suppose we want to change the scale of the variables, e.g., \(x_i &lt;- (x_i+a)/b\).</p>
+
+<ul>
+<li>This may result in the estimated regression coefficient having a better scale (e.g., \(\hat{\beta}_1=3.51\  vs\  \hat{\beta}_1=0.00000351\)).</li>
+<li>This may enhance numerical stability (really large or small values can cause problems).</li>
+</ul>
+
+<p>Rescaling \(x_i\) leaves the \(t\)- and \(F\)-tests unchanged, as well as \(\hat{\sigma}^2\) and \(R^2\) unchanged. \(\hat{\beta}_i\to b\hat{\beta}_i\).</p>
+
+<p>Rescaling \(y\) leaves the \(t\)- and \(F\)-tests unchanged, and \(R^2\) unchanged. \(\hat{\sigma}^2\) and \(\hat{\beta}\) will be multiplied by \(b\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example">
+
+<p>The <code>savings</code> data has data related to 50 savings-related variables in 50 countries, averaged over the period 1960-1970. The data has the following variables:</p>
+
+<ul>
+<li><code>sr</code> - savings rate. Personal saving divided by disposable income</li>
+<li><code>pop15</code> - percent population under age of 15</li>
+<li><code>pop75</code> - percent population over age of 75</li>
+<li><code>dpi</code> - per-capita disposable income in dollars</li>
+<li><code>ddpi</code> - percent growth rate of dpi</li>
+</ul>
+
+<p>Consider the changes in the regression models when we rescale the <code>dpi</code> predictor by 1000. What changes and what doesn’t? What if we rescaled the response (multiplying by 1000)?</p>
+
+</article></slide><slide class=""><hgroup><h2>Model fit</h2></hgroup><article  id="model-fit">
+
+<pre class = 'prettyprint lang-r'>lm1 &lt;- lm(sr ~ pop15 + pop75 + dpi + ddpi, data = savings)
+sumary(lm1)</pre>
+
+<pre >##                Estimate  Std. Error t value  Pr(&gt;|t|)
+## (Intercept) 28.56608654  7.35451611  3.8842 0.0003338
+## pop15       -0.46119315  0.14464222 -3.1885 0.0026030
+## pop75       -1.69149768  1.08359893 -1.5610 0.1255298
+## dpi         -0.00033690  0.00093111 -0.3618 0.7191732
+## ddpi         0.40969493  0.19619713  2.0882 0.0424711
+## 
+## n = 50, p = 5, Residual SE = 3.80267, R-Squared = 0.34</pre>
+
+</article></slide><slide class=""><hgroup><h2>Model fit after scaling dpi by 1000:</h2></hgroup><article  id="model-fit-after-scaling-dpi-by-1000">
+
+<pre class = 'prettyprint lang-r'>lm2 &lt;- lm(sr ~ pop15 + pop75 + I(dpi/1000) + ddpi, data = savings)
+sumary(lm2)</pre>
+
+<pre >##             Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept) 28.56609    7.35452  3.8842 0.0003338
+## pop15       -0.46119    0.14464 -3.1885 0.0026030
+## pop75       -1.69150    1.08360 -1.5610 0.1255298
+## I(dpi/1000) -0.33690    0.93111 -0.3618 0.7191732
+## ddpi         0.40969    0.19620  2.0882 0.0424711
+## 
+## n = 50, p = 5, Residual SE = 3.80267, R-Squared = 0.34</pre>
+
+</article></slide><slide class=""><hgroup><h2>Model after scaling response by 1000:</h2></hgroup><article  id="model-after-scaling-response-by-1000">
+
+<pre class = 'prettyprint lang-r'>lm3 &lt;- lm(I(sr*1000) ~ pop15 + pop75 + dpi + ddpi, data = savings)
+sumary(lm3)</pre>
+
+<pre >##                Estimate  Std. Error t value  Pr(&gt;|t|)
+## (Intercept) 28566.08654  7354.51611  3.8842 0.0003338
+## pop15        -461.19315   144.64222 -3.1885 0.0026030
+## pop75       -1691.49768  1083.59893 -1.5610 0.1255298
+## dpi            -0.33690     0.93111 -0.3618 0.7191732
+## ddpi          409.69493   196.19713  2.0882 0.0424711
+## 
+## n = 50, p = 5, Residual SE = 3802.66865, R-Squared = 0.34</pre>
+
+</article></slide><slide class=""><hgroup><h2>Scaling</h2></hgroup><article  id="scaling">
+
+<p>A very thorough approach to scaling is to convert all variables to standard units (mean 0 and variance 1) using the <code>scale</code> function.</p>
+
+<ul>
+<li>The fitted line will have an intercept of 0.</li>
+<li>Advantages:
+
+<ul>
+<li>All the predictors are on a comparable scale, making comparisons simpler.</li>
+<li>The coefficients can be viewed as a kind of partial correlation (the values are always between -1 and 1).</li>
+<li>We avoid numerical problems that arise when predictors are on very different scales.</li>
+</ul></li>
+<li>Disadvantages:
+
+<ul>
+<li>The regression coefficients represent the effect of a one standard deviation increase in the predictor on the response in standard deviations.</li>
+<li>This is not usually easy to interpret.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Savings example</h2></hgroup><article  id="savings-example-1">
+
+<pre class = 'prettyprint lang-r'>scsavings &lt;- data.frame(scale(savings))
+lm4 &lt;- lm(sr ~ pop15 + pop75 + dpi + ddpi, data = scsavings)
+sumary(lm4)</pre>
+
+<pre >##                Estimate  Std. Error t value Pr(&gt;|t|)
+## (Intercept)  4.0116e-16  1.2003e-01  0.0000 1.000000
+## pop15       -9.4204e-01  2.9545e-01 -3.1885 0.002603
+## pop75       -4.8731e-01  3.1218e-01 -1.5610 0.125530
+## dpi         -7.4508e-02  2.0592e-01 -0.3618 0.719173
+## ddpi         2.6243e-01  1.2567e-01  2.0882 0.042471
+## 
+## n = 50, p = 5, Residual SE = 0.84873, R-Squared = 0.34</pre>
+
+</article></slide><slide class=""><hgroup><h2>Plot of estimates</h2></hgroup><article  id="plot-of-estimates">
+
+<pre class = 'prettyprint lang-r'>edf &lt;- data.frame(coef(lm4),confint(lm4))[-1,]
+names(edf) &lt;- c(&#39;Estimate&#39;,&#39;lb&#39;,&#39;ub&#39;)
+library(ggplot2)
+p &lt;- ggplot(aes(y=Estimate,ymin=lb,ymax=ub,x=row.names(edf)),data=edf) + geom_pointrange()
+p + coord_flip() + xlab(&quot;Predictor&quot;) + geom_hline(yintercept=0, col=gray(0.75)) + theme_bw()</pre>
+
+<p><img src="pred_problem_files/figure-html/unnamed-chunk-5-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Scaling Binary Variables</h2></hgroup><article  id="scaling-binary-variables">
+
+<p>Scaling might be done differently when there are binary regressors.</p>
+
+<ul>
+<li>A binary variable that takes the values 0/1 with probability half will have a standard deviation of 0.5.<br/></li>
+<li>Moving the binary variable from 0 to 1 means moving 2 SDs.</li>
+</ul>
+
+<p>This suggests scaling the other continuous regressors by 2 SDs rather than 1 so that interpretations are on a common scale (1 unit increase = 2 SD increase)</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings example</h2></hgroup><article  id="savings-example-2">
+
+<p>Recall that the data clusters based on the pop15 predictor.</p>
+
+<ul>
+<li>We divide pop15 at 35%, so that the younger countries are coded as zero and the older countries as one.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>savings$age &lt;- ifelse(savings$pop15 &gt; 35, 0, 1)
+savings$dpis &lt;- (savings$dpi-mean(savings$dpi))/(2*sd(savings$dpi))
+savings$ddpis &lt;- (savings$ddpi - mean(savings$ddpi))/(2*sd(savings$ddpi))
+sumary(lm(sr ~ age + dpis + ddpis, savings))</pre>
+
+<pre >##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)   6.8176     1.0106  6.7464 2.19e-08
+## age           5.2841     1.5849  3.3341 0.001697
+## dpis         -1.5642     1.6093 -0.9720 0.336127
+## ddpis         2.4681     1.1082  2.2272 0.030866
+## 
+## n = 50, p = 4, Residual SE = 3.79990, R-Squared = 0.32</pre>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation</h2></hgroup><article  id="interpretation">
+
+<p>The predicted savings rate is about 5.3% higher for countries with a younger population.</p>
+
+<p>The same change of two standard deviations in ddpi means a difference of one in the new scale of ddpis.</p>
+
+<p>Recall: ddpi is the percent growth rate of dpi. A typical country with a growth rate of dpi two standard deviation more than another typical country has a savings rate 2.47% higher.</p>
+
+<p>Another way to achieve a similar effect is to use a −1/+1 coding rather than 0/1 so that the standard scaling can be used on the continuous predictors.</p>
+
+</article></slide><slide class=""><hgroup><h2>Collinearity</h2></hgroup><article  id="collinearity">
+
+<p>When the columns of \(X\) are linearly dependent, then \(X^T X\) is singular and there is no unique least squares estimate of \(\beta\).</p>
+
+<ul>
+<li>The columns of \(X\) are said to be exactly collinear in this case.</li>
+<li>This causes serious problems with estimation and interpretation.</li>
+</ul>
+
+<p>Even when the columns of \(X\) are not perfectly dependent, we still have problems.</p>
+
+</article></slide><slide class=""><hgroup><h2>What it does</h2></hgroup><article  id="what-it-does">
+
+<p>Collinearity leads to imprecise estimates of \(\beta\).</p>
+
+<ul>
+<li>The signs of the coefficients can be the opposite of what intuition about the effect of the predictors might suggest.</li>
+<li>The standard errors become inflated so it may be difficult to detect significant regression coefficients.</li>
+<li>The fit becomes very sensitive to measurement errors.
+
+<ul>
+<li>Small changes in y can lead to large changes in \(\hat{\beta}\).</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Detect Collinearity</h2></hgroup><article  id="detect-collinearity">
+
+</article></slide><slide class=""><hgroup><h2>Pairwise correlation</h2></hgroup><article  id="pairwise-correlation">
+
+<p>Examine the pairwise correlation matrix of the regressors and look for large pairwise correlations.</p>
+
+<ul>
+<li>Large is a bit subjective, but the larger the correlation among regressors, the more likely it is that you have a collinearity problem.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Coefficient of determination among regressors</h2></hgroup><article  id="coefficient-of-determination-among-regressors">
+
+<p>Let \(R_j^2\) denote the coefficient of determination when regressing \(x_j\) on all other regressors.</p>
+
+<ul>
+<li>Repeat for all regressors.</li>
+</ul>
+
+<p>\(R_j^2\) close to one indicates a collinearity problem.</p>
+
+<p>The offending linear combination can be discovered by examining the regression coefficients from each of these fits (which ones are significant?).</p>
+
+</article></slide><slide class=""><hgroup><h2>Difficulties</h2></hgroup><article  id="difficulties">
+
+<p>Collinearity makes some of the parameters difficult to estimate precisely.</p>
+
+<p>Define \(S_j^2\) to be the sample variance of regressor \(j\). We can show that</p>
+
+<p>\[var(\hat{\beta}_j)=\sigma^2 \frac{1}{1-R_j^2}\frac{1}{(n-1) S_j^2}.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Two facts</h2></hgroup><article  id="two-facts">
+
+<ul>
+<li>If \(x_j\) does not vary much, then the variance of \(\hat{\beta}_j\) will be large (since \(S_j^2\) will be small).</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>x1&lt;-runif(100,0.4,0.5)
+x2&lt;-runif(100,0,1)
+y1&lt;-2*x1 + rnorm(100, 0, 0.5)
+y2&lt;-2*x2 + rnorm(100, 0, 0.5)
+summary(lm(y1~x1))$coefficients</pre>
+
+<pre >##               Estimate Std. Error    t value  Pr(&gt;|t|)
+## (Intercept) 0.05701166  0.8064542 0.07069423 0.9437852
+## x1          1.73470475  1.7828313 0.97300555 0.3329461</pre>
+
+<pre class = 'prettyprint lang-r'>summary(lm(y2~x2))$coefficients</pre>
+
+<pre >##                 Estimate Std. Error     t value     Pr(&gt;|t|)
+## (Intercept) -0.002995889  0.0968211 -0.03094252 9.753783e-01
+## x2           1.977811897  0.1700102 11.63348713 3.624086e-20</pre>
+
+</article></slide><slide class=""><hgroup><h2>Two facts</h2></hgroup><article  id="two-facts-1">
+
+<ul>
+<li>We can maximize \(S_j^2\) by spreading X as much as possible.
+
+<ul>
+<li>Placing half of the points at the minimum practical value and half at the maximum maximizes this.</li>
+</ul>
+
+<pre >- This design assumes linearity and makes it impossible to check for curvature.
+- Generally, we distribute values a bit more than this.</pre></li>
+<li>We can use this fact to choose experimental designs that minimize the variance of the estimated regression coefficients.
+
+<ul>
+<li>Orthogonality implies that \(R_j^2=0\), which minimizes the variance.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Variance Inflation Factor</h2></hgroup><article  id="variance-inflation-factor">
+
+<p>If \(R_j^2\) is close to 1, then the variance inflation factor</p>
+
+<p>\[VIF_j=\frac{1}{1-R_j^2 }\] will be large.</p>
+
+<p>\(VIF_j\) more than 5 or 10 indicates a potential problem with collinearity for regressor \(x_j\).</p>
+
+</article></slide><slide class=""><hgroup><h2>VIF</h2></hgroup><article  id="vif">
+
+<p>The VIF is the standard diagnostic for assessing collinearity.</p>
+
+<p>The VIF is not appropriate for assessing collinearity for sets of related regressors like dummy-variable regressors or polynomial regressors.</p>
+
+<p>The generalized VIF should be used in those cases.</p>
+
+<p>For the model \(Y = \beta_0 + X_c\beta_c + X_r\beta_r + \epsilon\),</p>
+
+<p>\[GVIF_c = \frac{\det(R_{c})\det(R_{r})}{\det (R)}\] where \(R_c, R_r\), and \(R\) represent correlation matrix for \(X_c, X_r\) and \(X\).</p>
+
+<ul>
+<li>The vif function in the car package automatically computes the generalized VIF for related regressors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Condition number</h2></hgroup><article  id="condition-number">
+
+<p>Examine the eigenvalues of \(X^T X\) (usually after scaling the predictors so they have a standard deviation of 1). Let \(\lambda_1≥\lambda_2≥\dots ≥\lambda_p\geq 0\) be the eigenvalues of the \(p\) regressors ordered from largest to smallest.</p>
+
+<ul>
+<li><p>When the condition number \(\kappa=\sqrt{\lambda_1/\lambda_{p} }\geq 30\) then there is a potential problem with collinearity.</p></li>
+<li><p>The other condition indices are $ are worth examining, because they may indicate a problem with more than one linear combination of the regressors.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Variance Decomposition Proportions</h2></hgroup><article  id="variance-decomposition-proportions">
+
+<p>Variance decomposition proportions can be examined to determine the regressors that are leading to large condition indices.</p>
+
+<ul>
+<li>This information is provided by the colldiag function in the perturb package.</li>
+<li>A variable is involved in the linear dependency if the sum of its proportions over the rows with large condition indices is more than 0.5.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Belsley (1991)</h2></hgroup><article  id="belsley-1991">
+
+<p>Belsley (1991) recommends that when using condition indices to assess collinearity that:</p>
+
+<ul>
+<li>The intercept be included in your X matrix</li>
+<li>The columns of X should NOT be centered.</li>
+<li>The columns of X should be scaled (i.e., the standard deviation of each column should be constant).</li>
+</ul>
+
+<p>Belsley, D.A. Computer Science in Economics and Management (1991) 4: 33. <a href='https://doi.org/10.1007/BF00426854' title=''>https://doi.org/10.1007/BF00426854</a></p>
+
+</article></slide><slide class=""><hgroup><h2>Driving Example:</h2></hgroup><article  id="driving-example">
+
+<p>Car drivers like to adjust the seat position for their own comfort. Car designers would find it helpful to know where different drivers will position the seat depending on their size and age. Researchers at the HuMoSim laboratory at the University of Michigan collected data on 38 drivers. They measured age in years, weight in pounds, height with shoes and without shoes in cm, seated height arm length, thigh length, lower leg length and <code>hipcenter</code> the horizontal distance of the midpoint of the hips from a fixed location in the car in mm.</p>
+
+</article></slide><slide class=""><hgroup><h2>Fit a model with all predictors</h2></hgroup><article  id="fit-a-model-with-all-predictors">
+
+<pre class = 'prettyprint lang-r'>lm1 &lt;- lm(hipcenter ~ ., data = seatpos)
+sumary(lm1)</pre>
+
+<pre >##               Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 436.432128 166.571619  2.6201  0.01384
+## Age           0.775716   0.570329  1.3601  0.18427
+## Weight        0.026313   0.330970  0.0795  0.93718
+## HtShoes      -2.692408   9.753035 -0.2761  0.78446
+## Ht            0.601345  10.129874  0.0594  0.95307
+## Seated        0.533752   3.761894  0.1419  0.88815
+## Arm          -1.328069   3.900197 -0.3405  0.73592
+## Thigh        -1.143119   2.660024 -0.4297  0.67056
+## Leg          -6.439046   4.713860 -1.3660  0.18245
+## 
+## n = 38, p = 9, Residual SE = 37.72029, R-Squared = 0.69</pre>
+
+</article></slide><slide class=""><hgroup><h2>What we get?</h2></hgroup><article  id="what-we-get">
+
+<p>Notice that the \(R^2\) value is large (the model seems to fit the data fairly closely) but none of the individual predictors are significant!</p>
+
+<p>This is a sign of a problem with collinearity.</p>
+
+</article></slide><slide class=""><hgroup><h2>Pairwize correlations</h2></hgroup><article  id="pairwize-correlations">
+
+<pre class = 'prettyprint lang-r'>corrplot::corrplot.mixed(cor(seatpos))</pre>
+
+<p><img src="pred_problem_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>There are several large pairwise correlations between predictors and between predictors and the response.</p>
+
+</article></slide><slide class=""><hgroup><h2>VIF</h2></hgroup><article  id="vif-1">
+
+<pre class = 'prettyprint lang-r'>vif(lm1)</pre>
+
+<pre >##        Age     Weight    HtShoes         Ht     Seated        Arm      Thigh 
+##   1.997931   3.647030 307.429378 333.137832   8.951054   4.496368   2.762886 
+##        Leg 
+##   6.694291</pre>
+
+<p>There is a lot of variance inflation.</p>
+
+<ul>
+<li>We can interpret √307.4=17.5 as meaning that the standard error for height with shoes is 17.5 times larger than it would have been without collinearity.
+
+<ul>
+<li>This interpretation is not completely perfect since this is observational data and we cannot make orthogonal predictors.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Condition indices</h2></hgroup><article  id="condition-indices">
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+HtShoes
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Seated
+
+</th>
+
+<th style="text-align:center;">
+
+Arm
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+Leg
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.485</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+7.833</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.007</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.349</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+17.196</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.051</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.022</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.084</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.044</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.464</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+43.518</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.03</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.045</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.188</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.402</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.287</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.071</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+55.578</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.092</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.259</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.12</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.515</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.514</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+79.522</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.804</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.11</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.244</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.13</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.045</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.227</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+116.37</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.016</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.016</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.015</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.862</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.027</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.12</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.185</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+213.599</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.075</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.011</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.981</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.983</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.008</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.08</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1153.483</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<p>Several condition indices are large.</p>
+
+<ul>
+<li>There are problems with more than one linear combination of predictors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Add more noice</h2></hgroup><article  id="add-more-noice">
+
+<p>If we add a little bit of measurement error to the response, we get a large change in the estimated regression coefficients.</p>
+
+<pre class = 'prettyprint lang-r'>lm2 &lt;- lm(hipcenter + 10 * rnorm(38) ~ ., data = seatpos)
+sumary(lm2)</pre>
+
+<pre >##               Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 444.353146 163.103050  2.7244   0.0108
+## Age           0.680906   0.558453  1.2193   0.2326
+## Weight        0.085923   0.324078  0.2651   0.7928
+## HtShoes      -1.876784   9.549945 -0.1965   0.8456
+## Ht           -2.330553   9.918937 -0.2350   0.8159
+## Seated        3.150185   3.683559  0.8552   0.3995
+## Arm           0.509640   3.818982  0.1334   0.8948
+## Thigh        -0.430835   2.604633 -0.1654   0.8698
+## Leg          -5.797951   4.615702 -1.2561   0.2191
+## 
+## n = 38, p = 9, Residual SE = 36.93483, R-Squared = 0.71</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compare</h2></hgroup><article  id="compare">
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+Model1
+
+</th>
+
+<th style="text-align:right;">
+
+Model2
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+(Intercept)
+
+</td>
+
+<td style="text-align:right;">
+
+436.432
+
+</td>
+
+<td style="text-align:right;">
+
+444.353
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Age
+
+</td>
+
+<td style="text-align:right;">
+
+0.776
+
+</td>
+
+<td style="text-align:right;">
+
+0.681
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Weight
+
+</td>
+
+<td style="text-align:right;">
+
+0.026
+
+</td>
+
+<td style="text-align:right;">
+
+0.086
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+HtShoes
+
+</td>
+
+<td style="text-align:right;">
+
+-2.692
+
+</td>
+
+<td style="text-align:right;">
+
+-1.877
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Ht
+
+</td>
+
+<td style="text-align:right;">
+
+0.601
+
+</td>
+
+<td style="text-align:right;">
+
+-2.331
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Seated
+
+</td>
+
+<td style="text-align:right;">
+
+0.534
+
+</td>
+
+<td style="text-align:right;">
+
+3.150
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Arm
+
+</td>
+
+<td style="text-align:right;">
+
+-1.328
+
+</td>
+
+<td style="text-align:right;">
+
+0.510
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Thigh
+
+</td>
+
+<td style="text-align:right;">
+
+-1.143
+
+</td>
+
+<td style="text-align:right;">
+
+-0.431
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Leg
+
+</td>
+
+<td style="text-align:right;">
+
+-6.439
+
+</td>
+
+<td style="text-align:right;">
+
+-5.798
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<p>The \(R^2\) and standard error are very similar to the previous fit, but the coefficients have changed dramatically!</p>
+
+<ul>
+<li>The coefficients are quite sensitive to collinearity.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Solution</h2></hgroup><article  id="solution-1">
+
+<ul>
+<li>Amputating regressors collinear with other regressors.
+
+<ul>
+<li>Too many regressors are trying to do the same job, so we should remove some of them.</li>
+</ul></li>
+<li>Centering the regressors (subtracting their mean)</li>
+<li>Scaling the regressors (dividing by their standard deviation).</li>
+<li>Standardizing regressors.</li>
+<li>Combining the collinear regressors into a single regressor.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Drawbacks</h2></hgroup><article  id="drawbacks">
+
+<ul>
+<li>Removing a regressor from the model that has a non-zero coefficient will result in a biased fitted model.</li>
+</ul>
+
+<p>*The intercept column of X becomes orthogonal to the other regressors if the other regressors are centered. - In that case, the interpretation of the intercept becomes that it is the mean response when the regressors are at their sample mean values.</p>
+
+<ul>
+<li>Centering a predictor BEFORE using it to construct polynomial terms can help mitigate problems with collinearity among the polynomial terms, but will not remove all problems.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<ul>
+<li>Identify regressors with high pairwise correlation. Only keep one of the regressors.</li>
+<li>Remove regressors with large variance inflation factors since they have a strong linear relationship with others regressors.</li>
+<li>Look at the variance decomposition proportions and, for rows with large condition indices, identify the regressors that have a total proportion of 0.5 or more when added together across rows.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<pre class = 'prettyprint lang-r'>print_colldiag(lm1)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+HtShoes
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Seated
+
+</th>
+
+<th style="text-align:center;">
+
+Arm
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+Leg
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.485</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+7.833</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.007</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.349</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+17.196</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.051</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.022</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.084</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.044</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.464</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+43.518</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.03</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.045</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.188</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.402</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.287</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.071</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+55.578</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.092</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.259</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.12</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.515</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.514</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+79.522</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.804</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.11</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.244</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.13</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.045</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.227</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+116.37</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.016</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.016</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.015</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.862</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.027</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.12</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.185</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+213.599</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.075</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.011</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.981</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.983</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.008</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.08</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1153.483</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<p>Notice that <code>Ht</code> and <code>HtShoes</code> have very large variance decomposition proportions for the largest condition index.</p>
+
+<p>Iteratively remove regressors and recompute condition indices until the problem is fixed.</p>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>HtShoes</code></h2></hgroup><article  id="remove-htshoes">
+
+<pre class = 'prettyprint lang-r'>lm2 = update(lm1, .~.-HtShoes)
+print_colldiag(lm2)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Seated
+
+</th>
+
+<th style="text-align:center;">
+
+Arm
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+Leg
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.518</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+7.446</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.008</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.348</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+16.319</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.059</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.02</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.088</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.006</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.04</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.479</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+41.24</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.031</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.048</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.19</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.402</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.302</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.071</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+52.344</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.072</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.262</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.106</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.511</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.552</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+75.19</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.83</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.129</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.244</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.041</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.258</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.031</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.143</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+116.865</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.018</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.022</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.957</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.733</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.042</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.183</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.234</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+245.363</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>Seated</code></h2></hgroup><article  id="remove-seated">
+
+<pre class = 'prettyprint lang-r'>lm3 = update(lm2, .~.-Seated)
+print_colldiag(lm3)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Arm
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+Leg
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.524</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+7.048</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.012</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.007</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.354</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+15.58</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.113</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.008</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.076</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.021</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.572</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+40.364</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.074</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.046</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.23</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 15px;">
+0.433</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.252</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.062</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+49.348</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.106</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.27</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.118</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.51</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.565</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+70.297</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.695</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.143</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.219</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.995</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.035</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.167</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.368</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+150.424</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>Arm</code></h2></hgroup><article  id="remove-arm">
+
+<pre class = 'prettyprint lang-r'>lm4 = update(lm3, .~.-Arm)
+print_colldiag(lm4)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+Leg
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.812</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+6.532</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.013</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.01</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 15px;">
+0.349</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+14.412</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.093</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.042</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.718</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.006</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+37.643</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 11px;">
+0.219</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.059</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.38</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.067</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.5</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+55.459</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.676</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.113</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.224</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.997</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.21</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 16px;">
+0.494</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+136.988</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>Leg</code></h2></hgroup><article  id="remove-leg">
+
+<pre class = 'prettyprint lang-r'>lm5 = update(lm4, .~.-Leg)
+print_colldiag(lm5)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Weight
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.822</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.007</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+6.086</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.015</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.013</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.34</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.006</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+13.167</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.126</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.068</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.004</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.679</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+34.499</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.859</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 10px;">
+0.16</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.585</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.994</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 12px;">
+0.314</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+95.56</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>Weight</code></h2></hgroup><article  id="remove-weight">
+
+<pre class = 'prettyprint lang-r'>lm6 = update(lm5, .~.-Weight)
+print_colldiag(lm6)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+Thigh
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.009</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.002</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.919</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.001</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.003</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+5.636</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 13px;">
+0.389</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 14px;">
+0.445</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+28.236</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.608</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 9px;">
+0.072</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.998</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.552</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+56.69</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<pre class = 'prettyprint lang-r'>lm7 = update(lm6, .~.-Thigh)
+print_colldiag(lm7)</pre>
+
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:center;">
+
+intercept
+
+</th>
+
+<th style="text-align:center;">
+
+Age
+
+</th>
+
+<th style="text-align:center;">
+
+Ht
+
+</th>
+
+<th style="text-align:center;">
+
+cond.index
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.017</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+1</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.005</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.955</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.007</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+5.121</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.994</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: black !important;font-size: 8px;">
+0.028</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style=" font-weight: bold;    color: red !important;font-size: 16px;">
+0.993</span>
+
+</td>
+
+<td style="text-align:center;">
+
+<span style="     font-size: 12px;">
+37.433</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<pre class = 'prettyprint lang-r'>sumary(lm7)</pre>
+
+<pre >##              Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept) 526.95889   92.24788  5.7124 1.848e-06
+## Age           0.52106    0.38625  1.3490     0.186
+## Ht           -4.20038    0.53128 -7.9062 2.692e-09
+## 
+## n = 38, p = 3, Residual SE = 35.96120, R-Squared = 0.66</pre>
+
+</article></slide><slide class=""><hgroup><h2>Conclusion</h2></hgroup><article  id="conclusion">
+
+<p>If all the variables must be kept in the model, an alternative regression procedure such as ridge regression may be more appropriate.</p>
+
+<p>The effect of collinearity on prediction depends on where the prediction is to be made.</p>
+
+<ul>
+<li>The greater the distance is from the observed data, the more unstable the prediction.</li>
+<li>Distance needs to be considered in a Mahalanobis (accounting for the correlation between predictors) rather than a Euclidean sense.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Conclusion</h2></hgroup><article  id="conclusion-1">
+
+<p>Note: You really should assess collinearity right after exploratory data analysis and before variable selection.</p>
+
+<p>If your regressors are collinear, then all the subsequent inference is suspect and none of the diagnostics require you to fit a model first.</p>
+
+<p>It is better to remove collinear variables first, then proceed with analysis.</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+name: "my-website"
+navbar:
+  title: "My Website"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Syllabus"
+      href: about.html
+    - text: Lectures
+      menu:
+        - text: "Introduction"
+          href: chapter1.html
+        - text: "Review"
+          href: chapter1_5.html
+        - text: "Estimation"
+          href: chapter2.html
+        - text: "Interpretation"
+          href: interpretation.html
+        - text: "Checking Structure"
+          href: structure.html
+        - text: "Hyp. Test & CI"
+          href: hypothesis_review.html
+        - text: "Inference"
+          href: inference.html
+        - text: "Prediction"
+          href: prediction.html
+        - text: "Categorical Predictors"
+          href: cat_pred.html
+        - text: "Unusual Observations"
+          href: unusual_obs.html
+        - text: "Assumption on Error"
+          href: error_assumption.html
+        - text: "Variable Selection"
+          href: var_selection.html
+        - text: "Predictor Problems"
+          href: pred_problem.html
+
+    

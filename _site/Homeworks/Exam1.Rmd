@@ -1,0 +1,114 @@
+---
+title: "Exam 1"
+author: "Subrata Paul"
+date: "9/23/2020"
+output: pdf_document
+---
+
+## Problem 1 (5 points)
+
+Write down a linear regression model with assumptions. 
+
+## Problem 2 (5 points)
+
+In fitting a simple linear regression model $Y = \beta_0 + \beta_1 X+ \epsilon$, it was found that observation $Y_i$ fell directly on the fitted regression line. If this case were deleted, would the least square regression line fitted on the remaining $n-1$ cases be changed? [Hint: try to use the function that we minimize in the least square procedure.]
+
+## Problem 3(a) (10 points)
+
+In this problem, you will simulate data with 5000 observations. About 50% of them are male. Use a binomial distribution to choose the number of males randomly (Hint: You are flipping a fair coin and counting the number of heads). Call the variable `Gender`. Diastolic blood pressure of male and female follows a normal distribution with mean $\mu_\text{male} = 82$, $\mu_\text{female} = 80$ mmHg and standard deviation $\sigma_\text{male}= \sigma_\text{female} = 10.5$. Total cholesterol in blood follows a normal distribution with a mean of 5.69 and variance 1.31. Glucose follows a normal distribution with a mean 5.12 and a standard deviation of 1.24. Gender, cholesterol, and glucose are predictor variables. The response variable is BMI. The error term, $\epsilon~N(0,9)$ accounts for the randomness and effect of other factors that affect BMI. The mean BMI while all the predictors are zero is 23. Simulate BMI so that the effect sizes (regression coefficients) of Gender (Male), blood pressure, cholesterol, and blood glucose are 0.01, 0.07, 0.1, and -0.1, respectively. Run a multiple linear regression and discuss if the regression model could identify the simulated relationship. You should also discuss if you find an estimated coefficient for a variable that is much different than the parameter used in the simulation. 
+
+```{r, echo=F, eval=F, include=F}
+n = 5000
+gen = sample(size = n, prob = c(0.5,0.5), x = c(0,1),replace = T)
+blood = rep(NA, n)
+blood[gen==0] = rnorm(sum(gen==0), 80, 10.5)
+blood[gen==1] = rnorm(sum(gen==1), 82, 10.5)
+chol = rnorm(n, 5.69, sd = sqrt(1.31))
+glu = rnorm(n, 5.12, 1.24)
+dat = data.frame(Gender = gen, bp = blood, chol = chol, glu = glu)
+dat$bmi = 23 + 0.01*dat$Gender+ 0.07*dat$bp + 0.1 * dat$chol - 0.1*dat$glu + rnorm(5000, mean = 0, sd = 3)
+summary(lm(bmi~Gender + bp + chol+ glu, data = dat))
+```
+
+## Problem 3(b) (2 points)
+
+Run the same analysis as problem 3(a) multiple times. Do you get the same or different estimates? Why?
+
+## Problem 4 (10 points)
+
+a. What does it mean for a regression model to be a linear model? (Specifically, explain what linear model means in the context of a regression model.)
+
+b. Consider a setting where there are four observations ($n = 4$) and two predictors ($p=3$). Construct a $4\times 3$ design matrix $X$ that would lead to an unidentifiable model but where no two columns are identical. 
+
+Consider the figure below for parts (c) and (d) of this question. 
+
+```{r echo=F, fig.height=5, fig.width=5}
+x = seq(0,1,length.out = 100)
+y = x^2 + rnorm(100, 0, 0.01)
+plot(x,y)
+```
+
+
+(c) Is the relationship between $x$ and $y$ linear? Why?
+
+(d) Explain how the relationship between $y$ and $x$ can be approximated reasonably well by a linear model. 
+
+## Problem 5 (8 points)
+
+
+Consider the model
+
+$$\log(\text{ppgdp}) = \beta_0 + \beta_1 \text{fertility} + \beta_2\log(\text{pctUrban}) + \epsilon$$
+You can find the description of the data and the variables using `?alr4::UN11`. Fit the model, print the summary of the model and, interpret the coefficient of `pctUrban`. 
+
+
+You will not get full credit for using generic terms or variable names like fertility or pctUrban.  Clearly indicate what these variables are measuring/representing.
+
+
+## Problem 6 (10 points)
+
+Assume that the observations for the response variable are correlated i.e. cov$(y_i,y_j)\neq 0$. So the variance-covariance matrix $Var(\epsilon)\neq \sigma^2I$, where $\sigma$ is a constant and $I$ is the identity matrix. Instead assume that $Var(\epsilon) = \sigma^2 I + \gamma^2K$, where $K$ is not a diagonal matrix. How does this phenomena effects the estimates $\hat{\beta}$. (More specifically is $E[\hat{\beta}]$ and $Var(\hat{\beta})$ in this case and how they vary from that under usual linear regression model assumption?)
+
+## Problem 7 (10 points)
+
+Consider a simple linear regression model 
+
+$$Y = \beta_0 + \beta_1X+\epsilon$$ 
+with usual notations and assumptions. 
+
+a. How does the parameter $\beta_0$ and $\beta_1$ chaanges if we center the predictor variable $X$ (i.e. substract $\overline{X}$ from $X$). 
+
+b. How do the parameters changes if we scale the predictor variable $X$ (i.e. divide $X$ by its standard deviation?)
+
+c. If $X$ and $Y$ are uncorrelated what can be said about $\beta_0$ and $\beta_1$? 
+
+
+## Problem 8 (10 points)
+
+```{r echo=F, eval=F, include=F}
+n=5000
+dat = data.frame(row.names = seq(1,n))
+dat$x1 = abs(rnorm(n, mean = 5, sd = 2))
+dat$x2 = 1000*rgamma(n, 1, 20)
+dat$x3 = 100*rbeta(n,1,5)
+dat$y = 20 - sqrt(dat$x1) + 2*log(dat$x2)+ 0.5*dat$x3 + rnorm(n, 0, 4)
+lmod = lm(y~x1+x2+x3, data = dat)
+summary(lmod)
+write.table(dat, '../data/simu_exam1.txt', sep = '\t', row.names = F, col.names = T, quote = F)
+```
+
+Download the data `simu_exam1.txt` from the canvas. Fit a multiple linear regression model with $Y$ as the response variable and $x1, x2, x3$ as predictors (just one model with three predictors). Perform model diagnostic for structure. If there are issues, suggest a model that is more appropriate for the data. Give the coefficients of the final model and interpret them. 
+
+
+## Problem 9 (20 points)
+
+Select data from http://archive.ics.uci.edu/ml/datasets.php. On the left sidebar select `Regression`, `Numerical`, and `Multivariate`. You can choose any data from the list that has `Default Task = Regression` and the number of instances more than 500. Do not select data that has `Time Series` in the `Default Task` column. You will describe the data, run an appropriate multiple linear regression model, perform diagnostic for model structure, and transform variable if appropriate, and at the end interpret your result. 
+
+
+## Problem 10 (MATH 5387 only)
+
+Consider the linear regression model 
+$$Y = \beta_0 + \beta_1X_1 + \dots + \beta_jX_j + \dots +\beta_{p-1}X_{p-1}$$
+
+Show that the OLS linear fit to the data in an added variable plot for predictor $x_j$ will have slope $\beta_j$ and intercept 0. 
+

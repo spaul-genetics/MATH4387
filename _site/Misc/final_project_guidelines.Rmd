@@ -1,0 +1,47 @@
+---
+title: "Final Project Guideline"
+author: "Subrata Paul"
+date: "10/22/2020"
+output: pdf_document
+---
+
+Grading: The final project will be scored out of 100.  The project will be evaluated on the following (not including penalties for missed deadlines)
+
+* Data Hunt (5 points)
+
+* Exploratory Data Analysis (10 points)
+    - 3 pts: Appropriate graphics used
+    - 3 pts: Correct interpretations of graphics
+    - 3 pts: Concluding summary including research question(s)
+    - 1 pts: Overall thoroughness, completeness
+ 
+* Presentation (20 points)
+    - 4 pts:  Quality of slides.  Visually appealing, neat, orderly, etc.
+    - 5 pts:  Thoroughness of slides.  Introduction, Methods/Results, Conclusions
+    - 5 pts: Proper interpretation of the results
+    - 6 pts:  Quality of speaking 
+
+* Report (75 points):  
+    - 5 pts:  A well-planned report (order, neatness, readability).  Format, grammar and spelling.
+    - 10 pts:  Introduction.  Relevance, question of interest, background, etc.
+    - 50 pts:  Methods/Results.  Summary of data, appropriate methods used, appropriate graphical displays, proper diagnostic is performed, variable selection is discussed, interpretation of results are correct, etc.
+    - 10 pts:  Conclusions.  What did you learn, improvements, reaction, etc.
+
+
+* Format of the report 
+
+    - Possible options:
+        - R markdown
+        - Latex 
+        - Other typesetting but you have to submit in pdf format. 
+    - No codes on the main report. Include them as appendix 
+    - Figures are really helpful but don't add lots of pages of figure that makes your text harder to find. Use the figure that is necessary for your story and make sure you explain all the figures you use in your writing. Please don't assume that a figure tells the story, rather you tells the story and the figures help the audiance to grasp the story and help you to tell the story in much better way. 
+    - Interpret the results without very technical terms. Assume that your audiance do not have good understanding of math and get scared by large numbers such as 1.230567 or $\log 45.7$ or multiplicative of 2.34. 
+    - Scale figures so that they are readable but does not consume your report. 
+    - Explain the topic well enough so that anyone who does not have any idea on that topic can understand your conclusion, for example, if you are analyzing baseball data please explain the terms you use in the context of the game. 
+    
+
+
+
+
+
