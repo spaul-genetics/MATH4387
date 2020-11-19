@@ -35,5 +35,7 @@ navbar:
           href: var_selection.html
         - text: "Predictor Problems"
           href: pred_problem.html
+        - text: "Shrinkage"
+          href: shrinkage.html
 
     
