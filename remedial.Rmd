@@ -1,0 +1,271 @@
+---
+title: "Remedial Measures"
+author: "Subrata Paul"
+date: "6/4/2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    hitheme: zenburn
+---
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+
+
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+```{r setup, echo=FALSE, include=F}
+knitr::opts_chunk$set(fig.align = 'center', echo = F, message = F)
+library(faraway)
+library(alr4)
+```
+
+# Weighted Least Squares
+
+## Model 
+
+The generalized multiple regression model:
+
+$$Y_i = \beta_0 + \beta_1X_{i1} + \dots + \beta_{p-1}X_{i, p-1} + \epsilon_i$$
+where, 
+
+* $\beta_0, \beta_1, \dots , \beta_{p-1}$ are parameters
+* $X_{i1}, \dots X_{i, p-1}$ are known constants 
+* $\epsilon_i$ are independent $N(0,\sigma_i^2)$
+
+## Variance-covariance matrix 
+
+$$Var(\epsilon) = \begin{bmatrix}\sigma_1^2 & 0 & \dots & 0 \\
+0 & \sigma_2^2 & \dots & 0 \\
+\vdots & \vdots & & \vdots \\
+0 & 0 & \dots & \sigma_n^2\end{bmatrix}$$
+
+* OLS assumes equal variance: $\sigma_1^ =\dots = \sigma_n^2 = \sigma^2$
+* Using OLS we would get unbiased estimation of the parameters
+* The OLS estimates no longer have minimum variance 
+* We must account for unequal variance in the estimation process
+* Consider three cases:
+    - Error variances are known (unrealistic)
+    - Error variances are known up to proportionality constant 
+    - Error variances are known (realistic)
+    
+## Error variances are known
+
+Likelihood 
+
+$$L(\beta) = \prod\limits_{i=1}^n \frac{1}{\sqrt{2\pi\sigma_i^2}} \exp \left[ -\frac{1}{2\sigma_i^2} (Y_i -\beta_0 - \beta_1X_{i1} -\dots - \beta_{p-1}X_{i, p-1})^2\right]$$
+
+Define $$w_i = \frac{1}{\sigma_i^2}$$
+
+$$L(\beta) = \left[\prod\limits_{i=1}^n \frac{\sqrt{w_i}}{\sqrt{2\pi}}\right] \exp \left[ -\frac{1}{2} \sum\limits_{i=1}^n w_i(Y_i -\beta_0 - \beta_1X_{i1} -\dots - \beta_{p-1}X_{i, p-1})^2\right]$$
+Minimize 
+
+$$Q_w = \sum\limits_{i=1}^n w_i(Y_i -\beta_0 - \beta_1X_{i1} -\dots - \beta_{p-1}X_{i, p-1})^2$$
+## Intuition 
+
+* $w_i$ for $i=1,\dots , n$ are the regression weights
+* In OLS $w_i=1$ i.e. all observations get equal weights
+* Weight $w_i$ are inversely proportional to the variance $\sigma_i^2$
+* Weights reflects the amount of information contained in the observations
+* An observation with higher variance gets smaller weight
+* More precise $\Rightarrow$ More information $\Rightarrow$ More weight
+
+## In matrix notation 
+
+$$W = \begin{bmatrix}w_1 & 0 & \dots & 0 \\
+0 & w_2 & \dots & 0 \\
+\vdots & \vdots & & \vdots \\
+0 & 0 & \dots & w_n\end{bmatrix}$$
+
+Normal Equation 
+
+$$(X^TWX)\hat{\beta}_w = X^TWY$$
+
+Estimators
+
+$$\hat{\beta}_w = (X^TWX)^{-1}X^TWY$$
+
+Variance of the estimators 
+
+$$Var(\hat{\beta}_w = (X^TWX)^{-1}$$
+
+
+## Properties of the estimators
+
+* Unbiased 
+* Consistent 
+* Minimum variance among unbiased linear estimators
+* When weights are known Var($\hat{\beta}_w$) is generally less than Var($\hat{\beta}$)
+
+
+
+## Error variances unknown
+
+* We need to estimate the error variances. 
+* Residuals from an OLS gives valuable information about the error variances
+* Two methods:
+    - Estimation of variance function 
+    - Use of replicates or near replicates
+    
+## Estimation of variance 
+
+* Squared residual $\hat{\epsilon}^2$ is an estimator of $\sigma_i^2$
+* Absolute residual $|\hat{\epsilon}|$ is an estimator for $\sigma_i$
+* Idea 
+    - We can estimate the variance function describing the relation of $\sigma_i^2$ to relevant predictor variables by first fitting the regression model using unweighted least squares and then regressing $\hat{\epsilon}^2$ or $|\hat{\epsilon}|$ against the appropriate predictor variables. 
+* $|\hat{\epsilon}|$ is preferred if outliers exist. 
+
+## General guidelines
+
+1. A residual plot against $X_l$ exhibits a megaphone shape. $\Rightarrow$  Regress the absolute residuals against $X_l$
+
+2. A residual plot against $\hat{Y}$ exhibits a megaphone shape. $\Rightarrow$  Regress the absolute residuals against $\hat{Y}$
+3. A plot of the squared residuals against $X_l$ exhibits an upward tendency. $\Rightarrow$ Regress the squared residuals against $X_l$
+
+3. A plot of the squared residuals against $X_l$ suggests that the variance increases rapidly with increases in $X_l$ up to a point and then increases more slowly. $\Rightarrow$ Regress the absolute residuals against $X_l$ and $X_l^2$. 
+
+## What next?
+
+After the variance function or the standard deviation function is estimated, the fitted values from this function are used to obtain the estimated weights:
+
+$$w_i = \frac{1}{\hat{s}_i^2}\quad \text{ where } \hat{s}_i \text{ is fitted value from standard deviation function}$$
+$$w_i = \frac{1}{\hat{v}_i}\quad \text{ where } \hat{v}_i \text{ is fitted value from variance function}$$
+
+The parameters are then estiamted as 
+
+$$\hat{\beta}_w = (X^TWX)^{-1}X^TWY$$
+
+## Use of Replicates or Near Replicates
+
+* In designed experiments $\sigma_i^2$ is estimated suing replicate observations at each combination of levels of the predictor variables. 
+
+* In observation studies, near replicates many be used. 
+* For example, if the residual plot against $X_l$ shows a megaphone appearance, cases with $X_1$ values can be grouped together and the variance of the residuals in each group calculated.
+    - The reciprocal of these variances are the weights.
+    
+    
+## Example (Strong Interaction ALR4 page 157)
+
+* Response : scattering cross-section ($y$), Predictor: square of total energy in the center of mass frame of reference ($s$)
+* Designed experiment 
+* A very large number of particles was counted at each setting of $s$
+* The variance of $y$ is thus known almost exactly 
+
+## Example (Strong Interaction ALR4 page 157)
+
+```{r}
+lmod = lm(y~x, weights = 1/SD^2, data = alr4::physics)
+summary(lmod)
+```
+
+
+## Example (Blood pressure)
+
+```{r fig.width=10, fig.height=4}
+blood = read.table('./data/blood_pressure.dat', header = T)
+lmod = lm(BP ~ Age, data = blood)
+par(mfrow = c(1,3))
+plot(BP ~ Age, data = blood, main = '(a)')
+abline(lmod)
+plot(blood$Age, lmod$residuals, xlab = 'Age', ylab = 'Residual', main = '(b)')
+abline(h=0)
+
+plot(blood$Age, abs(lmod$residuals), xlab = 'Age', ylab = 'Residual', main = '(c)')
+abline(lm(abs(lmod$residuals)~blood$Age))
+```
+
+* (a) $\Rightarrow$ linear relationship (unweighted)
+* (b) $\Rightarrow$ confirms the nonconstant error variance 
+* (c) $\Rightarrow$ a linear relation between Age and standard error is reasonable
+
+
+## Example (Blood pressure)
+
+* Regress absolute residuals against `Age` 
+
+```{r}
+lmod_abs_res = lm(abs(lmod$residuals) ~ blood$Age)
+sumary(lmod_abs_res)
+```
+
+* Variance function 
+
+$$\hat{s} = `r coef(lmod_abs_res)[1]` + `r coef(lmod_abs_res)[2]` Age$$
+
+* Weights 
+
+```{r echo=T}
+w = 1/lmod_abs_res$fitted.values^2
+head(w)
+head(blood$Age)
+```
+
+
+## Example (Blood pressure)
+
+* OLS
+
+```{r}
+sumary(lmod)
+```
+
+* WLS
+
+```{r echo=T}
+wls_mod = lm(BP ~ Age, weights = w, data = blood)
+sumary(wls_mod)
+```
+
+
+
+

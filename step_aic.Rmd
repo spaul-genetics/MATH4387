@@ -1,0 +1,17 @@
+---
+title: "Step_AIC"
+author: "Subrata Paul"
+date: "10/27/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r step_aic}
+data(state)
+statedata = as.data.frame(state.x77)
+names(statedata) = gsub(' ','.', names(statedata))
+lmod = lm(Life.Exp ~ ., data = statedata)
+step(lmod, direction = 'both')
+```

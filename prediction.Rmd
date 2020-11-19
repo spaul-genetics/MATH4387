@@ -1,0 +1,358 @@
+---
+title: "Prediction"
+subtitle: "Chapter 4 and 5 of LMWR2"
+author: "Subrata Paul"
+date: "6/4/2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    hitheme: zenburn
+---
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+
+
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+
+## The Natural Predictor
+
+
+Given a new set of regressor values, $x_0=(1,x_{01},…,x_{0,p-1} )^T$, a natural predictor for the associated response is $\hat{y}_0 = x_0^T\hat{\beta}$.
+
+
+What is the uncertainty in our prediction?
+
+-	It depends on the type of prediction made.
+
+
+## Confidence Intervals for Predictions
+
+There are two types of predictions that are made from regression models.
+
+1.	Prediction of the mean response.
+2.	Prediction of a future (or new) observation
+
+Consider building a regression model predicting the selling price of homes in a certain area based on predictors such as the number of bedrooms and closeness to a major highway.  
+
+
+## What we can predict?
+Consider building a regression model predicting the selling price of homes in a certain area based on predictors such as the number of bedrooms and closeness to a major highway.  
+
+Given a set of regressor values x_0, we might want to:
+
+-	Estimate the average selling price of a house with characteristics $x_0$.  
+    -	The average selling price is $x_0^T \beta$, and we would estimate the average price by $\hat{y}_0=x_0^T \hat{\beta}$.  
+    -	The parametric uncertainty of our estimate is only affected by our uncertainty in estimating $\beta$.
+    - Called **prediction or estimation of the mean response**
+
+## What we can predict?
+
+- Predict the future selling price of a specific house with characteristics $x_0$.
+
+    -	The selling price of this house is $y_0=x_0^T \beta+\epsilon_0$.  
+    -	Since $E(\epsilon_0 |X=x_0 )=0$, the predicted price for a new observation is also $\hat{y}_0+\hat{\epsilon}_0=x_0^T \hat{\beta}+0=x_0^T \hat{\beta}$  
+    -	The parametric uncertainty of our prediction is affected by our uncertainty in estimating $\beta$ and the uncertainty associated with the error $\epsilon_0$.
+    - Called **Prediction of a new or future response**
+
+## Variance of the Estimation Error for the Mean
+
+$$\begin{aligned}
+var(x_0^T\hat{\beta}) = & var(x_0^T(X^TX)^{-1}X^Ty) \\ = & x_0^T(X^TX)^{-1}X^T var(y) \left(x_0^T(X^TX)^{-1}X^T\right)^T\\
+=& x_0^T(X^TX)^{-1}X^T var(y) X(X^TX)^{-1}x_0\\
+=& x_0^T(X^TX)^{-1}X^T \sigma^2 I X(X^TX)^{-1}x_0\\
+=& x_0^T(X^TX)^{-1}X^T  X(X^TX)^{-1}x_0 \sigma^2\\
+=& x_0^T(X^TX)^{-1}x_0 \sigma^2\\
+\end{aligned}$$
+
+
+## Variance of the Prediction Error for a new response 
+
+$$\begin{aligned}
+var(x_0^T\hat{\beta} +\epsilon) = & var(x_0^T(X^TX)^{-1}X^Ty) +\sigma^2 & \text{Assume Independence}\\ 
+=& \left(1+x_0^T(X^TX)^{-1}x_0\right) \sigma^2 \\
+\end{aligned}$$
+
+## CI for Mean Response
+
+Since, $\hat{y}_0 = x_0^T\hat{\beta} \sim N(x_0^T\beta, x_0^T(X^TX)^{-1}x_0 \sigma^2$, 
+
+$$\frac{\hat{y}_0 - x_0^T\beta}{\hat{\sigma}\sqrt{x_0^T(X^TX)^{-1}x_0}}\sim T_{n-p}.$$
+
+A 100(1-\alpha)\% CI for the mean response given $x_0$, 
+$$x_0^T\hat{\beta} \pm t_{n-p}^{\alpha/2} \hat{\sigma}\sqrt{x_0^T(X^TX)^{-1}x_0}.$$
+
+## CI for New Response
+
+A 100(1-\alpha)\% CI for a future response given $x_0$, 
+$$x_0^T\hat{\beta} \pm t_{n-p}^{\alpha/2} \hat{\sigma}\sqrt{1+x_0^T(X^TX)^{-1}x_0}.$$
+
+
+## Prediction Interval
+
+
+A future observation is a random variable.  Thus, the second type of interval is typically called a **prediction interval (PI)**. 
+
+-	There is a 95% chance that the actual future value will fall within our prediction interval (in the context of constructing many intervals from independent samples of the population and our assumptions are correct).
+
+A confidence interval for the mean response is typically much narrower than the prediction interval for a new response (assuming the same x_0).
+
+## Prediction VS Confidence
+
+```{r, echo=F, fig.height=6.5, fig.align='center'}
+
+ci <- function(y, ci_level = 0.95){
+  mu = mean(y)
+  s = sd(y)
+  ci = c(mu - qt(ci_level + (1-ci_level)/2, df = length(y)-1)*s/sqrt(length(y)),
+        mu + qt(ci_level + (1-ci_level)/2, df = length(y)-1)*s/sqrt(length(y)))
+  return(ci)
+}
+
+pi <- function(y, ci_level = 0.95){
+  mu = mean(y)
+  s = sd(y)
+  ci = c(mu - qt(ci_level + (1-ci_level)/2, df = length(y)-1)*(1+s/sqrt(length(y))),
+         mu + qt(ci_level + (1-ci_level)/2, df = length(y)-1)*(1+s/sqrt(length(y))))
+  return(ci)
+}
+
+set.seed(25)
+y = rnorm(10, 2, 1)
+plot(y, ylim = c(-2,6),pch = 20)
+arrows(x0 = 5.7, y0 = ci(y)[1], x1 = 5.7, y1 = ci(y)[2], lwd = 3, code = 3, col = 'red')
+arrows(x0 = 6.3, y0 = pi(y)[1], x1 = 6.3, y1 = pi(y)[2], lwd = 3, code = 3, col = 'blue')
+for(i in 1:49){
+y1 = rnorm(10,2,1)
+points(y1, col = i, pch = 20)
+points(x = 5.5, y = mean(y1), pch = 15, col = i)
+}
+legend('topright',c('Prediction','Confidence'),lwd = 1, col = c('blue','red'))
+legend('topleft', c('Mean','Data'), pch = c(15, 20))
+```
+
+## Simulated Example
+
+```{r echo=T}
+set.seed(123)
+x = seq(1,20)
+y = 2*x + rnorm(length(x), mean = 0, sd = 2)
+lmod = lm(y~x)
+plot(x,y)
+abline(lmod, col = 'blue')
+```
+
+## Simulated Example
+
+```{r}
+set.seed(123)
+new_obs = 2*11.5 + rnorm(100, mean = 0, sd = 2)
+plot(x,y)
+abline(lmod, col = 'blue')
+points(rep(11.5, length(new_obs)), new_obs, col='red')
+```
+
+## Simulated Example
+
+```{r}
+set.seed(123)
+mean_obs <- c()
+for(i in 1:100){
+  obs = 2*12.5 + rnorm(10, mean = 0, sd = 2)
+  mean_obs[i]<-mean(obs)
+}
+plot(x,y)
+abline(lmod, col = 'blue')
+points(rep(11.5, length(new_obs)), new_obs, col='red')
+points(rep(12.5, length(mean_obs)), mean_obs, col = 'green')
+```
+
+## Example - Body Fat 
+
+Measuring body fat is not simple. Muscle and bone are denser than fat so an estimate of body density can be used to estimate the proportion of fat in the body. Measuring someone's weight is easy but volume is more difficult. One method requires submerging the body underwater in a tank and measuring the increase in the water level. Most people would prefer not to be submerged underwater to get a measure of body fat, so we would like an easier method. In order to develop such a method, researchers recorded age, weight, height, and 10 body circumference measurements for 252 men. Each man's percentage of body fat was accurately estimated by an underwater weighing technique. Can we predict body fat using only the easy-to-record measurements?
+
+## Response for the median values of the predictors{.smaller}
+
+```{r}
+data(fat, package = 'faraway')
+lmod <- lm(brozek ~ age + weight + height + neck + chest + 
+             abdom + hip + thigh + knee + ankle + biceps + 
+             forearm + wrist, data=fat)
+summary(lmod)
+```
+
+## Response for the median values of the predictors
+
+```{r}
+x <- model.matrix(lmod)
+(x0<-apply(x, 2, median))
+(y0<-sum(x0*coef(lmod)))
+```
+
+## Response for the median values of the predictors
+
+```{r}
+predict(lmod, newdata = data.frame(t(x0)))
+```
+
+Note: The data.frame object placed in the `new` argument must include columns with names matching the names of the predictor variables in the fitted model.
+
+
+## Construct PI and CI
+
+```{r}
+predict(lmod, newdata = data.frame(t(x0)), interval = "prediction", level = 0.95)
+predict(lmod, newdata = data.frame(t(x0)), interval = "confidence", level = 0.95)
+```
+
+The prediction interval ranges from 9.6% body fat up to 25.4%.  This is pretty wide, so there may not be enough information for practical use.
+
+The confidence interval for the mean response is 16.9% to 18.1%, which is much narrower.  
+
+
+## Interpretation of CI 
+
+The percentage of body fat between 16.94 and 18.04 are good estimates of the unknown mean percent body fat of the people with age --, height --, etc. In general, if we would repeat our sampling procedure infinitely, 95% of such constracted confidence intervals would contain the true mean percentage of body fat. 
+
+## Interpretation of PI 
+
+Given a person's measurements are (age = 43, height = 70, etc.), the percengate of body fat will be between 9.62 to 25.37 with a confidence of 95%. In general, if we could repeat our sampling process infinitely, 95% of such constructed prediction intervals would contain the person's true percent body fat. 
+
+## Extrapolation 
+
+Extrapolation is making statistical inference outside the range of the observed data.
+
+-	Quantitative extrapolation concerns x_0 that are far from the original data.
+-	Prediction intervals become wider as we move away from the observed data.
+
+What happens when we predict body fat at the 95th percentile of the observed data?
+
+## Measurements are at 95th percentile
+
+```{r}
+(x1 <- apply(x,2,function(x) quantile(x,0.95)))
+predict(lmod, new = data.frame(t(x1)), interval="prediction")
+predict(lmod, new = data.frame(t(x1)), interval="confidence")
+```
+
+Our confidence interval for the mean is almost 4% wide instead of 1%!  That is a large increase in our uncertainty!
+
+## Graphical (Simulated Data)
+
+```{r, echo=F, message=F, fig.height=6.5, fig.align='center'}
+x = seq(-5,5, length.out = 150)
+y = 0.5*x + 100 + rnorm(150,mean = 0, sd = 2)
+dat = data.frame(x = x, y = y)
+lmod = lm(y~x, data = dat)
+
+library(ggplot2)
+ggplot(data = dat, aes(x = x, y = y))+
+  geom_point()+
+  geom_smooth(method = lm, se = T)
+```
+
+## Graphical (Simulated Data)
+
+```{r, echo=F, warning=F,message=F, fig.height=6.5, fig.align='center'}
+new_dat = cbind(dat, predict(lmod, interval = 'prediction'))
+ggplot(data = new_dat, aes(x = x, y = y))+
+  geom_point()+
+  geom_smooth(method = lm, se = T)+
+  geom_line(aes(y=lwr), color = 'red', linetype = 'dashed')+
+  geom_line(aes(y=upr), color = 'red', linetype = 'dashed')
+```
+
+## Other Uncertainty
+
+An additional source of variation is not accounted for in the previous intervals: 
+
+-	What is the correct model for this data? 
+
+We do our best to find a good model given the available data, but there will always be substantial **model uncertainty**, i.e., the form the model should take.
+
+**Parametric uncertainty** is accounted for using the methods we have learned.
+
+**Model uncertainty** is much harder to quantify.
+
+
+## What Can Go Wrong with Predictions?
+
+-	**Bad model**. The statistician does a poor job of modeling the data.
+
+-	**Quantitative extrapolation**. We try to predict outcomes for cases with predictor values much different from what we see in the data.  
+
+    * This is a practical problem in assessing the risk from low exposure to substances that are dangerous in high quantities — consider second-hand tobacco smoke, asbestos, and radon.
+
+## What Can Go Wrong with Predictions?
+
+-	**Qualitative extrapolation**. We try to predict outcomes for observations that come from a different population. 
+
+    *	We used the body fat model for men to predict the body fat for women. 
+    *	This is a common problem because circumstances are always changing and it's hard to judge whether the new case is comparable.
+    *	We prefer experimental data to observational data, but sometimes experience from the laboratory does not transfer to real life.
+
+-	**Overconfidence** due to overtraining.
+
+    -	Data analysts search for a model that fits their observed data very closely, but the fitted model may not be appropriate for new data.
+    -	This can lead to unrealistically small σ ̂.
+
+## What Can Go Wrong with Predictions?
+
+-	**Black swans**. Sometimes errors can appear to be normally distributed because you haven't seen enough data to be aware of extremes.
+  
+    -	This is of particular concern in financial applications where stock prices are characterized by mostly small changes (normally distributed) but with infrequent large changes (usually falls).

@@ -1,0 +1,126 @@
+---
+title: "Homework 6 Key"
+author: "Subrata Paul"
+date: "10/25/2020"
+output: pdf_document
+---
+
+```{r echo=F}
+library(xtable)
+options(scipen=999)
+options(xtable.comment = FALSE)
+```
+
+## Problem 3.3
+
+(a) The predictors sex and income are significant at the 0.05 level. 
+```{r message=F, results='asis'}
+lmod = lm(gamble ~., data = faraway::teengamb)
+xtable(lmod)
+```
+
+(b) We predict that females will spend about 22 lbs less per year on gambling than their male counterparts, assuming that their socioeconomic status, income, and verbal scores are the same. 
+
+(c)
+
+$H_0:\ \beta_{\text{sex}} = \beta_{\text{status}} = \beta_{\text{verbal}}=0|\beta_{\text{income}}\neq 0$
+
+$H_a:\ \beta_{\text{sex}} \text{ or } \beta_{\text{status}} \text{ or } \beta_{\text{verbal}}\neq 0|\beta_{\text{income}}\neq 0$
+
+```{r}
+full_mod = lm(gamble ~ ., data = faraway::teengamb)
+reduced_mod = lm(gamble ~ income, data = faraway::teengamb)
+(rssf = deviance(full_mod))
+(rssr = deviance(reduced_mod))
+(f = ((rssr - rssf)/3)/(rssf/42))
+1 - pf(f, df1 = 3, df2 = 42)
+```
+
+
+$$F = \frac{(`r round(rssr,2)` - `r round(rssf,2)`)/ `r reduced_mod$df.residual - full_mod$df.residual`}{`r round(rssf,2)`/`r full_mod$df.residual`} = `r f`$$
+
+p-value = $P(F_{3,42} \geq 4.13)$ = 0.012
+
+There is moderate evidence that at least one of the predictors sex, status, or verbal should be included in the regression model of gamble that already contains the income predictor.
+
+## Problem 3.4
+
+(a)
+
+$H_0:\ \beta_{\text{salary}} = 0| \beta_{\text{ratio}}\neq 0, \beta_{\text{expend}}\neq 0$
+
+$H_0:\ \beta_{\text{salary}} \neq 0| \beta_{\text{ratio}}\neq 0, \beta_{\text{expend}}\neq 0$
+
+```{r}
+fmod = lm(total ~ expend + ratio + salary, data = faraway::sat)
+summary(fmod)
+```
+
+$$t = \frac{`r fmod$coefficients['salary']`}{`r summary(fmod)$coefficients[4,2]`} = `r summary(fmod)$coefficients[4,3]` $$
+
+p-value = $2P(T_{46} \geq `r abs(summary(fmod)$coefficients[4,3])`) = `r summary(fmod)$coefficients[4,4]`$
+
+There is weak evidence to conclude the salary predictor should be included in the model of sat scores that already has the ratio and expend predictors. 
+
+$H_0:\ \beta_{\text{salary}} = \beta_{\text{ratio}} = \beta_{\text{expend}}= 0$
+
+$H_0:\ \beta_{\text{salary}} \neq 0 \text{ or } \beta_{\text{ratio}} \neq 0 \text{ or } \beta_{\text{expend}}\neq  0$
+
+```{r}
+rmod = lm(total ~ 1, faraway::sat)
+(rssf = deviance(fmod))
+(rssr = deviance(rmod))
+(f = ((rssr - rssf)/(rmod$df.residual - fmod$df.residual))/(rssf/fmod$df.residual))
+1 - pf(f, df1 = rmod$df.residual - fmod$df.residual, df2 = fmod$df.residual)
+```
+
+
+
+$$F = \frac{(`r round(rssr,2)` - `r round(rssf,2)`)/ `r rmod$df.residual - fmod$df.residual`}{`r round(rssf,2)`/`r fmod$df.residual`} = `r f`$$
+
+p-value = $P(F_{3,42} \geq 4.13)$ = `r 1 - pf(f, df1 = rmod$df.residual - fmod$df.residual, df2 = fmod$df.residual)`.
+
+There is moderate evidence to conclude at least one of the predictors salary, ratio, or expend should be used in modeling the sat predictor.
+
+
+(b)
+
+F test: 
+
+$H_0:\ \beta_\text{takers}=0|\beta_\text{ratio}\neq 0, \beta_\text{expend}\neq 0 , \beta_\text{salary}\neq 0$
+
+$H_a:\ \beta_\text{takers}\neq 0|\beta_\text{ratio}\neq 0, \beta_\text{expend}\neq 0 , \beta_\text{salary}\neq 0$
+
+```{r}
+options(scipen=5)
+rmod = lm(total ~ expend + ratio + salary, faraway::sat)
+fmod = lm(total ~ expend + ratio + salary + takers, faraway::sat)
+(rssf = deviance(fmod))
+(rssr = deviance(rmod))
+(f = ((rssr - rssf)/(rmod$df.residual - fmod$df.residual))/(rssf/fmod$df.residual))
+1 - pf(f, df1 = rmod$df.residual - fmod$df.residual, df2 = fmod$df.residual)
+```
+
+
+
+$$F = \frac{(`r round(rssr,2)` - `r round(rssf,2)`)/ `r rmod$df.residual - fmod$df.residual`}{`r round(rssf,2)`/`r fmod$df.residual`} = `r f`$$
+
+p-value = $P(F_{3,42} \geq 4.13)$ = `r 1 - pf(f, df1 = rmod$df.residual - fmod$df.residual, df2 = fmod$df.residual)`.
+
+There is very strong evidence to conclude that the takers predictor should be included in the model of sat scores that already has the ratio, salary, and expend predictors. 
+
+t test:
+
+```{r results='asis'}
+library(xtable)
+xtable(fmod)
+```
+
+$$t = \frac{`r fmod$coefficients['takers']`}{`r summary(fmod)$coefficients[5,2]`} = `r summary(fmod)$coefficients[5,3]` $$
+
+p-value = $2P(T_{46} \geq `r abs(summary(fmod)$coefficients[5,3])`) = `r summary(fmod)$coefficients[5,4]`$
+
+
+Notice that $t^2 = F = 157.74$
+
+

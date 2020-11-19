@@ -1,0 +1,31 @@
+---
+title: "Homework 4"
+author: "Subrata Paul"
+date: "9/16/2020"
+output: pdf_document
+---
+
+## Problem 1
+
+Describe `UN11` data in the `alr4` package in your own words. You can get details using `?UN11` and googling things. Provide descriptive statistics and plots with your description. 
+
+## Problem 2
+
+Using the `UN11` data set in the `alr4` package:
+
+a.	Fit a simple linear regression of $y=\log(\text{fertility})$ on $x$=`pctUrban`.
+b. 	Provide the equation for the fitted model.
+c.	Use the model fit in a. to provide an interpretation of the association between `pctUrban` and `fertility` in the context of the problem.
+
+## Problem 3
+
+
+Fit the regression of $y=\log(\text{fertility})$ on $x_1 = \log(\text{ppgdp})$ and $x_2 = \text{lifeExpF}$. 
+
+a.	What is the equation for the fitted model?
+
+b.	If we increase `ppgdp` by 25%, what is the expected decrease in fertility?  
+c.	Using your computation from part b (i.e., for a 25% increase in `ppgdp`), provide an interpretation of the association between `ppgdp` and `fertility` in the context of the problem.
+
+You will not get full credit for using generic terms or variable names like fertility or pctUrban.  Clearly indicate what these variables are measuring/representing.
+

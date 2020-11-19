@@ -1,0 +1,37 @@
+---
+title: "F Test Statistics"
+author: "Subrata Paul"
+date: "10/15/2020"
+output: html_document
+---
+
+The F-test statistics compares two nested linear regression model. We can use it to test if a linear regression model fits the data significantly better compared to the null model. The t-test for a particular predictor or regressor is similar to F test of two models with and without that predictor. A question arises, if none of the predictor are significantly associated with the response, can we conclude that on the F-test we would likely to fail to reject the null hypothesis that $H_0:\ \beta_j=0$ for all $j\in \{1\dots p\}$. If so, what is the point of doing an F-test. In the following simulated example we will try to get some insight. 
+
+```{r}
+x1 = 3:10
+x2 = rnorm(x1, x1, 0.1)
+cor(x1,x2)
+```
+We simulated to regressors `x1` and `x2` that are highly correlated. 
+
+```{r}
+set.seed(10)
+y = 100 + rnorm(x1, 10*x1, 10)
+plot(x1, y)
+```
+
+```{r}
+summary(lm(y~x1+x2))
+```
+
+The F-statistics p-value is small and so we conclude that the regression model is better than the null model that is we reject the null hypothesis that $H_0:\ \beta_1=\beta_2=0$ in favor of the alternative that at least one of the predictors is associated with the response. The t-test concludes the opposite. According to the two t-tests, we fail to conclude that any of the predictor is associated with the response. 
+
+This is because the predictors are correlated and they hide association of one another. If we fit a linear regression with either of the two predictors we will see association. 
+
+```{r}
+summary(lm(y~x1))
+```
+
+```{r}
+summary(lm(y~x2))
+```
