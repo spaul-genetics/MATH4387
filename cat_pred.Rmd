@@ -260,6 +260,7 @@ plot(predictorEffect('group',lmod1))
 ## Pairwise comparison
 
 ```{r}
+library(emmeans)
 group.emm.s = emmeans(lmod1, specs = 'group')
 knitr::kable(pairs(group.emm.s))
 ```

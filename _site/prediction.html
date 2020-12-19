@@ -364,7 +364,7 @@ points(rep(12.5, length(mean_obs)), mean_obs, col = &#39;green&#39;)</pre>
 
 <p>Measuring body fat is not simple. Muscle and bone are denser than fat so an estimate of body density can be used to estimate the proportion of fat in the body. Measuring someone’s weight is easy but volume is more difficult. One method requires submerging the body underwater in a tank and measuring the increase in the water level. Most people would prefer not to be submerged underwater to get a measure of body fat, so we would like an easier method. In order to develop such a method, researchers recorded age, weight, height, and 10 body circumference measurements for 252 men. Each man’s percentage of body fat was accurately estimated by an underwater weighing technique. Can we predict body fat using only the easy-to-record measurements?</p>
 
-</article></slide><slide class=""><hgroup><h2>Response for the median values of the predictors</h2></hgroup><article  id="response-for-the-median-values-of-the-predictors" class="smaller">
+</article></slide><slide class=""><hgroup><h2>Response for the median values of the predictors</h2></hgroup><article  class="smaller" id="response-for-the-median-values-of-the-predictors">
 
 <pre class = 'prettyprint lang-r'>data(fat, package = &#39;faraway&#39;)
 lmod &lt;- lm(brozek ~ age + weight + height + neck + chest + 

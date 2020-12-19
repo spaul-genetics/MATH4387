@@ -21,10 +21,10 @@ Grading: The final project will be scored out of 100.  The project will be evalu
     - 5 pts: Proper interpretation of the results
     - 6 pts:  Quality of speaking 
 
-* Report (75 points):  
+* Report (65 points):  
     - 5 pts:  A well-planned report (order, neatness, readability).  Format, grammar and spelling.
     - 10 pts:  Introduction.  Relevance, question of interest, background, etc.
-    - 50 pts:  Methods/Results.  Summary of data, appropriate methods used, appropriate graphical displays, proper diagnostic is performed, variable selection is discussed, interpretation of results are correct, etc.
+    - 40 pts:  Methods/Results.  Summary of data, appropriate methods used, appropriate graphical displays, proper diagnostic is performed, variable selection is discussed, interpretation of results are correct, etc.
     - 10 pts:  Conclusions.  What did you learn, improvements, reaction, etc.
 
 

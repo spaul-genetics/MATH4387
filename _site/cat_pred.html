@@ -468,6 +468,47 @@ plot(predictorEffect(&#39;group&#39;,lmod1))</pre>
 
 <p><img src="cat_pred_files/figure-html/unnamed-chunk-9-1.png" width="720" /></p>
 
+</article></slide><slide class=""><hgroup><h2>Pairwise comparison</h2></hgroup><article  id="pairwise-comparison">
+
+<pre class = 'prettyprint lang-r'>library(emmeans)
+group.emm.s = emmeans(lmod1, specs = &#39;group&#39;)
+knitr::kable(pairs(group.emm.s))</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">contrast</th>
+<th align="right">estimate</th>
+<th align="right">SE</th>
+<th align="right">df</th>
+<th align="right">t.ratio</th>
+<th align="right">p.value</th>
+</tr>
+<tr class="odd">
+<td align="left">oecd - other</td>
+<td align="right">7.119708</td>
+<td align="right">1.270907</td>
+<td align="right">196</td>
+<td align="right">5.60207</td>
+<td align="right">2e-07</td>
+</tr>
+<tr class="even">
+<td align="left">oecd - africa</td>
+<td align="right">22.674187</td>
+<td align="right">1.419998</td>
+<td align="right">196</td>
+<td align="right">15.96776</td>
+<td align="right">0e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">other - africa</td>
+<td align="right">15.554479</td>
+<td align="right">1.042641</td>
+<td align="right">196</td>
+<td align="right">14.91835</td>
+<td align="right">0e+00</td>
+</tr>
+</table>
+
 </article></slide><slide class=""><hgroup><h2>Factors and Quantitative Predictors</h2></hgroup><article  id="factors-and-quantitative-predictors">
 
 <p>It is common to study the effect of a factor AFTER adjusting for one or more other quantitative regressors.</p>
@@ -484,14 +525,14 @@ plot(predictorEffect(&#39;group&#39;,lmod1))</pre>
 ggplot(data = UN11, aes(x = ppgdp, y = lifeExpF, col = group, shape = group))+
   geom_point()</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-10-1.png" width="720" /></p>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-11-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Helpful One</h2></hgroup><article  id="helpful-one">
 
 <pre class = 'prettyprint lang-r'>ggplot(data = UN11, aes(x = log(ppgdp), y = lifeExpF, col = group, shape = group))+
   geom_point()</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-11-1.png" width="720" /></p>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-12-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>What we see?</h2></hgroup><article  id="what-we-see">
 
@@ -654,21 +695,21 @@ kable(summary(lmodi)$coefficients)</pre>
 
 <pre >## `geom_smooth()` using formula &#39;y ~ x&#39;</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-15-1.png" width="720" /></p>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-16-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Effect Plot</h2></hgroup><article  id="effect-plot-1">
 
 <pre class = 'prettyprint lang-r'>par(mfrow = c(1,2))
 plot(predictorEffect(&#39;ppgdp&#39;,lmodi), lines = list(multiline = T))</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-16-1.png" width="720" /></p>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-17-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Effect Plot with Transformation</h2></hgroup><article  id="effect-plot-with-transformation">
 
 <pre class = 'prettyprint lang-r'>UN11$logppgdp = log(UN11$ppgdp)
 plot(predictorEffect(&#39;logppgdp&#39;,lm(lifeExpF ~ group*logppgdp, data = UN11)), lines = list(multiline = T))</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-17-1.png" width="720" /></p>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-18-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Main Effect Model</h2></hgroup><article  id="main-effect-model">
 
@@ -731,7 +772,7 @@ kable(summary(lmodm)$coefficients)</pre>
 
 <pre >## `geom_smooth()` using formula &#39;y ~ x&#39;</pre>
 
-<p><img src="cat_pred_files/figure-html/unnamed-chunk-19-1.png" width="720" /></p></article></slide>
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-20-1.png" width="720" /></p></article></slide>
 
 
   <slide class="backdrop"></slide>
