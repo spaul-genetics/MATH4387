@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Categorical Predictors</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Categorical Predictors',
+                        subtitle: 'Chapter 5 of ALR4, Chapter 14, 15 of LMWR2',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/3/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Categorical Predictors</h2></hgroup><article  id="categorical-predictors">
+
+<p>A <strong>categorical variable</strong> is a variable that can take on one of a limited, usually fixed, number of possible values, assigning each individual or other unit of observation to a particular group or nominal category on the basis of some qualitative property.</p>
+
+<p>Categorical predictors are often called <strong>factors</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Example: UN Data</h2></hgroup><article  id="example-un-data">
+
+<p>Consider data from 199 localities (mostly members of the United Nations, but a few areas such as Hong Kong). The measured variables include:</p>
+
+<ul>
+<li><code>ppgdp</code> – the gross national product per person in U.S. dollars</li>
+<li><code>fertility</code> – average number of children per woman</li>
+<li><code>lifeExpF</code> – female life expectancy, years</li>
+<li><code>pctUrban</code> – percentage of population living in urban areas</li>
+<li><code>group</code> – a factor with level <code>oecd</code> for countries that are members of the Organization for Economic Cooperation and Development (OECD) as of May 2012, <code>africa</code> for countries on the African continent, and other for all other countries. No OECD countries are located in Africa.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Exploring Data for One-Factor Models</h2></hgroup><article  id="exploring-data-for-one-factor-models">
+
+<p>If the only predictor is a factor, then the regression model is called a one-factor or one-way design.</p>
+
+<p>Boxplots of a one-factor model are useful for comparing different levels of each factor.</p>
+
+<ul>
+<li>The thick middle line indicates the median value.</li>
+<li>The box extends to the 25th and 75th percentiles. The distance between the quartiles is known as the <strong>interquartile range (IQR)</strong>.</li>
+<li>The <strong>whiskers</strong> generally extend to the most extreme values that are within 1.5 IQRs from the <strong>quartiles</strong>.</li>
+<li>Values outside the whiskers are outliers and are indicated by a dot or star.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Boxplot Example</h2></hgroup><article  id="boxplot-example">
+
+<pre class = 'prettyprint lang-r'>data(UN11, package = &#39;alr4&#39;)
+boxplot(lifeExpF ~ group, data = UN11)</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>More Details</h2></hgroup><article  id="more-details">
+
+<pre class = 'prettyprint lang-r'>library(ggstatsplot)
+UN11$country = row.names(UN11)
+ggbetweenstats(data = UN11, plot.type = &#39;box&#39;,x = group, y = lifeExpF, outlier.tagging = T, outlier.label =  country)</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-2-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we get?</h2></hgroup><article  id="what-we-get">
+
+<p>-The oecd countries generally have the largest female life expectancy, with africa having the lowest.</p>
+
+<ul>
+<li><p>Nauru and Afghanistan have unusually low female life expectancy for the other group.</p></li>
+<li><p>Japan has high female life expectancy, and Turkey has low life expectancy, compared to the other members of the oecd.</p></li>
+<li><p>The variation of female life expectancy in oecd is smallest, but in africa is largest.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Defining Factors as Regressors</h2></hgroup><article  id="defining-factors-as-regressors">
+
+</article></slide><slide class=""><hgroup><h2>Defining Factors as Regressors</h2></hgroup><article  id="defining-factors-as-regressors-1">
+
+<p><strong>Dummy</strong> or <strong>indicator</strong> variables are used to include categorical predictors in a regression model.</p>
+
+<p>A dummy variable \(U_j\) for factor level \(j\) is 1 if an observation has level \(j\), but 0 otherwise.</p>
+
+<ul>
+<li>-1 and 1, or 1 and 2, are sometimes used, but this is less common and more difficult to interpret.</li>
+<li>Assignment labels are mostly arbitrary and do not affect the results.</li>
+</ul>
+
+<p>Since group has \(d=3\) levels, the \(j\)th dummy variable \(U_j\) for the factor \(j=1,2,…,d\) has \(i\)th value \(u_ij\), for \(i=1,2,…,n\), given by</p>
+
+<p>\[u_{ij} = \begin{cases}1 &amp; \text{ if group}_i = j\text{th category of group}\\ 0 &amp;\text{ otherwise}\end{cases}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Try in <code>R</code></h2></hgroup><article  id="try-in-r">
+
+<pre class = 'prettyprint lang-r'>levels(UN11$group)</pre>
+
+<pre >## [1] &quot;oecd&quot;   &quot;other&quot;  &quot;africa&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>U1 = with(UN11, (group == levels(group)[1])+0)
+U2 = with(UN11, (group == levels(group)[2])+0)
+U3 = with(UN11, (group == levels(group)[3])+0)
+head(data.frame(group = UN11$group, U1, U2, U3))</pre>
+
+<pre >##    group U1 U2 U3
+## 1  other  0  1  0
+## 2  other  0  1  0
+## 3 africa  0  0  1
+## 4 africa  0  0  1
+## 5  other  0  1  0
+## 6  other  0  1  0</pre>
+
+<p>U_1 is the dummy variable for oecd, U_2 is the dummy variable for other, and U_3 for africa.</p>
+
+</article></slide><slide class=""><hgroup><h2>One-Factor Model</h2></hgroup><article  id="one-factor-model">
+
+<p>Regression coefficients are generally called effects in this setting.</p>
+
+<p>How can we build a model using the form y=X+ϵ?</p>
+
+<p>What would happen if we fit the model</p>
+
+<p>\(E(lifeExpF│group)=\beta_0+\beta_1 U_1+\beta_2 U_2+\beta_3 U_3?\)</p>
+
+<p>Why?</p>
+
+</article></slide><slide class=""><hgroup><h2>This is why!</h2></hgroup><article  id="this-is-why">
+
+<p>In that case, \(X\) would be rank deficient since \(U_1+U_2+U_3=1\), which will always match the intercept.</p>
+
+<ul>
+<li>The columns of \(X\) would be linearly dependent.</li>
+</ul>
+
+<p>We only need \(d-1\) dummy variables to represent \(d\) levels because the last level represented when all the other dummy variables were 0.</p>
+
+<ul>
+<li>Any of the \(d\) dummy variables could be excluded, though generally it is the first or last level.</li>
+<li><code>R</code> drops the first level by default.</li>
+<li>The level dropped is known as the <strong>reference</strong> or <strong>baseline</strong> level.</li>
+<li>In <code>R</code>, this method for creating the dummy variables is known as the <strong>treatment contrast</strong>.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>A different solution</h2></hgroup><article  id="a-different-solution">
+
+<p>Other possibilities for avoiding linear dependence are:</p>
+
+<ul>
+<li>Drop \(\beta_0\) from the model.</li>
+<li>Assume \(\sum_{i=1}^{p-1}\beta_i =0\).</li>
+<li>This is known as a <strong>sum contrast</strong> and does NOT use dummy variables.</li>
+<li>Interpretation is generally more difficult.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Models</h2></hgroup><article  id="models">
+
+<p>Using a treatment contrast with the first level of <code>group</code> as the reference level (<code>oecd</code>), our model becomes \[E(lifeExpF│group)=\beta_0+\beta_2 U_2+\beta_3 U_3.\]</p>
+
+<p>Since <code>group = oecd</code> implies \(U_2=U_3=0\), \[E(lifeExpF│group=oecd)=\beta_0+\beta_2 0+\beta_3 0=\beta_0.\]</p>
+
+<p>Since <code>group = other</code> implies \(U_2=1 \text{ and } U_3=0\), \[E(lifeExpF│group=other)=\beta_0+\beta_2 1+\beta_3 0=\beta_0+\beta_2.\]</p>
+
+<p>Since <code>group = africa</code> implies \(U_2=0 \text{ and } U_3=1\), \[E(lifeExpF│group=africa)=\beta_0+\beta_2 0+\beta_3 1=\beta_0+\beta_3.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Fit in <code>R</code></h2></hgroup><article  id="fit-in-r">
+
+<ul>
+<li>Method 1</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ U2 + U3, data = UN11)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = lifeExpF ~ U2 + U3, data = UN11)
+## 
+## Coefficients:
+## (Intercept)           U2           U3  
+##       82.45        -7.12       -22.67</pre>
+
+<ul>
+<li>Method 2</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ group, data = UN11)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = lifeExpF ~ group, data = UN11)
+## 
+## Coefficients:
+## (Intercept)   groupother  groupafrica  
+##       82.45        -7.12       -22.67</pre>
+
+</article></slide><slide class=""><hgroup><h2><code>LifeExpF</code> of different groups</h2></hgroup><article  id="lifeexpf-of-different-groups">
+
+<ul>
+<li>\(\hat{E}(Lifeexpf│group=oecd)=\hat{\beta}_0=82.45.\)</li>
+<li>\(\hat{E}(Lifeexpf│group=other)=\hat{\beta}_0+\hat{\beta}_2=82.45-7.12=75.33.\)</li>
+<li>\(\hat{E}(Lifeexpf│group=africa)=\hat{\beta}_0+\hat{\beta}_3=82.45-22.67=59.79.\)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation</h2></hgroup><article  id="interpretation">
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ group, data = UN11)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = lifeExpF ~ group, data = UN11)
+## 
+## Coefficients:
+## (Intercept)   groupother  groupafrica  
+##       82.45        -7.12       -22.67</pre>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation</h2></hgroup><article  id="interpretation-1">
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ group, data = UN11)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = lifeExpF ~ group, data = UN11)
+## 
+## Coefficients:
+## (Intercept)   groupother  groupafrica  
+##       82.45        -7.12       -22.67</pre>
+
+<ul>
+<li>The expected female life expectancy for OECD nations is 82.45 years.</li>
+<li>The expected female life expectancy for other nations is 7.12 years less than nations in OECD.</li>
+<li>The expected female life expectancy for African nations is 22.67 years less than nations in OECD.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Interesting Facts</h2></hgroup><article  id="interesting-facts">
+
+<ul>
+<li>\(\hat{\beta}_0\) is simply the sample mean of the responses in the oecd group.</li>
+<li>\(\hat{\beta}_2\) is the difference between the sample mean of the responses for the other group and the oecd group.</li>
+<li>\(\hat{\beta}_3\) is the difference between the sample mean of the responses for the africa group and the oecd group.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>with(UN11, tapply(lifeExpF, group, mean))</pre>
+
+<pre >##     oecd    other   africa 
+## 82.44645 75.32674 59.77226</pre>
+
+</article></slide><slide class=""><hgroup><h2>Effect Plot</h2></hgroup><article  id="effect-plot">
+
+<pre class = 'prettyprint lang-r'>library(effects)</pre>
+
+<pre >## Loading required package: carData</pre>
+
+<pre >## lattice theme set by effectsTheme()
+## See ?effectsTheme for details.</pre>
+
+<pre class = 'prettyprint lang-r'>lmod1 = lm(lifeExpF ~ group, data = UN11)
+plot(predictorEffect(&#39;group&#39;,lmod1))</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-9-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Factors and Quantitative Predictors</h2></hgroup><article  id="factors-and-quantitative-predictors">
+
+<p>It is common to study the effect of a factor AFTER adjusting for one or more other quantitative regressors.</p>
+
+<p>If we have a mixture of factors and quantitative variables in our data, it’s useful to create a scatterplot of the response versus the covariate that distinguishes the observations for each level.</p>
+
+<ul>
+<li>This helps us assess whether the relationship between the response and quantitative regressor differs for the levels of the factor.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Scatter Plot</h2></hgroup><article  id="scatter-plot">
+
+<pre class = 'prettyprint lang-r'>library(ggplot2)
+ggplot(data = UN11, aes(x = ppgdp, y = lifeExpF, col = group, shape = group))+
+  geom_point()</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-10-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Helpful One</h2></hgroup><article  id="helpful-one">
+
+<pre class = 'prettyprint lang-r'>ggplot(data = UN11, aes(x = log(ppgdp), y = lifeExpF, col = group, shape = group))+
+  geom_point()</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-11-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we see?</h2></hgroup><article  id="what-we-see">
+
+<ul>
+<li>The linear relationship between lifeExpF and log(ppgdp) is fairly weak for the africa locations</li>
+<li>The linear relationship is reasonably strong for the other locations</li>
+<li>The linear relationship is reasonably strong for oecd locations.</li>
+<li>It’s unclear whether the average rate of change between lifeExpF and log(ppgdp) (the slope) is the same for the three factor levels.</li>
+<li>The average lifeExpF seems to differ vertically for the same levels of log(ppgdp) for the different factor levels.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Different Models to Consider</h2></hgroup><article  id="different-models-to-consider">
+
+<p>Suppose we have a response \(y\), a quantitative regressor \(x\), and a two-level factor variable represented by a dummy variable \(u\):</p>
+
+<p>\[u = \begin{cases}0 &amp; \text{ for the reference level}\\ 1 &amp; \text{ for the treatment level.}\end{cases}\]</p>
+
+<p>Consider several possible regression models:</p>
+
+<ul>
+<li>The same regression line for both levels, y=β_0+β_1 x+ϵ.
+
+<ul>
+<li>In R: <code>y ~ x</code></li>
+</ul></li>
+<li>A factor predictor but no quantitative predictor, y=β_0+β_2 u+ϵ.
+
+<ul>
+<li>In R: <code>y ~ u</code></li>
+<li>This is a <strong>one-way model</strong>.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Different Models to Consider</h2></hgroup><article  id="different-models-to-consider-1">
+
+<ul>
+<li>Separate regression lines for each group having the same slope, \(y=\beta_0+\beta_1 x+\beta_2 u+\epsilon\).
+
+<ul>
+<li>In R: <code>y ~ x + u.</code></li>
+<li>This is known as a parallel lines or main effects model.</li>
+<li>\(\beta_2\) represents the vertical distance between the regression lines (the effect of the treatment).</li>
+</ul></li>
+<li>Separate lines for each group with different slopes, \(y=\beta_0+\beta_1 x+\beta_2 u+\beta_3 xu+\epsilon\).
+
+<ul>
+<li>In R: <code>y ~ x + u + x:u</code> or <code>y ~ x*u</code></li>
+<li>This is known as a separate lines or interaction model.</li>
+<li><code>x:u</code> means the interaction between \(x\) and \(u\).</li>
+<li><code>x*u</code> means the cross between \(x\) and \(u\) (\(x\), \(u\), and the interaction between \(x\) and \(u\)).</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<pre class = 'prettyprint lang-r'>lmodi = lm(lifeExpF ~ group*log(ppgdp), data = UN11)
+head(model.matrix(lmodi))</pre>
+
+<pre >##             (Intercept) groupother groupafrica log(ppgdp) groupother:log(ppgdp)
+## Afghanistan           1          1           0   6.212606              6.212606
+## Albania               1          1           0   8.209907              8.209907
+## Algeria               1          0           1   8.405815              0.000000
+## Angola                1          0           1   8.371450              0.000000
+## Anguilla              1          1           0   9.528801              9.528801
+## Argentina             1          1           0   9.122831              9.122831
+##             groupafrica:log(ppgdp)
+## Afghanistan               0.000000
+## Albania                   0.000000
+## Algeria                   8.405815
+## Angola                    8.371450
+## Anguilla                  0.000000
+## Argentina                 0.000000</pre>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-1">
+
+<pre class = 'prettyprint lang-r'>library(knitr)
+kable(summary(lmodi)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">59.2136614</td>
+<td align="right">15.220345</td>
+<td align="right">3.8904284</td>
+<td align="right">0.0001377</td>
+</tr>
+<tr class="even">
+<td align="left">groupother</td>
+<td align="right">-11.1731029</td>
+<td align="right">15.594836</td>
+<td align="right">-0.7164617</td>
+<td align="right">0.4745723</td>
+</tr>
+<tr class="odd">
+<td align="left">groupafrica</td>
+<td align="right">-22.9848394</td>
+<td align="right">15.783786</td>
+<td align="right">-1.4562310</td>
+<td align="right">0.1469536</td>
+</tr>
+<tr class="even">
+<td align="left">log(ppgdp)</td>
+<td align="right">2.2425354</td>
+<td align="right">1.466444</td>
+<td align="right">1.5292337</td>
+<td align="right">0.1278438</td>
+</tr>
+<tr class="odd">
+<td align="left">groupother:log(ppgdp)</td>
+<td align="right">0.9294372</td>
+<td align="right">1.517667</td>
+<td align="right">0.6124117</td>
+<td align="right">0.5409862</td>
+</tr>
+<tr class="even">
+<td align="left">groupafrica:log(ppgdp)</td>
+<td align="right">1.0949810</td>
+<td align="right">1.578460</td>
+<td align="right">0.6937019</td>
+<td align="right">0.4887032</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-2">
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ log(ppgdp), data = UN11[UN11$group==&#39;oecd&#39;,])$coefficients</pre>
+
+<pre >## (Intercept)  log(ppgdp) 
+##   59.213661    2.242535</pre>
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ log(ppgdp), data = UN11[UN11$group==&#39;other&#39;,])$coefficients</pre>
+
+<pre >## (Intercept)  log(ppgdp) 
+##   48.040558    3.171973</pre>
+
+<pre class = 'prettyprint lang-r'>lm(lifeExpF ~ log(ppgdp), data = UN11[UN11$group==&#39;africa&#39;,])$coefficients</pre>
+
+<pre >## (Intercept)  log(ppgdp) 
+##   36.228822    3.337516</pre>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-3">
+
+<p>\[\hat{E}(lifeExpF│ppgdp=x,group=oecd)= \]</p>
+
+<p>\[\hat{E}(lifeExpF│ppgdp=x,group=other)= \]</p>
+
+<p>\[\hat{E}(lifeExpF│ppgdp=x,group=africa)= \]</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-4">
+
+<pre class = 'prettyprint lang-r'>ggplot(data = UN11, aes(x = log(ppgdp), y = lifeExpF, col = group, shape = group))+
+  geom_point() + geom_smooth(method = &#39;lm&#39;)</pre>
+
+<pre >## `geom_smooth()` using formula &#39;y ~ x&#39;</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-15-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect Plot</h2></hgroup><article  id="effect-plot-1">
+
+<pre class = 'prettyprint lang-r'>par(mfrow = c(1,2))
+plot(predictorEffect(&#39;ppgdp&#39;,lmodi), lines = list(multiline = T))</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-16-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect Plot with Transformation</h2></hgroup><article  id="effect-plot-with-transformation">
+
+<pre class = 'prettyprint lang-r'>UN11$logppgdp = log(UN11$ppgdp)
+plot(predictorEffect(&#39;logppgdp&#39;,lm(lifeExpF ~ group*logppgdp, data = UN11)), lines = list(multiline = T))</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-17-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Main Effect Model</h2></hgroup><article  id="main-effect-model">
+
+<p>Examining the fit of the interaction model to the data suggests that the slope might be the same for all groups.</p>
+
+<p>A <strong>main effects model</strong> assumes the slope is the same for all factor levels but allows each group to have its own intercept.</p>
+
+<ul>
+<li>Main effects models are easier to interpret since the effect of the quantitative regressor is the same for all levels of the factor.</li>
+<li>This model is called the <strong>Analysis of Covariance (ANCOVA)</strong> when the factor levels indicate a randomly assigned treatment for subjects.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-5">
+
+<pre class = 'prettyprint lang-r'>lmodm = lm(lifeExpF ~ log(ppgdp) + group, UN11)
+kable(summary(lmodm)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">49.529241</td>
+<td align="right">3.3995539</td>
+<td align="right">14.569335</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">log(ppgdp)</td>
+<td align="right">3.177320</td>
+<td align="right">0.3159597</td>
+<td align="right">10.056092</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">groupother</td>
+<td align="right">-1.534683</td>
+<td align="right">1.1736824</td>
+<td align="right">-1.307579</td>
+<td align="right">0.1925556</td>
+</tr>
+<tr class="even">
+<td align="left">groupafrica</td>
+<td align="right">-12.170365</td>
+<td align="right">1.5574486</td>
+<td align="right">-7.814297</td>
+<td align="right">0.0000000</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Plot</h2></hgroup><article  id="plot">
+
+<pre class = 'prettyprint lang-r'>ggplot(data = UN11, aes(x = log(ppgdp), y = lifeExpF, col = group, shape = group))+
+  geom_point() + geom_smooth(method = &#39;lm&#39;, mapping= aes(y = predict(lmodm, UN11)))</pre>
+
+<pre >## `geom_smooth()` using formula &#39;y ~ x&#39;</pre>
+
+<p><img src="cat_pred_files/figure-html/unnamed-chunk-19-1.png" width="720" /></p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

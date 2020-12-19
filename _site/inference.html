@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inference for Linear Models</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Inference for Linear Models',
+                        subtitle: 'Chapter 3 of LMWR2, Chapter 2, 3, and 6 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Assumption We Need</h2></hgroup><article  id="assumption-we-need">
+
+<p>Statistical tests and confidence intervals for the regression coefficients of a linear regression model (typically) assume</p>
+
+<p>\[\epsilon \sim N(0,\sigma^2I).\]</p>
+
+<p>This is equivalent to \(\epsilon_1,\epsilon_2,…,\epsilon_n \sim N(0,\sigma^2)\) and i.i.d.</p>
+
+<p>Unless discussing a permutation test or a bootstrap confidence interval, we will assume these assumptions are satisfied.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Two Facts</h2></hgroup><article  id="two-facts">
+
+</article></slide><slide class=""><hgroup><h2>Fact 1</h2></hgroup><article  id="fact-1">
+
+<p>Show that if \(y = X\beta + \epsilon\) and \(\epsilon \sim N(0,\sigma^2I)\), then \[y\sim N(X\beta, \sigma^2I)\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Fact 2</h2></hgroup><article  id="fact-2">
+
+<p>Show that if \(y = X\beta + \epsilon\) and \(\epsilon \sim N(0,\sigma^2I)\), then</p>
+
+<p>\[\hat{\beta} = (X^TX)^{-1}X^Ty \sim N(\beta, \sigma^2(X^TX)^{-1}).\]</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Compare Models</h2></hgroup><article  id="compare-models">
+
+</article></slide><slide class=""><hgroup><h2>Hypothesis Tests to Compare Models</h2></hgroup><article  id="hypothesis-tests-to-compare-models">
+
+<p>Motivation: How do we decide whether all or some of the regressor variables should be included in our model?</p>
+
+<p>Consider a model, \(\Omega\), and a simpler model, \(\omega\), which consists of a subset of the regressors that are in \(\Omega\).</p>
+
+<ul>
+<li>If the models have similar fit, we prefer model \(\omega\) since it is simpler.</li>
+<li>If the two models have similar fit, then \(RSS_\omega-RSS_\Omega\) will be small.</li>
+<li>If the fit of model \(\Omega\) is much better than model \(\omega\), then we prefer model \(\Omega\).</li>
+<li>If \(RSS_\omega-RSS_\Omega\) is large, then model \(\Omega\) has a superior fit.</li>
+</ul>
+
+<p>We need a null distribution related to \(RSS_\omega-RSS_\Omega\).</p>
+
+</article></slide><slide class=""><hgroup><h2>The Null Distribution</h2></hgroup><article  id="the-null-distribution">
+
+<p>Suppose that model \(\Omega\) has \(p\) estimated regression coefficients and model \(\omega\) has \(q\) estimated regression coefficients.</p>
+
+<p>The statistic \[\begin{aligned}F = &amp; \frac{(RSS_\omega-RSS_\Omega)/(p-q)}{RSS_\Omega/(n-p)} \\ =&amp; \frac{(RSS_\omega-RSS_\Omega)/(df_\omega - df_\Omega)}{RSS_\Omega/df_\Omega}\\ =&amp; \frac{(RSS_\omega-RSS_\Omega)/(p-q)}{\hat{\sigma}^2_\Omega}\sim F_{p-q, n-p},\end{aligned} \]</p>
+
+<p>assuming model \(\omega\) is correct, where:</p>
+
+<ul>
+<li>\(df_\omega = n-q\)</li>
+<li>\(df_\Omega = n-p\)</li>
+<li>\(\hat{\sigma}^2_\Omega = RSS_\Omega/df_\Omega\)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>General \(F\) Test</h2></hgroup><article  id="general-f-test">
+
+<p>General F Test comparing two <strong>nested regression</strong> models</p>
+
+<p>\(H_0\): Model \(\omega\) is adequate \(H_a\): Model \(\Omega\) is preferred</p>
+
+<p>Test statistic: \[F = \frac{(RSS_\omega-RSS_\Omega)/(p-q)}{\hat{\sigma}^2_\Omega}\]</p>
+
+<p>Decision: Conclude \(H_a\) when \(F\geq F_{p-q,n-p}^\alpha\).</p>
+
+<p>p-value \(P(F_{p-q,n-p} \geq F)\)</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Testing Example</h2></hgroup><article  id="testing-example">
+
+</article></slide><slide class=""><hgroup><h2>Test of all regressors (test for a regression relationship)</h2></hgroup><article  id="test-of-all-regressors-test-for-a-regression-relationship">
+
+<p>Are any of the regressors useful in predicting the response?</p>
+
+<ul>
+<li>Full model \((\Omega)\) is \(y=X\beta+\epsilon\)</li>
+<li>\(X\) is a full-rank \(n×p\) matrix.</li>
+<li>Reduced model \((\omega)\) is \(y=\mu+\epsilon=\beta_0+\epsilon\)</li>
+</ul>
+
+<p>We can write the hypotheses as</p>
+
+<p>\(H_0:\beta_1=\dots =\beta_{p-1}=0\) \(H_a\): At least one of the regression coefficients is different from zero.</p>
+
+</article></slide><slide class=""><hgroup><h2>Test Statistic</h2></hgroup><article  id="test-statistic">
+
+<p>For the simple model \((\omega)\), we estimate \(\mu\) by \(\overline{y}\). Thus, \[RSS_\omega=(y- \overline{y} )^T (y-\overline{y})=TSS\], where TSS stands for the total sum of squares (corrected for the mean).</p>
+
+<p>For the full model \((\Omega)\), we get our typical residuals sum of squares \[ RSS_\Omega=(y-X\hat{\beta} )^T (y-X\hat{\beta} )=\hat{\epsilon}^T \hat{\epsilon}=RSS.\]</p>
+
+<p>Since the simple model has only 1 parameter and the full model was \(p\) parameters, the test statistic is</p>
+
+<p>\[F=\frac{(TSS-RSS)/(p-1)}{RSS/(n-p)}=\frac{SS_{reg}/(p-1)}{\hat{\sigma}^2}.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>ANOVA presentation</h2></hgroup><article  id="anova-presentation">
+
+<p>The information in the above test is often presented in an <strong>analysis of variance (ANOVA)</strong> table.</p>
+
+<p>The ANOVA table looks something like:</p>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">Source</th>
+<th align="left">Degrees of Freedom</th>
+<th align="left">Sums of Squares</th>
+<th align="left">Mean Squares</th>
+<th align="left">F</th>
+</tr>
+<tr class="odd">
+<td align="left">Regression</td>
+<td align="left">\(p-1\)</td>
+<td align="left">\(SS_{reg}\)</td>
+<td align="left">\(\frac{SS_{reg}}{p-1}\)</td>
+<td align="left">\(F\)</td>
+</tr>
+<tr class="even">
+<td align="left">Residual</td>
+<td align="left">\(n-p\)</td>
+<td align="left">RSS</td>
+<td align="left">\(\frac{RSS}{n-p}\)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">\(n-1\)</td>
+<td align="left">TSS</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Some Notes</h2></hgroup><article  id="some-notes">
+
+<ul>
+<li>Even if we fail to reject \(H_0\) (we’re not confident we should include any regressors), there may be a nonlinear relationship between the regressors and the response.</li>
+<li>There may simply be too little data to confidently conclude a regressor helps describe the mean response.</li>
+<li>Even if we conclude \(H_a\), we’re not sure that model \(\Omega\) is the best model—it is simply preferable to model \(\omega\).</li>
+<li>Not all regressors may be necessary.</li>
+<li>Additional regressors may improve the model further.</li>
+<li>The F test for a regression relationship is just the beginning of analysis.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example">
+
+<p>There are 30 cases (Islands) and seven variables in the data set. The relevant variables are:</p>
+
+<ul>
+<li><code>Species</code> – the number of plant species found on the island</li>
+<li><code>Area</code> – the area of the island (km2)</li>
+<li><code>Elevation</code> – the highest elevation of the island (m)</li>
+<li><code>Nearest</code> (the distance from the nearest island (km)</li>
+<li><code>Scruz</code> – the distance from Santa Cruz Island (km)</li>
+<li><code>Adjacent</code> – the area of the adjacent island (km2)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example (Test)</h2></hgroup><article  id="galapagos-example-test">
+
+<p>Test whether there is a regression relationship between the response and all the predictors.</p>
+
+<p>\(H_0:\)</p>
+
+<p>\(H_a:\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example (Test)</h2></hgroup><article  id="galapagos-example-test-1">
+
+<p>Test whether there is a regression relationship between the response and all the predictors.</p>
+
+<p>\(H_0:\ \beta_{Area} = \beta_{Elevation}=\beta_{Nearest} = \beta_{Scruz} =\beta_{Adjacent}=0\)</p>
+
+<p>\(H_a:\) At least for one predictor \(\beta_{pred}\neq 0\).</p>
+
+<p>Test statistic:</p>
+
+<p>p-value:</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example (Test)</h2></hgroup><article  class="smaller" id="galapagos-example-test-2">
+
+<pre class = 'prettyprint lang-r'>data(gala, package = &#39;faraway&#39;)
+lmod = lm(Species ~ . - Endemics, data = gala)
+summary(lmod)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ . - Endemics, data = gala)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -111.679  -34.898   -7.862   33.460  182.584 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  7.068221  19.154198   0.369 0.715351    
+## Area        -0.023938   0.022422  -1.068 0.296318    
+## Elevation    0.319465   0.053663   5.953 3.82e-06 ***
+## Nearest      0.009144   1.054136   0.009 0.993151    
+## Scruz       -0.240524   0.215402  -1.117 0.275208    
+## Adjacent    -0.074805   0.017700  -4.226 0.000297 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 60.98 on 24 degrees of freedom
+## Multiple R-squared:  0.7658, Adjusted R-squared:  0.7171 
+## F-statistic:  15.7 on 5 and 24 DF,  p-value: 6.838e-07</pre>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example (Test)</h2></hgroup><article  id="galapagos-example-test-3">
+
+<p>Test whether there is a regression relationship between the response and all the predictors.</p>
+
+<p>\(H_0:\ \beta_{Area} = \beta_{Elevation}=\beta_{Nearest} = \beta_{Scruz} =\beta_{Adjacent}=0\)</p>
+
+<p>\(H_a:\) At least for one predictor \(\beta_{pred}\neq 0\).</p>
+
+<p>Test statistic: 15.6994122, 5, 24</p>
+
+<p>p-value : 6.837893^{-7}</p>
+
+<p>Test and p-value can be extracted as <code>summary(lmod)$fstatistic</code> and <code>1-pf(summary(lmod)$fstatistic, summary(lmod)$df[1] -1, summary(lmod)$df[2])[1]</code></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Testing just One Regressor</h2></hgroup><article  id="testing-just-one-regressor">
+
+</article></slide><slide class=""><hgroup><h2>Test</h2></hgroup><article  id="test">
+
+<p>To test whether a single regressor (regressor \(i\)) can be dropped from the model, we choose between \(H_0:\beta_i=0\) and \(H_a:\beta_i\neq 0\).</p>
+
+<p>We have two options in this case:</p>
+
+<ul>
+<li>Use the previous approach, letting the reduced model be the one without that regressor.</li>
+<li>Use a t-statistic approach.</li>
+</ul>
+
+<p>The statistic \(t_i=\hat{\beta}_i/\hat{se}(\hat{\beta}_i)\) has a t distribution with \(n-p\) degrees of freedom under \(H_0\) and can be used to decide between the claims using a t distribution with \(n-p\) degrees of freedom.</p>
+
+</article></slide><slide class=""><hgroup><h2>Some Notes</h2></hgroup><article  id="some-notes-1">
+
+<ul>
+<li>\(t_i^2=F\) and the results will be numerically identical.</li>
+<li>The t distribution approach requires less work, and is typically preferred in this simpler context.</li>
+<li>The test of a regression coefficient is relative to the other regressors in the model. We cannot look at the effect of one regressor without considering the effect of the other regressors.</li>
+<li>The result of a test may be different when different regressor variables are considered.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-1">
+
+<p>Test whether the regression coefficient for Area is significant (assuming the other predictors are in the model).</p>
+
+<p>\(H_0:\)</p>
+
+<p>\(H_a:\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-2">
+
+<p>Test whether the regression coefficient for Area is significant (assuming the other predictors are in the model).</p>
+
+<p>\(H_0:\ \beta_{Area}=0\)</p>
+
+<p>\(H_a:\ \beta_{Area}\neq 0\)</p>
+
+<p>Test statistic:</p>
+
+<p>p-value:</p>
+
+<p>Conclusion in contex:</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  class="smaller" id="galapagos-example-3">
+
+<pre class = 'prettyprint lang-r'>summary(lmod)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ . - Endemics, data = gala)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -111.679  -34.898   -7.862   33.460  182.584 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  7.068221  19.154198   0.369 0.715351    
+## Area        -0.023938   0.022422  -1.068 0.296318    
+## Elevation    0.319465   0.053663   5.953 3.82e-06 ***
+## Nearest      0.009144   1.054136   0.009 0.993151    
+## Scruz       -0.240524   0.215402  -1.117 0.275208    
+## Adjacent    -0.074805   0.017700  -4.226 0.000297 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 60.98 on 24 degrees of freedom
+## Multiple R-squared:  0.7658, Adjusted R-squared:  0.7171 
+## F-statistic:  15.7 on 5 and 24 DF,  p-value: 6.838e-07</pre>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-4">
+
+<p>Test whether the regression coefficient for Area is significant (assuming the other predictors are in the model).</p>
+
+<p>\(H_0:\ \beta_{Area}=0\)</p>
+
+<p>\(H_a:\ \beta_{Area}\neq 0\)</p>
+
+<p>Test statistic: -0.0239383</p>
+
+<p>p-value: 0.296318</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-5">
+
+<p>Test whether the regression coefficient for Area is significant (assuming the other predictors are in the model).</p>
+
+<p>\(H_0:\ \beta_{Area}=0\)</p>
+
+<p>\(H_a:\ \beta_{Area}\neq 0\)</p>
+
+<p>Test statistic: -0.0239383</p>
+
+<p>p-value: 0.296318</p>
+
+<p>Conclusion in contex: We don’t have enough evidence to claim that area of an island is associated with number of species after controlling for Elevation, Nearest, Scruz, and Adjacent.</p>
+
+</article></slide><slide class=""><hgroup><h2>Caution</h2></hgroup><article  id="caution">
+
+<p>It is not sufficient to say you are testing whether the coefficient for a single regressor is significant when other regressors are in the model.</p>
+
+<p>You should specify which regressor variables are in the model.</p>
+
+</article></slide><slide class=""><hgroup><h2>Only Area</h2></hgroup><article  class="smaller" id="only-area">
+
+<p>How do the results change if the larger model only had the Area regressor?</p>
+
+<pre class = 'prettyprint lang-r'>lmod_area = lm(Species ~ Area, data = gala)
+summary(lmod_area)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ Area, data = gala)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -99.495 -53.431 -29.045   3.423 306.137 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 63.78286   17.52442   3.640 0.001094 ** 
+## Area         0.08196    0.01971   4.158 0.000275 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 91.73 on 28 degrees of freedom
+## Multiple R-squared:  0.3817, Adjusted R-squared:  0.3596 
+## F-statistic: 17.29 on 1 and 28 DF,  p-value: 0.0002748</pre>
+
+</article></slide><slide class=""><hgroup><h2>Only Area: Hypothesis Test</h2></hgroup><article  id="only-area-hypothesis-test">
+
+<p>\(H_0:\)</p>
+
+<p>\(H_a:\)</p>
+
+<p>Test statistic:</p>
+
+<p>p-value</p>
+
+<p>Conclusion:</p>
+
+</article></slide><slide class=""><hgroup><h2>Only Area: Hypothesis Test</h2></hgroup><article  id="only-area-hypothesis-test-1">
+
+<p>\(H_0:\ \beta_{Area} = 0\)</p>
+
+<p>\(H_a:\ \beta_{Area}\neq 0\)</p>
+
+<p>Test statistic: 0.0819632</p>
+
+<p>p-value: 2.748268^{-4}</p>
+
+<p>Conclusion: Area is significantly (p-value: 2.748268^{-4}) associated with number of species in an island.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Testing a pair of regressors</h2></hgroup><article  id="testing-a-pair-of-regressors">
+
+</article></slide><slide class=""><hgroup><h2>Procedure</h2></hgroup><article  id="procedure">
+
+<p>To test whether two (or more) regressors should simultaneously be dropped from the model, we should fit a reduced model without them and a full model including them using the general F test procedure previously described.</p>
+
+<p>Galapagos example continued: Test whether the Area and Adjacent regressor variables should be simultaneously dropped from the model that already includes Elevation, Nearest, and Scruz in the model. Make sure to specify the regressors that are the model when stating H_0 and H_a.</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  class="smaller" id="galapagos-example-6">
+
+<pre class = 'prettyprint lang-r'>reduced_model = lm(Species ~ Elevation + Nearest + Scruz, data = gala)
+summary(reduced_model)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ Elevation + Nearest + Scruz, data = gala)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -194.53  -31.31  -18.41   12.84  246.65 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 23.66993   22.96231   1.031    0.312    
+## Elevation    0.20019    0.03437   5.824 3.88e-06 ***
+## Nearest      1.19422    1.28777   0.927    0.362    
+## Scruz       -0.42342    0.27022  -1.567    0.129    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 78.03 on 26 degrees of freedom
+## Multiple R-squared:  0.5846, Adjusted R-squared:  0.5367 
+## F-statistic:  12.2 on 3 and 26 DF,  p-value: 3.593e-05</pre>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-7">
+
+<pre class = 'prettyprint lang-r'>sum(resid(lmod)^2) # RSS_Full</pre>
+
+<pre >## [1] 89231.37</pre>
+
+<pre class = 'prettyprint lang-r'>deviance(lmod) # RSS_full (different way to extract)</pre>
+
+<pre >## [1] 89231.37</pre>
+
+<pre class = 'prettyprint lang-r'>deviance(reduced_model) # RSS_reduced</pre>
+
+<pre >## [1] 158291.6</pre>
+
+<pre class = 'prettyprint lang-r'>(numerator =  (deviance(reduced_model) - deviance(lmod))/(reduced_model$df.residual - lmod$df.residual))</pre>
+
+<pre >## [1] 34530.13</pre>
+
+<pre class = 'prettyprint lang-r'>(denominator = deviance(lmod)/lmod$df.residual)</pre>
+
+<pre >## [1] 3717.974</pre>
+
+<pre class = 'prettyprint lang-r'>(F = numerator/denominator)</pre>
+
+<pre >## [1] 9.287352</pre>
+
+<pre class = 'prettyprint lang-r'>(p_value = 1-pf(F, reduced_model$df.residual - lmod$df.residual, lmod$df.residual))</pre>
+
+<pre >## [1] 0.001029711</pre>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-8">
+
+<pre class = 'prettyprint lang-r'>anova(lmod, reduced_model)</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Model 1: Species ~ (Endemics + Area + Elevation + Nearest + Scruz + Adjacent) - 
+##     Endemics
+## Model 2: Species ~ Elevation + Nearest + Scruz
+##   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)   
+## 1     24  89231                               
+## 2     26 158292 -2    -69060 9.2874 0.00103 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>F test for Area only</h2></hgroup><article  id="f-test-for-area-only">
+
+<pre class = 'prettyprint lang-r'>anova(lmod,lm(Species ~.-Endemics - Area, data = gala))</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Model 1: Species ~ (Endemics + Area + Elevation + Nearest + Scruz + Adjacent) - 
+##     Endemics
+## Model 2: Species ~ (Endemics + Area + Elevation + Nearest + Scruz + Adjacent) - 
+##     Endemics - Area
+##   Res.Df   RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     24 89231                           
+## 2     25 93469 -1   -4237.7 1.1398 0.2963</pre>
+
+<p>Do you see, \(t_i^2 = F\)?</p>
+
+</article></slide><slide class=""><hgroup><h2>F test for Adjacent Only</h2></hgroup><article  id="f-test-for-adjacent-only">
+
+<pre class = 'prettyprint lang-r'>anova(lmod,lm(Species ~.-Endemics - Adjacent, data = gala))</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Model 1: Species ~ (Endemics + Area + Elevation + Nearest + Scruz + Adjacent) - 
+##     Endemics
+## Model 2: Species ~ (Endemics + Area + Elevation + Nearest + Scruz + Adjacent) - 
+##     Endemics - Adjacent
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     24  89231                                  
+## 2     25 155638 -1    -66406 17.861 0.0002971 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Permutation Test</h2></hgroup><article  id="permutation-test">
+
+</article></slide><slide class=""><hgroup><h2>Assumptions for Tests</h2></hgroup><article  id="assumptions-for-tests">
+
+<p>The tests we have considered thus far assume that</p>
+
+<p>\[\epsilon_i\sim N(0,\sigma^2),\ i=1,2,\dots, n.\quad i.i.d \]</p>
+
+<p>The Central Limit Theorem applies to the estimated regression coefficients, so inference based on the assumption of normality can be approximately correct provided the sample size is large enough.</p>
+
+<p><strong>Permutation tests</strong> do not require an assumption of normal errors. Instead, the errors are <strong>typically assumed to be independent and identically distributed</strong>, or more generally, the errors should be <strong>exchangeable</strong>.</p>
+
+</article></slide><slide class=""><hgroup><h2>Motivating idea behind permutation tests</h2></hgroup><article  id="motivating-idea-behind-permutation-tests">
+
+<p>If the response has no relationship with the regressor variables, then we should be able to randomly permute the response variable without a substantial difference in the typical model results. (None of the regressors matter anyway, right?)</p>
+
+</article></slide><slide class=""><hgroup><h2>See in Figure</h2></hgroup><article  id="see-in-figure">
+
+<pre class = 'prettyprint lang-r'>original = data.frame(x = rnorm(100), y = rnorm(100), tag = rep(&#39;original y&#39;,100))
+dat = original
+for(i in 1:3){
+  flag = data.frame(x = original$x, y = sample(original$y), 
+                    tag = rep(paste0(&#39;permuted y &#39;,i), 100))
+  dat = rbind(dat, flag) 
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>See in Figure</h2></hgroup><article  id="see-in-figure-1">
+
+<pre class = 'prettyprint lang-r'>library(ggplot2)
+ggplot(data = dat, aes(x = x, y = y))+
+  geom_point()+
+  facet_wrap(vars(tag))</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Formal Permutation Test</h2></hgroup><article  id="formal-permutation-test">
+
+<ul>
+<li>Permute the response variable for all possible (\(n!\)) permutations</li>
+<li>Fit the regression model to each permuted data set</li>
+<li>Calculate the \(F\) statistic associated with the general \(F\) test for each model.</li>
+<li>The p-value is the proportion of test statistics for the permuted data that are as extreme (i.e., at least as large as) the test statistic for the original data set.<br/></li>
+<li>The p-value of the permutation test can often be approximated by the p-value from the general F test.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Advantages and Disadvantages</h2></hgroup><article  id="advantages-and-disadvantages">
+
+<p>Advantages of the permutation test:</p>
+
+<ul>
+<li>Doesn’t require normal errors.</li>
+<li>More robust than other traditional methods if the errors are not normal.</li>
+</ul>
+
+<p>Disadvantages of the permutation test:</p>
+
+<ul>
+<li>Takes more time.</li>
+<li>The test is not as powerful when the errors are truly normal.</li>
+</ul>
+
+<p>To speed up computation time for the permutation test, we use only a subset of random permutations instead of all possible permutations.</p>
+
+<p>A permutation of a vector can be obtained in R using the <code>sample</code> function.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Galapagos Example (Permutation Test)</h2></hgroup><article  id="galapagos-example-permutation-test">
+
+</article></slide><slide class=""><hgroup><h2>Use a permutation test to assess whether the variables Nearest and Scruz should be used as regressors for Species.</h2></hgroup><article  class="smaller" id="use-a-permutation-test-to-assess-whether-the-variables-nearest-and-scruz-should-be-used-as-regressors-for-species.">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Species ~ Nearest + Scruz, data = gala)
+lms &lt;- summary(lmod)
+print(lms)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ Nearest + Scruz, data = gala)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -97.88 -73.54 -46.30  18.34 344.82 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  98.4765    28.3561   3.473  0.00175 **
+## Nearest       1.1792     1.9184   0.615  0.54391   
+## Scruz        -0.4406     0.4025  -1.095  0.28333   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 116.2 on 27 degrees of freedom
+## Multiple R-squared:  0.04269,    Adjusted R-squared:  -0.02823 
+## F-statistic: 0.602 on 2 and 27 DF,  p-value: 0.5549</pre>
+
+</article></slide><slide class=""><hgroup><h2>f statistic and p-value</h2></hgroup><article  id="f-statistic-and-p-value">
+
+<p>Test statistic available from summary function</p>
+
+<pre class = 'prettyprint lang-r'>fobs &lt;- lms$fstatistic[1]
+1 - pf(lms$fstatistic[1], lms$fstatistic[2], lms$fstatistic[3])</pre>
+
+<pre >##     value 
+## 0.5549255</pre>
+
+</article></slide><slide class=""><hgroup><h2>Randomly sample responses (4000 times), recompute model and fstatistic</h2></hgroup><article  id="randomly-sample-responses-4000-times-recompute-model-and-fstatistic">
+
+<pre class = 'prettyprint lang-r'>nreps &lt;- 4000
+set.seed(123) # reproducible results
+fstats &lt;- numeric(nreps) # to store permuted test statistics
+for (i in 1:nreps) {
+  lmodp &lt;- lm(sample(Species) ~ Nearest + Scruz, gala) # permute response
+  # and then regress permuted response on Nearest and Scruz
+  lmodps &lt;- summary(lmodp) # summarize fit from lmodp
+  # extract the fstatistic from the summary of lmodp
+  fstats[i] &lt;- lmodps$fstatistic[1]
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>compute p-value</h2></hgroup><article  id="compute-p-value">
+
+<p>Note: p-value = the proportion of simulated test statistics at least as extreme as our observed test statistics).</p>
+
+<pre class = 'prettyprint lang-r'>mean(fstats &gt;= fobs)</pre>
+
+<pre >## [1] 0.55825</pre>
+
+</article></slide><slide class=""><hgroup><h2>compare statistics for permuted data to observed statistic</h2></hgroup><article  id="compare-statistics-for-permuted-data-to-observed-statistic">
+
+<pre class = 'prettyprint lang-r'>plot(density(fstats), xlim = c(0, 10))
+abline(v = fobs)</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Use a permutation test to assess whether the variables Area and Adjacent should be used as regressors for Species.</h2></hgroup><article  class="smaller" id="use-a-permutation-test-to-assess-whether-the-variables-area-and-adjacent-should-be-used-as-regressors-for-species.">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Species ~ Area + Adjacent, data = gala)
+lms &lt;- summary(lmod)
+print(lms)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ Area + Adjacent, data = gala)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -104.40  -53.94  -27.47   21.87  301.75 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 66.27714   18.26047   3.630 0.001169 ** 
+## Area         0.08406    0.02028   4.144 0.000302 ***
+## Adjacent    -0.01166    0.02027  -0.575 0.570059    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 92.85 on 27 degrees of freedom
+## Multiple R-squared:  0.3892, Adjusted R-squared:  0.344 
+## F-statistic: 8.602 on 2 and 27 DF,  p-value: 0.001287</pre>
+
+</article></slide><slide class=""><hgroup><h2>f statistic and p-value</h2></hgroup><article  id="f-statistic-and-p-value-1">
+
+<p>Test statistic available from summary function</p>
+
+<pre class = 'prettyprint lang-r'>fobs &lt;- lms$fstatistic[1]
+1 - pf(lms$fstatistic[1], lms$fstatistic[2], lms$fstatistic[3])</pre>
+
+<pre >##       value 
+## 0.001286913</pre>
+
+</article></slide><slide class=""><hgroup><h2>Randomly sample responses (4000 times), recompute model and fstatistic</h2></hgroup><article  id="randomly-sample-responses-4000-times-recompute-model-and-fstatistic-1">
+
+<pre class = 'prettyprint lang-r'>nreps &lt;- 4000
+set.seed(123) # reproducible results
+fstats &lt;- numeric(nreps) # to store permuted test statistics
+for (i in 1:nreps) {
+  lmodp &lt;- lm(sample(Species) ~ Nearest + Scruz, gala) # permute response
+  # and then regress permuted response on Nearest and Scruz
+  lmodps &lt;- summary(lmodp) # summarize fit from lmodp
+  # extract the fstatistic from the summary of lmodp
+  fstats[i] &lt;- lmodps$fstatistic[1]
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>compute p-value</h2></hgroup><article  id="compute-p-value-1">
+
+<p>Note: p-value = the proportion of simulated test statistics at least as extreme as our observed test statistics).</p>
+
+<pre class = 'prettyprint lang-r'>mean(fstats &gt;= fobs)</pre>
+
+<pre >## [1] 0.00625</pre>
+
+</article></slide><slide class=""><hgroup><h2>compare statistics for permuted data to observed statistic</h2></hgroup><article  id="compare-statistics-for-permuted-data-to-observed-statistic-1">
+
+<pre class = 'prettyprint lang-r'>plot(density(fstats), xlim = c(0, 10))
+abline(v = fobs)</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-20-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Permutation of a Regressor</h2></hgroup><article  id="permutation-of-a-regressor">
+
+<p>Testing whether a regressor can be dropped from the regression model also falls within the permutation test framework.</p>
+
+<p>For a test involving a single regression coefficient \(\beta_j\), we permute regressor \(X_j\) instead of the response.</p>
+
+<ul>
+<li>If \(X_j\) has no relationship with the response, permuting \(X_j\) should have little impact on the model fit.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-9">
+
+<p>Test whether the Scruz regressor should be in the model when Nearest is in the model.</p>
+
+<pre class = 'prettyprint lang-r'>tobs &lt;- lms$coef[3,3]
+# Randomly sample Scruz (4000 times), recompute model and tstatistic
+nreps &lt;- 4000
+tsim &lt;- numeric(nreps)
+set.seed(123) # reproducability
+for (i in 1:nreps) {
+  # fit model with permuted Scruz
+  lmodp = lm(Species ~ Nearest + sample(Scruz), gala)
+  lmodps = summary(lmodp) # summarize results
+  # extract the t statistic for the permuted data
+  tsim[i] &lt;- lmodps$coef[3,3]
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>visual comparison of test statistics from permuted data to observed data</h2></hgroup><article  id="visual-comparison-of-test-statistics-from-permuted-data-to-observed-data">
+
+<pre class = 'prettyprint lang-r'>hist(tsim, freq = FALSE)
+abline(v = tobs)</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-22-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>compute p-value</h2></hgroup><article  id="compute-p-value-2">
+
+<pre class = 'prettyprint lang-r'>mean(abs(tsim) &gt;= abs(tobs))</pre>
+
+<pre >## [1] 0.58075</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Confidence Interval for \(\beta\)</h2></hgroup><article  id="confidence-interval-for-beta">
+
+</article></slide><slide class=""><hgroup><h2>What</h2></hgroup><article  id="what">
+
+<p>An alternative way of expressing the uncertainty in our estimates is through confidence intervals (CIs) or confidence regions.</p>
+
+<ul>
+<li>A <strong>confidence region</strong> is the same thing as a CI, except that it may have more than one dimension.</li>
+</ul>
+
+<p>A confidence region provides us with plausible values of our target parameter(s).</p>
+
+<p>When constructing confidence regions for more than one parameter, we must decide whether to form the confidence regions individually or simultaneously.</p>
+
+</article></slide><slide class=""><hgroup><h2>Link to Hypothesis Test</h2></hgroup><article  id="link-to-hypothesis-test">
+
+<p>Confidence intervals and regions are directly linked to hypothesis tests.</p>
+
+<p>A 100(1-\(\alpha\))% confidence interval for \(\beta_j\) is linked with a hypothesis test of \(H_0:\beta_j=c\) versus \(H_a:\beta_j\neq c\) tested at level \(\alpha\).</p>
+
+<ul>
+<li><p>Any point that lies within the 100(1-\(\alpha\))% confidence interval for \(\beta_j\) represents a value of \(c\) for which the associated null hypothesis would not be rejected at significance level \(\alpha\).</p></li>
+<li><p>Any point outside of the confidence interval is a value of \(c\) for which the associated null hypothesis would be rejected.</p></li>
+</ul>
+
+<p>The relationship above assumes that model \(\Omega\) used in the hypothesis test is used to construct the confidence interval.</p>
+
+</article></slide><slide class=""><hgroup><h2>Link to Hypothesis Test</h2></hgroup><article  id="link-to-hypothesis-test-1">
+
+<p>A 100(1-\(\alpha\))% confidence region for \(\beta_i,\beta_j,…,\beta_k\) is linked with a hypothesis test of \(H_0:\beta_i=c_i,\beta_j=c_j,…,\beta_k=c_k\) versus \(H_a:\beta_i\neq c_i\) or \(\beta_j\neq c_j\) or \(\dots\) or$ _kc_k$ tested at level \(\alpha\).</p>
+
+<ul>
+<li><p>Any point that lies within the 100(1-\(\alpha\))% confidence region for \(\beta_i,\beta_j,\dots,\beta_k\) represents values of \(c_i,c_j,\dots ,c_k\) for which the associated null hypothesis would not be rejected at significance level \(\alpha\).</p></li>
+<li><p>Any point outside of the confidence region represents values of \(c_i,c_j,\dots,c_k\) for which the associated null hypothesis would be rejected.</p></li>
+</ul>
+
+<p>Once again, these results are conditional on the other regressors in the fitted model.</p>
+
+</article></slide><slide class=""><hgroup><h2>Confidence Interval</h2></hgroup><article  id="confidence-interval">
+
+<p>The CIs for the individual regression coefficients take the form</p>
+
+<p>\[\hat{\beta}_{i-1}\pm t_{n-p}^{\alpha/2} \hat{\sigma}\sqrt{(X^TX)_{ii}^{-1}},\quad i=1,\dots, p\] which is the same as \[\hat{\beta}_{i-1} \pm t_{n-p}^{\alpha/2} \hat{se}\left(\hat{\beta}_{i-1}\right) i= 1, \dots, p.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Confidence Region</h2></hgroup><article  id="confidence-region">
+
+<p>A 100(1-\(\alpha\))% simultaneous (joint) confidence region for \(\beta\) satisfies:</p>
+
+<p>\[(\hat{\beta}-\beta)^TX^TX(\hat{\beta} - \beta) \leq p\hat{\sigma}^2 F_{p,n-p}^\alpha.\]</p>
+
+<p>These regions produce ellipsoids in p-space, so they cannot be easily visualized except in two dimensions.</p>
+
+<p>These regions can be easily plotted using the <code>confidenceEllipse</code> function in the <strong>car</strong> package.</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  class="smaller" id="galapagos-example-10">
+
+<p>Construct a 95% CI for \(\beta_{Area}\) (assuming the other four predictors are in the model).</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(lmod)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = Species ~ Area + Elevation + Nearest + Scruz + Adjacent, 
+##     data = gala)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -111.679  -34.898   -7.862   33.460  182.584 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  7.068221  19.154198   0.369 0.715351    
+## Area        -0.023938   0.022422  -1.068 0.296318    
+## Elevation    0.319465   0.053663   5.953 3.82e-06 ***
+## Nearest      0.009144   1.054136   0.009 0.993151    
+## Scruz       -0.240524   0.215402  -1.117 0.275208    
+## Adjacent    -0.074805   0.017700  -4.226 0.000297 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 60.98 on 24 degrees of freedom
+## Multiple R-squared:  0.7658, Adjusted R-squared:  0.7171 
+## F-statistic:  15.7 on 5 and 24 DF,  p-value: 6.838e-07</pre>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  class="smaller" id="galapagos-example-11">
+
+<p>Construct a 95% CI for \(\beta_{Area}\) (assuming the other four predictors are in the model).</p>
+
+<pre class = 'prettyprint lang-r'>qt(.975, df = df.residual(lmod))</pre>
+
+<pre >## [1] 2.063899</pre>
+
+<pre class = 'prettyprint lang-r'>-.02394 + c(-1, 1) * 2.0639 * .02242</pre>
+
+<pre >## [1] -0.07021264  0.02233264</pre>
+
+</article></slide><slide class=""><hgroup><h2>construct 95% confidence intervals of all parameters</h2></hgroup><article  id="construct-95-confidence-intervals-of-all-parameters">
+
+<pre class = 'prettyprint lang-r'>confint(lmod, level = 0.95)</pre>
+
+<pre >##                   2.5 %      97.5 %
+## (Intercept) -32.4641006 46.60054205
+## Area         -0.0702158  0.02233912
+## Elevation     0.2087102  0.43021935
+## Nearest      -2.1664857  2.18477363
+## Scruz        -0.6850926  0.20404416
+## Adjacent     -0.1113362 -0.03827344</pre>
+
+<p>Note: the intervals were produced at the same time, but these are not simultaneous confidence regions.</p>
+
+</article></slide><slide class=""><hgroup><h2>Construct a 95% joint confidence region for \(\beta_{Area}\) and \(\beta_{Adjacent}\)</h2></hgroup><article  id="construct-a-95-joint-confidence-region-for-beta_area-and-beta_adjacent">
+
+<pre class = 'prettyprint lang-r'>confidenceEllipse(lmod, which.coef = c(2, 6), ylim = c(-0.13, 0))
+points(0,0)
+abline(v = confint(lmod)[2,], lty = 2)
+abline(h = confint(lmod)[6,], lty = 2)</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-29-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Some Notes</h2></hgroup><article  id="some-notes-2">
+
+<ul>
+<li><p>Both the horizontal width and vertical width of the joint confidence region is wider than the widths of the individual confidence intervals.</p></li>
+<li><p>The overall area of the joint region is smaller than the area of the intersection between the two individual confidence regions.</p></li>
+<li><p>This is because the estimated regression parameters are positively correlated.</p></li>
+<li><p>If the lines of the individual confidence regions were tangential to the joint region, then the individual CIs would by jointly correct (their confidence level would be at least 95%). Why?</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Questions?</h2></hgroup><article  id="questions">
+
+<ul>
+<li>Is it plausible that \(\beta_{Area}=\beta_{Adjacent}=0\)? Why?</li>
+</ul>
+
+<p>.</p>
+
+<p>.</p>
+
+<ul>
+<li>Is it plausible that \(\beta_{Area}=-0.06\) and \(\beta_{Adjacent}=-0.045\)? Why? Do the results change if you use the individual confidence regions instead of the joint regions?</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Caution</h2></hgroup><article  id="caution-1">
+
+<p>It is possible to make different conclusions when using individual confidence regions in comparison with the joint confidence regions!</p>
+
+<p>The joint confidence regions should be preferred.</p>
+
+<p>We must be cautious about how we interpret univariate hypothesis tests or confidence intervals because the same conclusions may not be jointly true!</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Bootstrap Confidence Interval</h2></hgroup><article  id="bootstrap-confidence-interval">
+
+</article></slide><slide class=""><hgroup><h2>When and why we need them?</h2></hgroup><article  id="when-and-why-we-need-them">
+
+<p>The F- and t-based confidence regions and intervals we have described depend on the assumption of normal errors, specifically, that \(\epsilon_i \sim N(0,\sigma^2)\), i.i.d.</p>
+
+<ul>
+<li>In general, parametric CIs assume we know the sampling distribution of the statistic that estimates our target parameter.</li>
+</ul>
+
+<p>How would we approximate the sampling distribution of a statistic using simulated data if we knew the distribution of the population?</p>
+
+</article></slide><slide class=""><hgroup><h2>Estimating the sampling distribution of \(\hat{\beta}\) using simulation:</h2></hgroup><article  id="estimating-the-sampling-distribution-of-hatbeta-using-simulation">
+
+<ul>
+<li>Generate \(\epsilon\) from a known distribution.</li>
+<li>Form \(y=X\beta+\epsilon\) for fixed \(X\) and \(\beta\).</li>
+<li>Compute \(\hat{\beta}\).</li>
+<li>Repeat steps 1-3 many times</li>
+<li>Estimate the sampling distribution of the estimated coefficients with the empirical distribution of the estimated coefficients from the simulated data sets.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Determining the bootstrap distribution of \(\hat{\beta}\)</h2></hgroup><article  id="determining-the-bootstrap-distribution-of-hatbeta">
+
+<p>We can use the bootstrap method to produce a confidence interval for our regression coefficients when error distribution is unknown or non-normal. Process:</p>
+
+<ul>
+<li>Generate \(\epsilon^*\) by sampling with replacement from \(\hat{\epsilon}\).</li>
+<li>Form \(y^*=X\hat{\beta}+\epsilon^*\) for fixed \(X\) and using the \(\hat{\beta}\) from the fitted model of the original data.</li>
+<li>Compute \(\hat{\beta}^*\) from \((X,y^*)\).</li>
+<li>Repeat steps 1-3 many times</li>
+<li>Estimate the sampling distribution of the estimated coefficients using the bootstrap distribution of the estimated coefficients from the bootstrapped data sets.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Bootstrap CI</h2></hgroup><article  id="bootstrap-ci">
+
+<p>A bootstrap CI for a parameter is constructed by taking the appropriate quantiles of the bootstrap distribution for the statistic that estimates the parameter.</p>
+
+<p>It is possible to take every possible bootstrap sample from \(\hat{\epsilon}\), but we usually just take a lot of samples.</p>
+
+<ul>
+<li>We sample the residuals using the <code>sample</code> function with the argument <code>replace=TRUE</code>.</li>
+<li>The <code>residuals</code> and <code>fitted</code> functions get the residuals and fitted values, respectively from the original fitted model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-12">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+set.seed(123)
+nb = 4000 # number of bootstrap samples
+coefmat = matrix(0, nb, 6)
+resids = residuals(lmod) #extract residuals
+preds = fitted(lmod) # fitted values
+for (i in 1:nb) {
+  booty &lt;- preds + sample(resids, replace = TRUE) # create bootstrap data
+  # fit regression model to bootstrap data
+  bmod &lt;- lm(booty ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+  coefmat[i,] = coef(bmod) # extract estimated coefficients from bmod and store them for later
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Construct Bootstrap CI</h2></hgroup><article  id="construct-bootstrap-ci">
+
+<pre class = 'prettyprint lang-r'>colnames(coefmat) = c(&quot;Intercept&quot;, colnames(gala[,3:7])) # rename columns of coefmat
+coefmat &lt;- data.frame(coefmat) # convert to data frame
+cis = apply(coefmat, 2, quantile, probs = c(.025, .975)) # construct 95% CIs for each coefficients using the apply function
+knitr::kable(cis)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Intercept</th>
+<th align="right">Area</th>
+<th align="right">Elevation</th>
+<th align="right">Nearest</th>
+<th align="right">Scruz</th>
+<th align="right">Adjacent</th>
+</tr>
+<tr class="odd">
+<td align="left">2.5%</td>
+<td align="right">-25.31406</td>
+<td align="right">-0.0623651</td>
+<td align="right">0.2310989</td>
+<td align="right">-1.716588</td>
+<td align="right">-0.6061978</td>
+<td align="right">-0.1054528</td>
+</tr>
+<tr class="even">
+<td align="left">97.5%</td>
+<td align="right">42.69309</td>
+<td align="right">0.0180740</td>
+<td align="right">0.4207570</td>
+<td align="right">2.122722</td>
+<td align="right">0.1677720</td>
+<td align="right">-0.0397966</td>
+</tr>
+</table>
+
+<pre class = 'prettyprint lang-r'>knitr::kable(t(confint(lmod)))</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">(Intercept)</th>
+<th align="right">Area</th>
+<th align="right">Elevation</th>
+<th align="right">Nearest</th>
+<th align="right">Scruz</th>
+<th align="right">Adjacent</th>
+</tr>
+<tr class="odd">
+<td align="left">2.5 %</td>
+<td align="right">-32.46410</td>
+<td align="right">-0.0702158</td>
+<td align="right">0.2087102</td>
+<td align="right">-2.166486</td>
+<td align="right">-0.6850926</td>
+<td align="right">-0.1113362</td>
+</tr>
+<tr class="even">
+<td align="left">97.5 %</td>
+<td align="right">46.60054</td>
+<td align="right">0.0223391</td>
+<td align="right">0.4302193</td>
+<td align="right">2.184774</td>
+<td align="right">0.2040442</td>
+<td align="right">-0.0382734</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>What we get</h2></hgroup><article  id="what-we-get">
+
+<p>These intervals are similar to the ones produced when assuming that ϵ∼N(0,σ^2 I).</p>
+
+<p>The position of 0 relative to the intervals is the same for both methods, so qualitatively, the results are the same even though the numerical values differ slightly.</p>
+
+<p>Consider the bootstrap densities for Area and Adjacent along with the associated 95% bootstrap confidence intervals.</p>
+
+</article></slide><slide class=""><hgroup><h2>Bootstrap Density for Area</h2></hgroup><article  id="bootstrap-density-for-area">
+
+<pre class = 'prettyprint lang-r'>plot(density(coefmat$Area), xlab = &quot;Area&quot;, main = &quot;&quot;) # plot density
+title(&quot;Bootstrap distribution for betahat_Area&quot;) #title
+abline(v = c(-.0628, .0185), lty = 2) # plot ci</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-33-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Bootstrap Density for Adjacent</h2></hgroup><article  id="bootstrap-density-for-adjacent">
+
+<pre class = 'prettyprint lang-r'>plot(density(coefmat$Adjacent), xlab = &quot;Adjacent&quot;, main = &quot;&quot;) # plot density
+title(&quot;Bootstrap distribution for betahat_Adjacent&quot;) #title
+abline(v = c(-.104, -.041), lty = 2) # plot ci</pre>
+
+<p><img src="inference_files/figure-html/unnamed-chunk-34-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Notes</h2></hgroup><article  id="notes">
+
+<p>Both densities are roughly symmetric and normal, though this is not always the case.</p>
+
+<p>Bootstrap methods can be used for hypothesis testing, but permutation-based methods are generally preferred.</p>
+
+<p>There are alternative resampling methods for the bootstrap.</p>
+
+<ul>
+<li>E.g., we can resample the \((X,Y)\) pairs rather than the residuals.</li>
+<li>This is less attractive, particularly when X is regarded as fixed, like in designed experiments.</li>
+</ul>
+
+<p>There are also more complex ways of constructing the intervals.</p>
+
+<ul>
+<li>See Bootstrap Methods And Their Application by Davison (1997) for more details.</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Sampling, Experimentation, Generalization, and Causation</h2></hgroup><article  id="sampling-experimentation-generalization-and-causation">
+
+</article></slide><slide class=""><hgroup><h2>Experimental</h2></hgroup><article  id="experimental">
+
+<p>The method of data collection determines the conclusions we can draw.</p>
+
+<p>The mathematical model \(Y=X\beta+ϵ\) describes how the response \(Y\) is generated.</p>
+
+<p>For designed experiments, we can view nature as the computer generating our observed responses.</p>
+
+<ul>
+<li>We decide the values of the predictors and then record the response \(Y\).</li>
+<li>We can do this as many times as we want in order to learn something about \(\beta\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Observational</h2></hgroup><article  id="observational">
+
+<p>In observational studies, we have a finite population from which we draw a sample that is our data.</p>
+
+<ul>
+<li>We hope to learn about the unknown population value β from the sample.</li>
+<li>A random sample is needed to do this.<br/></li>
+<li>The sample should also be a small portion of the total population size (otherwise we need a correction).</li>
+<li>Samples chosen by hand are typically not very useful.</li>
+<li>Statistical inference relies on the data selected being a random sample.</li>
+<li>Even when the data are chosen to be &ldquo;representative&rdquo;, the conclusions are suspect.</li>
+<li>Conclusions drawn from a sample of convenience are easy to criticize, likely to be biased, etc.</li>
+<li>The conclusions are limited to the sample themselves.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Sample from Entire Population</h2></hgroup><article  id="sample-from-entire-population">
+
+<p>Sometimes the sample is the entire population.</p>
+
+<ul>
+<li>Some might argue that inference is not needed since the sample is the population.</li>
+<li>Your results are still subject to uncertainty because you can’t measure everything!</li>
+<li>You need to carefully think about the goals of your model.</li>
+<li>In this case, permutation tests make it possible to give meaning to the p-value, though the conclusion applies only to the sample.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Two Types of Predictors</h2></hgroup><article  id="two-types-of-predictors">
+
+<p>There are two basic types of predictors that can be used in regression analysis: experimental and observational.</p>
+
+<ul>
+<li><p>Experimental predictors are controlled by the experimenter.</p></li>
+<li><p>Observational predictors are observed rather than chosen.</p></li>
+</ul>
+
+<p>The types of predictors can be mixed in a particular study.</p>
+
+</article></slide><slide class=""><hgroup><h2>Observational Data</h2></hgroup><article  id="observational-data">
+
+<p>For observational data, the idea of holding regressors constant makes no sense:</p>
+
+<ul>
+<li><p>These observable values are not under our control.</p></li>
+<li><p>We cannot change them except by some fantastic feat of civil or genetic engineering, post-apocalyptic mind control, etc.</p></li>
+<li><p>There are probably additional unmeasured variables that have some connection to the response. We cannot possibly hold these constant.</p></li>
+<li><p>A lurking variable is a predictor variable not included in the regression model that would change the interpretation of the fitted model if included.</p></li>
+<li><p>Causal conclusions CANNOT be made for observational data because of the possible existence of lurking variables in our model.</p></li>
+<li><p>Observational data allow us to show an association between two or more variables, but we cannot make causal conclusions.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Causal Conclusion</h2></hgroup><article  id="causal-conclusion">
+
+<p>Causal conclusions CAN be made for data obtained from a randomized experiment (i.e., the treatments are randomly assigned to the subjects).</p>
+
+<ul>
+<li><p>Randomly assigning experimental factors limits the potential effects of lurking variables, since the random assignment guarantees that the correlation between the regressors in the mean function and any lurking variable is small or 0.</p></li>
+<li><p>Some experimental designs are constructed so that the effects of observational factors can be ignored or used in an analysis of covariance.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Two Additional Notes</h2></hgroup><article  id="two-additional-notes">
+
+<p>Conclusions can be generalized from the sample to the population when the subjects were obtained using a random sample of the population.</p>
+
+<p>The interpretation of results from a regression analysis depends on the details of the data design and collection.</p>
+
+</article></slide><slide class=""><hgroup><h2>Example: Feedlots</h2></hgroup><article  id="example-feedlots">
+
+<p>A feedlot is a small farming operation that includes many cattle, swine, or poultry in a small area. These operations can provide high-paying jobs while efficiently producing animal products, but can have negative environmental impacts.</p>
+
+<p>A study investigating the effect of feedlots on property values utilized data from 292 residential property sales in two southern Minnesota counties in 1993-1994.</p>
+
+</article></slide><slide class=""><hgroup><h2>Variables in the Study</h2></hgroup><article  id="variables-in-the-study">
+
+<ul>
+<li>The response was logarithm of sale price.</li>
+<li>Some predictors were derived from house characteristics (size, number of bedrooms, age, etc.)</li>
+<li>Other predictors described the relationship of the property to existing feedlots and related features of the feedlots such as their size.</li>
+<li>The goal of the regression analysis was to identify the &ldquo;feedlot effect&rdquo; from the coefficients of the regressors created from the feedlot variables.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Analysis</h2></hgroup><article  id="analysis">
+
+<p>The estimated effects were generally positive and judged to be nonzero, meaning that close proximity to feedlots was associated with an increase in sales prices.</p>
+
+<ul>
+<li>This was unexpected, but could be positive since the positive economic impact of the feedlot might outweigh the negative environmental considerations.</li>
+</ul>
+
+<p>Can we conclude that living near a feedlot causes an increase in sale price?</p>
+
+<p>.</p>
+
+<p>Can we generalize these results to other places?</p>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<ul>
+<li>Causal conclusions can only be made for data obtained from an experiment in which the treatments were randomly assigned.</li>
+<li>Results can be generalized to a population when the data are a random sample from that population.</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Additional Example of Nested-model F tests</h2></hgroup><article  id="additional-example-of-nested-model-f-tests">
+
+</article></slide><slide class=""><hgroup><h2>Testing a subspace</h2></hgroup><article  id="testing-a-subspace">
+
+<p>Some tests cannot be simply expressed in terms of the inclusion or exclusion of subsets of regressors. E.g., could the areas of the current and adjacent island be added together and be added to our model instead of the two separate regressors?</p>
+
+<p>This can be expressed as:</p>
+
+<p>\(H_0:\beta_{Area}=\beta_{Adjacent} |\beta_{Elevation},\beta_{Nearest},\beta_{Scruz}\neq 0\)</p>
+
+<p>The null model is a linear subspace of the full model and we can test our hypothesis using the general F test.</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-13">
+
+<p>Test whether both the Area and Adjacent regressor variables have identical regression coefficients (assuming the other regressors are in the model).</p>
+
+<pre class = 'prettyprint lang-r'>lmods &lt;- lm(Species ~ I(Adjacent + Area) + Elevation + Nearest + Scruz, gala) 
+lmod = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+anova(lmod,lmods)</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Model 1: Species ~ Area + Elevation + Nearest + Scruz + Adjacent
+## Model 2: Species ~ I(Adjacent + Area) + Elevation + Nearest + Scruz
+##   Res.Df    RSS Df Sum of Sq     F  Pr(&gt;F)  
+## 1     24  89231                             
+## 2     25 109591 -1    -20360 5.476 0.02793 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Test \(\beta = c\)</h2></hgroup><article  id="test-beta-c">
+
+<p>If we wanted to test whether a certain regression coefficient equaled a value, then this can also be done.</p>
+
+<p>Suppose we wish to test \(H_0:\beta_i=c\) versus \(H_a:\beta_i\neq c\) for some constant \(c\). This can also be done using the general F test previously discussed.</p>
+
+<p>In this case, our null model becomes</p>
+
+<p>\[y=\beta_0+\beta_1 X_1+\dots +cX_i+\dots+\epsilon.\]</p>
+
+<p>The trick is fitting the appropriate model in R.</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-14">
+
+<p>Test whether \(\beta_{Elevation}=0.5\) assuming the other regressors are in the model.</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+lmods &lt;- lm(Species ~ Area + offset(0.5*Elevation) + Nearest + Scruz + Adjacent, gala) 
+# the offset term indicates that this term is a constant and not to be estimated.
+anova(lmods, lmod) # compare models using general f-test</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Model 1: Species ~ Area + offset(0.5 * Elevation) + Nearest + Scruz + 
+##     Adjacent
+## Model 2: Species ~ Area + Elevation + Nearest + Scruz + Adjacent
+##   Res.Df    RSS Df Sum of Sq      F   Pr(&gt;F)   
+## 1     25 131312                                
+## 2     24  89231  1     42081 11.318 0.002574 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Using t-test</h2></hgroup><article  id="using-t-test">
+
+<p>The previous test could be done using a t test. In that case:</p>
+
+<p>\(H_0:\beta_i=c\)</p>
+
+<p>\(H_a: \begin{cases}\beta_i=c &amp; (two-tailed)\\ \beta_i&gt;c &amp; (upper-tailed) \\ \beta_i&lt;c &amp;(lower-tailed) \end{cases}\)</p>
+
+<p>Test Statistic:</p>
+
+<p>\[t = \frac{\hat{\beta}_i-c}{\hat{se}(\hat{\beta}_i)}\]</p>
+
+<p>has a \(t\) distribution with \(n-p\) degrees of freedom</p>
+
+<p>\(P-value: \begin{cases}2P(T_{n-p}&gt;|t|) &amp; (two-tailed)\\ P(T_{n-p}&gt;t) &amp; (upper-tailed) \\ P(T_{n-p}&lt;t)&amp; (lower-tailed)\end{cases}\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example-15">
+
+<p>Test whether \(\beta_{Elevation}=0.5\) using a \(t\) test (assuming the other regressors are in the model).</p>
+
+<p>\(H_0:\ \beta_{Elevation} = 0.5\)</p>
+
+<p>\(H_a:\ \beta_{Elevation} \neq 0.5\)</p>
+
+<pre class = 'prettyprint lang-r'>(tstat &lt;- (coef(lmod)[3] - 0.5)/sqrt(vcov(lmod)[3,3])) # test statistic</pre>
+
+<pre >## Elevation 
+## -3.364253</pre>
+
+<pre class = 'prettyprint lang-r'>2 * (1 - pt(abs(tstat), df = df.residual(lmod))) # p-value</pre>
+
+<pre >##   Elevation 
+## 0.002573836</pre>
+
+</article></slide><slide class=""><hgroup><h2>Notes</h2></hgroup><article  id="notes-1">
+
+<p>The \(t\) test approach is preferred for testing claims about individual regression coefficients since you don’t need to fit multiple models.</p>
+
+<ul>
+<li>Results will be the same as if you were using a general F test approach.</li>
+</ul>
+
+<p>Notes:</p>
+
+<ul>
+<li>We can only test hypotheses about linear combinations of regression coefficients.</li>
+<li>E.g., we could test whether β_i=2β_j</li>
+<li>E.g., we could not test whether β_i β_j=1</li>
+<li>We can only compare models that are nested.</li>
+<li>We cannot compare models for different data.</li>
+<li>This can occur if you have missing data for a certain regressors.</li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

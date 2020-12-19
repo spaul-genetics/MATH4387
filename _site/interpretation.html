@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interpretation of Main Effects</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Interpretation of Main Effects',
+                        subtitle: 'Chapter 4 of ALR4, Chapter 5 of LMWR2',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/3/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Understanding Parameter Estimates</h2></hgroup><article  id="understanding-parameter-estimates">
+
+</article></slide><slide class=""><hgroup><h2>Example: Fuel Consumption Data</h2></hgroup><article  id="example-fuel-consumption-data">
+
+<p>What is the relationship between fuel consumption and various regressors for the 50 United States and the District of Columbia? The variables (measured in 2001 unless otherwise noted) are:</p>
+
+<ul>
+<li><code>Drivers</code> – Number of licensed drivers in the state</li>
+<li><code>FuelC</code> - Gasoline sold for road use (1K gallons)</li>
+<li><code>Income</code> – Personal income for the year 2000 (dollar/person)</li>
+<li><code>Miles</code> - Miles of Federal-aid highway miles in the state</li>
+<li><code>Pop</code> - 2001 population age 16 and over</li>
+<li><code>Tax</code> - Gasoline state tax rate (cents/gallon)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Model</h2></hgroup><article  id="model">
+
+<p>We transform some of these variables to obtain:</p>
+
+<ul>
+<li><code>Fuel</code> – 1000 \(\times\) <code>FuelC/Pop</code> (Gallons/person)</li>
+<li><code>Income1K</code> – <code>Income</code>/1000 ($1K/person)</li>
+<li><code>Dlic</code> - 1000 \(\times\) <code>Drivers/Pop</code> (licensed drivers/1K persons)</li>
+<li><code>log(Miles)</code> – Natural logarithm of <code>Miles</code></li>
+</ul>
+
+<p>Consider the regression model</p>
+
+<p>E(Fuel│Tax,Dlic,Income1K,Miles)=\(\beta_0\)+\(\beta_1\) Tax+\(\beta_2\) Dlic+\(\beta_3\) Income1K+\(\beta_4\) loga(Miles).</p>
+
+</article></slide><slide class=""><hgroup><h2><code>Miles</code></h2></hgroup><article  id="miles">
+
+<pre class = 'prettyprint lang-r'>data(fuel2001, package=&#39;alr4&#39;)
+plot(density(fuel2001$Miles))</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2><code>log(Miles)</code></h2></hgroup><article  id="logmiles">
+
+<pre class = 'prettyprint lang-r'>plot(density(log(fuel2001$Miles)))</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Model Fit</h2></hgroup><article  id="model-fit">
+
+<pre >## 
+## Call:
+## lm(formula = Fuel ~ Tax + Dlic + Income1K + logMiles, data = fuel2001)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -163.145  -33.039    5.895   31.989  183.499 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 154.1928   194.9062   0.791 0.432938    
+## Tax          -4.2280     2.0301  -2.083 0.042873 *  
+## Dlic          0.4719     0.1285   3.672 0.000626 ***
+## Income1K     -6.1353     2.1936  -2.797 0.007508 ** 
+## logMiles     26.7552     9.3374   2.865 0.006259 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 64.89 on 46 degrees of freedom
+## Multiple R-squared:  0.5105, Adjusted R-squared:  0.4679 
+## F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07</pre>
+
+</article></slide><slide class=""><hgroup><h2>Fitted Model</h2></hgroup><article  id="fitted-model">
+
+<p>The fitted model is:</p>
+
+<p><strong>\(\hat{E}\)(Fuel│Tax,Dlic,Income1K,Miles)=154.19-4.24 Tax+0.47 Dlic-6.14 Income1K+26.76 loga(Miles)</strong></p>
+
+<p>This equation represents the estimated conditional mean of Fuel given fixed values of the regressors Tax, Dlic, Income1K, and Miles.</p>
+
+</article></slide><slide class=""><hgroup><h2>Units of Coefficients</h2></hgroup><article  id="units-of-coefficients">
+
+<p>The \(\beta\)-coefficients (<strong>slopes</strong> or <strong>partial slopes</strong>) have units.</p>
+
+<ul>
+<li>Fuel is in gallons per person, so all quantities on the right side of the equal sign must also be in gallons per person.</li>
+</ul>
+
+<p>The intercept is 154.19 gallons per person.</p>
+
+<ul>
+<li>In a state with no taxes, drivers, income, and almost no roads (1 mile!), we expect 154.19 gallons of Fuel to be consumed per person.</li>
+<li>This is technically correct, but nonsensical, because a state such as this can never exist!</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Unit of Coefficients (Example)</h2></hgroup><article  id="unit-of-coefficients-example">
+
+<p>The coefficient for Income1K must be in gallons per person per thousand dollars per person (i.e., (gallons/person)/($1K/person).</p>
+
+<ul>
+<li>Income1K is measured in thousands of dollars per person ($1K/person).</li>
+</ul>
+
+<p>The units for the coefficient for Tax is gallons per person per cent of tax per gallon (gallons/person)/(cents/gallon).</p>
+
+<ul>
+<li>Tax is measured in cents per gallon (cents/gallon).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Rate of Change</h2></hgroup><article  id="rate-of-change">
+
+<p>Estimated coefficients are usually interpreted as a <strong>rate of change</strong>.</p>
+
+<ul>
+<li>What is the change in the predicted response for two observations having the same regressor values, except that the regressor of interest is one unit greater for one of the observations?</li>
+</ul>
+
+<p><strong>Example:</strong> If a state was identical to another state except that its Tax rate was 1 cent/gallon more than the other state, then we predict its Fuel consumption will be about 4.24 gallons/person less than the other state.</p>
+
+</article></slide><slide class=""><hgroup><h2>Why?</h2></hgroup><article  id="why">
+
+<p>Consider the regression model</p>
+
+<p>\[E(Y|X) = \beta_0 X_1 + \beta_1 X_2 + \beta_3 X_3\] The predicted value when \(X_1 = x_1\), \(X_2 = t\), and \(X_3 = x_3\)</p>
+
+<p>\[E(Y|[x_1,t,x_3]) = \beta_0 x_1 + \beta_1 t + \beta_3 x_3\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Why?</h2></hgroup><article  id="why-1">
+
+<p>Consider the regression model</p>
+
+<p>\[E(Y|X) = \beta_0 X_1 + \beta_1 X_2 + \beta_3 X_3\] The predicted value when \(X_1 = x_1\), \(X_2 = t\), and \(X_3 = x_3\)</p>
+
+<p>\[E(Y|[x_1,t,x_3]) = \beta_0 x_1 + \beta_1 t + \beta_3 x_3\]</p>
+
+<p>What happens if we change \(X_2\) to \(t+1\) keeping \(X_1\) and \(X_3\) same?</p>
+
+<p>\[E(Y|[x_1,t+1,x_3]) = \beta_0 x_1 + \beta_1 (t+1) + \beta_3 x_3\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Why?</h2></hgroup><article  id="why-2">
+
+<p>Consider the regression model</p>
+
+<p>\[E(Y|X) = \beta_0 X_1 + \beta_1 X_2 + \beta_3 X_3\] The predicted value when \(X_1 = x_1\), \(X_2 = t\), and \(X_3 = x_3\)</p>
+
+<p>\[E(Y|[x_1,t,x_3]) = \beta_0 x_1 + \beta_1 t + \beta_3 x_3\]</p>
+
+<p>What happens if we change \(X_2\) to \(t+1\) keeping \(X_1\) and \(X_3\) same?</p>
+
+<p>\[E(Y|[x_1,t+1,x_3]) = \beta_0 x_1 + \beta_1 (t+1) + \beta_3 x_3\]</p>
+
+<p>The difference \[E(Y|[x_1,t+1,x_3]) -  E(Y|[x_1,t,x_3])= \beta_1 \]</p>
+
+</article></slide><slide class=""><hgroup><h2>Effect plot</h2></hgroup><article  id="effect-plot">
+
+<p>An <strong>effect</strong> plot is used to visualize the effect of a regressor on the mean response while holding the other regressors at their mean values.</p>
+
+<ul>
+<li>Effect plots often provide pointwise 95% confidence bands for the fitted line.</li>
+</ul>
+
+<p>What is the effect of Tax on expected Fuel consumption when the other regressors are fixed at their sample mean values?</p>
+
+<p>\(\hat{E}\)(Fuel│Tax,Dlic=903.68,Income1K=28.4,loga(Miles)=10.91)</p>
+
+<p>=154.19-4.23 Tax+0.47(903.68)-6.14(28.4)+26.76(10.91)</p>
+
+<p>=<strong>606.92-4.23 Tax.</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect plot of Tax</h2></hgroup><article  id="effect-plot-of-tax">
+
+<pre class = 'prettyprint lang-r'>library(&#39;effects&#39;)
+plot(predictorEffect(&quot;Tax&quot;,fuel_mod), main = &quot;Tax Effect Plot&quot;, focal.levels = c())</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect plot of Tax</h2></hgroup><article  id="effect-plot-of-tax-1">
+
+<p>What if we fixed the other regressors at different values? i.e., not their sample means?</p>
+
+<ul>
+<li>The shape doesn’t change if there is no interaction term between the effect of interest and the other regressors.</li>
+<li>But the line would shift vertically.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Signs of Estimates</h2></hgroup><article  id="signs-of-estimates">
+
+<p>The sign of a parameter estimate indicates the direction of the relationship between the regressor and the response after adjusting for all other regressors in the mean function.</p>
+
+<p>The sign of the effect of a regressor is often more important than its magnitude.</p>
+
+<ul>
+<li>The effect of a regressor is quantified by the associated regression coefficient.</li>
+</ul>
+
+<p>If regressors are highly correlated, both the magnitude and sign of an estimated coefficient may change depending on what other regressors are in the model.</p>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation Depends on Other Terms</h2></hgroup><article  id="interpretation-depends-on-other-terms">
+
+<p>Regressors can play different roles in a model depending on what other variables are in a model.</p>
+
+<p><strong>Example: Berkeley Guidance Study</strong></p>
+
+<p>Data from the Berkeley Guidance Study on the growth of boys and girls is provided in the BGSgirls data set in the alr4 package.</p>
+
+<ul>
+<li>The response, BMI18, is the body mass index at age 18.</li>
+<li>The weights at ages 2, 9, and 18 (kg) are the predictors WT2, WT9, and WT18 for the n=70 girls in the study.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Plot Berkeley Guidance Data</h2></hgroup><article  id="plot-berkeley-guidance-data">
+
+<pre class = 'prettyprint lang-r'>data(&quot;BGSgirls&quot;, package= &#39;alr4&#39;)
+library(ggplot2)
+pairs(BGSgirls[,c(&#39;BMI18&#39;, &#39;WT2&#39;,&#39;WT9&#39;,&#39;WT18&#39;)])</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-5-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>A better view</h2></hgroup><article  id="a-better-view">
+
+<pre class = 'prettyprint lang-r'>library(psych)
+pairs.panels(BGSgirls[,c(&#39;BMI18&#39;, &#39;WT2&#39;,&#39;WT9&#39;,&#39;WT18&#39;)], method = &#39;pearson&#39;, hist.col = &quot;#00AFBB&quot;, lm = T, ellipses = T)</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-6-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>The scatterplot matrix indicates:</h2></hgroup><article  id="the-scatterplot-matrix-indicates">
+
+<ul>
+<li>A positive linear relationship between the response and the three predictors</li>
+<li>The relationship is strongest between BMI18 and WT18.<br/></li>
+<li>The predictors themselves are also correlated.</li>
+</ul>
+
+<p>We cannot simply do three separate simple regressions, because we must account for the correlations between the predictors.</p>
+
+<p>Note: Since the marginal relationships between the response and predictors are approximately linear, it doesn’t appear we need to transform the predictors before including them in our model.</p>
+
+</article></slide><slide class=""><hgroup><h2>Model 1</h2></hgroup><article  id="model-1">
+
+<pre class = 'prettyprint lang-r'>lmod1 = lm(BMI18 ~ WT2 + WT9 + WT18, data = BGSgirls)
+summary(lmod1)$coefficients</pre>
+
+<pre >##                Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept)  8.30977995 1.65517498  5.0204843 4.156122e-06
+## WT2         -0.38663273 0.15145143 -2.5528496 1.300465e-02
+## WT9          0.03140967 0.04937039  0.6362047 5.268432e-01
+## WT18         0.28744733 0.02602646 11.0444256 1.203260e-16</pre>
+
+</article></slide><slide class=""><hgroup><h2>Model 1</h2></hgroup><article  id="model-1-1">
+
+<pre class = 'prettyprint lang-r'>lmod1 = lm(BMI18 ~ WT2 + WT9 + WT18, data = BGSgirls)
+summary(lmod1)$coefficients</pre>
+
+<pre >##                Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept)  8.30977995 1.65517498  5.0204843 4.156122e-06
+## WT2         -0.38663273 0.15145143 -2.5528496 1.300465e-02
+## WT9          0.03140967 0.04937039  0.6362047 5.268432e-01
+## WT18         0.28744733 0.02602646 11.0444256 1.203260e-16</pre>
+
+<p>We get the unexpected result that a heavier baby is associated with a lower BMI as an adult.</p>
+
+<ul>
+<li>This is weird, and doesn’t appear to be due to chance since the associated p-value is small.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Let’s try something defferent</h2></hgroup><article  id="lets-try-something-defferent">
+
+<p>Since all of the predictors are weights, we combine them to create new regressors:</p>
+
+<p>DW9 = WT9 – WT2 = Weight gain from age 2 to 9 DW18 = WT18 – WT2 = Weight gain from age 2 to 18</p>
+
+<p>We fit:</p>
+
+<ul>
+<li>a second model replacing WT9 and WT18 with DW9 and DW18</li>
+<li>a third model including all the variables.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Model 2</h2></hgroup><article  id="model-2" class="smaller">
+
+<pre class = 'prettyprint lang-r'>BGSgirls$DW9 = BGSgirls$WT9 - BGSgirls$WT2
+BGSgirls$DW18 = BGSgirls$WT18 - BGSgirls$WT2
+lmod2 = lm(BMI18 ~ WT2 + DW9 + DW18, data = BGSgirls)
+summary(lmod2)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = BMI18 ~ WT2 + DW9 + DW18, data = BGSgirls)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.1037 -0.7432 -0.1240  0.8320  4.3485 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  8.30978    1.65517   5.020 4.16e-06 ***
+## WT2         -0.06778    0.12751  -0.532    0.597    
+## DW9          0.03141    0.04937   0.636    0.527    
+## DW18         0.28745    0.02603  11.044  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.333 on 66 degrees of freedom
+## Multiple R-squared:  0.7772, Adjusted R-squared:  0.767 
+## F-statistic: 76.73 on 3 and 66 DF,  p-value: &lt; 2.2e-16</pre>
+
+</article></slide><slide class=""><hgroup><h2>Model 3</h2></hgroup><article  id="model-3" class="smaller">
+
+<pre class = 'prettyprint lang-r'>lmod3 = lm(BMI18 ~ WT2 + WT9 + WT18 + DW9 + DW18, data = BGSgirls)
+summary(lmod3)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = BMI18 ~ WT2 + WT9 + WT18 + DW9 + DW18, data = BGSgirls)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.1037 -0.7432 -0.1240  0.8320  4.3485 
+## 
+## Coefficients: (2 not defined because of singularities)
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  8.30978    1.65517   5.020 4.16e-06 ***
+## WT2         -0.38663    0.15145  -2.553    0.013 *  
+## WT9          0.03141    0.04937   0.636    0.527    
+## WT18         0.28745    0.02603  11.044  &lt; 2e-16 ***
+## DW9               NA         NA      NA       NA    
+## DW18              NA         NA      NA       NA    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.333 on 66 degrees of freedom
+## Multiple R-squared:  0.7772, Adjusted R-squared:  0.767 
+## F-statistic: 76.73 on 3 and 66 DF,  p-value: &lt; 2.2e-16</pre>
+
+</article></slide><slide class=""><hgroup><h2>Model fit summary of three models</h2></hgroup><article  id="model-fit-summary-of-three-models">
+
+<p><strong>Model 1</strong>: <code>BMI18 ~ WT2 + WT9 + WT18</code></p>
+
+<p><strong>Model 2</strong>: <code>BMI18 ~ WT2 + DW9 + DW18</code></p>
+
+<p><strong>Model 3</strong>: <code>BMI18 ~ WT2 + WT9 + WT18 + DW9 + DW18</code></p>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Model1</th>
+<th align="left">Model2</th>
+<th align="right">Model3</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="left">8.3098</td>
+<td align="left">8.3098</td>
+<td align="right">8.3098</td>
+</tr>
+<tr class="even">
+<td align="left">WT2</td>
+<td align="left">-0.3866</td>
+<td align="left">-0.0678</td>
+<td align="right">-0.3866</td>
+</tr>
+<tr class="odd">
+<td align="left">WT9</td>
+<td align="left">0.0314</td>
+<td align="left">.</td>
+<td align="right">0.0314</td>
+</tr>
+<tr class="even">
+<td align="left">WT18</td>
+<td align="left">0.2874</td>
+<td align="left">.</td>
+<td align="right">0.2874</td>
+</tr>
+<tr class="odd">
+<td align="left">DW9</td>
+<td align="left">.</td>
+<td align="left">0.0314</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">DW18</td>
+<td align="left">.</td>
+<td align="left">0.2874</td>
+<td align="right">NA</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Why?</h2></hgroup><article  id="why-3">
+
+<ul>
+<li><p>The coefficient for WT2 is 1/5 the size in Model 2 in comparison with Model 1 (and is also insignificant, i.e., not statistically different from 0).</p></li>
+<li><p>In Model 1, the effect of WT2 seems to be negative and significant, while in Model 2 we cannot conclude the effect is different from 0.</p></li>
+<li><p>When regressors are correlated, interpretation of the effect of a regressor depends not only on the other regressors in the model, but also upon the linear transformation of the variables used.</p></li>
+<li><p>Why are there NAs for the third model?</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Rank Deficient and Overparameterized Mean Functions</h2></hgroup><article  id="rank-deficient-and-overparameterized-mean-functions">
+
+<p>The last two coefficients in the third model were not estimable because the model was overparameterized (some of the regressors were linear combinations of the others).</p>
+
+<p>R automatically drops the last regressors added to the model until the matrix X becomes full rank (and the parameters become estimable).</p>
+
+</article></slide><slide class=""><hgroup><h2>Regressors in Logarithmic Scale</h2></hgroup><article  id="regressors-in-logarithmic-scale">
+
+<p>Logarithms are commonly used both for the response and for regressors.</p>
+
+<p>Decibels (loudness), Richter scale (earthquake intensity), and pH levels (acidity) are all examples of logarithmic scales.</p>
+
+<p>Predictors that span several orders of magnitude should be transformed to the log scale.</p>
+
+<p>The regressor log(Miles) in the fuel consumption data uses natural logarithms.</p>
+
+<p>The effects plot for log(Miles) is a straight line (similar to Tax), but the effects plot for Miles on the original scale is different.</p>
+
+</article></slide><slide class=""><hgroup><h2>Effect plot of log(Miles)</h2></hgroup><article  id="effect-plot-of-logmiles">
+
+<pre class = 'prettyprint lang-r'>plot(predictorEffect(&quot;logMiles&quot;,fuel_mod), main = &quot;log(Miles) Effect Plot&quot;, focal.levels = c())</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-12-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect plot of Miles</h2></hgroup><article  id="effect-plot-of-miles">
+
+<pre class = 'prettyprint lang-r'>data(fuel2001, package = &#39;alr4&#39;)
+fuel2001 &lt;- transform(fuel2001,
+     Dlic=1000 * Drivers/Pop,
+     Fuel=1000 * FuelC/Pop,
+     Income1K=Income/1000)
+fuel_mod = lm(Fuel ~ Tax + Dlic + Income1K + log(Miles), data = fuel2001)
+plot(predictorEffect(&quot;Miles&quot;,fuel_mod), main = &quot;Miles Effect Plot&quot;, focal.levels = c())</pre>
+
+<p><img src="interpretation_files/figure-html/unnamed-chunk-13-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect size for Log</h2></hgroup><article  id="effect-size-for-log">
+
+<p>The effect of increasing Miles is greater in states with fewer miles of roadway, with relatively little change in states with the most roadway.</p>
+
+<p>This is the usual effect of logarithms: the fitted effect changes most rapidly when the regressor is small and less rapidly when the predictor is large.</p>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation of coefficients for a log(ed) regressor</h2></hgroup><article  id="interpretation-of-coefficients-for-a-loged-regressor">
+
+<p>Recall that \(y = log_bx\) is chosen so that \(b^y=x.\)</p>
+
+<p>Thus, \(\log_2(64)=6\), \(\log_{10}(10)=1\), and \(\log_e(e)=1\)</p>
+
+<p>We typically interpret changes on the log scale in relation to changing the predictor by the multiplicative effect \(c\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Practice</h2></hgroup><article  id="practice">
+
+<p>Concentrating on the \(j\)th regression coefficient, we let \(X_{(j)}\), \(x_{(j)}\), and \(\beta_{(j)}\) denote, respectively, all predictors excluding \(X_j\), the observed values of the predictors excluding \(x_j\), and all coefficients excluding \(\beta_j\) and \(\beta_0.\)</p>
+
+<p>Determine the change in the mean response when \(X_j\) changes from \(x_j\) to \(cx_j\) for a natural log transformation assuming \(E(Y│X)=\beta_0+\beta_j \log(X_j)+\beta_{(j)} X_{(j)}\).</p>
+
+</article></slide><slide class=""><hgroup><h2>For regressor on the natural log scale:</h2></hgroup><article  id="for-regressor-on-the-natural-log-scale">
+
+<ul>
+<li>Regressor \(X_j\) increasing by 1% while the other regressors remain constant is associated with a \(\beta_j/100\) increase in the response variable, on average.</li>
+</ul>
+
+<p>Interpret the Miles predictor from the Fuel example:</p>
+
+</article></slide><slide class=""><hgroup><h2>Practice</h2></hgroup><article  id="practice-1">
+
+<p>Determine the change in the mean response when \(X_j\) changes from \(x_j\) to \(cx_j\), when \(c=10\) for a \(\log_{10}\) transformation assuming that \(E(Y│X)=\beta_0+\beta_j + \log_{10}(X_j) + \beta_{(j)} X_{(j)}\).</p>
+
+</article></slide><slide class=""><hgroup><h2>For a regressor on the log base 10 scale:</h2></hgroup><article  id="for-a-regressor-on-the-log-base-10-scale">
+
+<ul>
+<li>Regressor \(X_j\) increasing by a factor of 10 (an increase of 900%) while the other regressors remain constant is associated with a \(\beta_j\) increase in the response variable, on average.</li>
+</ul>
+
+<p>Imagine that we had used a log base 10 transformation for Miles in the Fuel example. In that case, the fitted model is</p>
+
+<p>\(\hat{E}\)(Fuel│Tax, Dlic, Income1K, Miles) = 154.19 - 4.24 Tax + 0.47 Dlic - 6.14 Income1K + 61.61 \(\log_{10}\)(Miles).</p>
+
+<p>Interpret the impact of Miles on Fuel.</p>
+
+</article></slide><slide class=""><hgroup><h2>Response in the Logarithmic Scale</h2></hgroup><article  id="response-in-the-logarithmic-scale">
+
+<p>It is common for responses to be transformed to a logarithmic scale for theoretical or practical considerations.</p>
+
+<p>If the response is \(\log(Y)\)), it is still technically correct to interpret the regression coefficients as describing the expected change in the logarithmic response for a unit increase in the associated regressor, holding the other regressors constant.</p>
+
+<ul>
+<li>This isn’t very useful since \(\log(Y)\) generally changes nonlinearly with \(Y\) (on the original scale).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Response in the Logarithmic Scale</h2></hgroup><article  id="response-in-the-logarithmic-scale-1">
+
+<p>In this setting, our regression model is</p>
+
+<p>\[E\left[\log(Y)|X_j=x_j, X_{(j)}=x_{(j)}\right] = \beta_0 +\beta_1x_j +\beta_{(j)}x_{(j)}\]</p>
+
+<p>It is frequently acceptable to approximate the expected value of a log by the log of the expected value, i.e.</p>
+
+<p>\[E\left[\log(Y)|X_j=x_j, X_{(j)}=x_{(j)}\right] \approx \log E\left[Y|X_j=x_j, X_{(j)}=x_{(j)}\right]\]</p>
+
+<p>Use this fact to show that \[E\left[Y|X_j=x_j+1, X_{(j)}=x_{(j)}\right] \approx \exp(\beta_j) E\left[Y|X_j=x_j, X_{(j)}=x_{(j)}\right]\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Response in the Logarithmic Scale</h2></hgroup><article  id="response-in-the-logarithmic-scale-2">
+
+<p>A unit increase in \(X_j\) (the other regressors remaining constant) is associated with a change in the mean \(Y\) by the multiplicative effect \(\exp(\beta_j)\)</p>
+
+<p>Interpret the relationship between \(X_j\) and the mean of \(Y\) when \(X_j\) increases by 1 unit and \(β_j=0.3\) and the other predictors do not change.</p>
+
+</article></slide><slide class=""><hgroup><h2>Both response and regressor in logarithmic scale</h2></hgroup><article  id="both-response-and-regressor-in-logarithmic-scale">
+
+<p>If both the regressor and the response are in \(\log\) scale, then increasing the regressor by 1 unit corresponds to multiplying the predictor by e (which isn’t a helpful interpretation).</p>
+
+<p>If \(X_j\) is our predictor and \(\log(X_j)\) is our regressor, we consider \(X_j\) changing from \(x_j\) to \(cx_j\). In that case the regressor becomes \(\log(cx_j)=\log(c) +\log(x_j)\).</p>
+
+<p>Assume \[E\left[\log(Y)||X_j=x_j,X_{(j)}=x_{(j)} \right] = \beta_0 +\beta_1 \log x_j +\beta_{(j)}x_{(j)}\]</p>
+
+<p>How does the expected response change if \(X_j\) changes from \(x_j\) to \(cx_j\) (and all other predictors stay the same)?</p>
+
+</article></slide><slide class=""><hgroup><h2>Practice</h2></hgroup><article  id="practice-2">
+
+<p>Interpret the relationship between \(X_j\) and the mean of \(Y\) when \(X_j\) increases by 10% and \(\beta_j=0.3\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<p>Summary of Interpretations (Simple Linear Regression)</p>
+
+<p>\(E(Y│X=x)=\beta_0+\beta_1 x\): A unit increase in \(X\) is associated with a change of \(\beta_1\) in the mean of \(Y\).</p>
+
+<p>\(E(Y│X=x)=\beta_0+\beta_1\log(x)\): A change in \(X\) from \(x\) to \(cx\) is associated with a change of \(\beta_1\log c\) in the mean of \(Y\).</p>
+
+<p>\(E(\log Y│X=x)=\beta_0+\beta_1 x\): A unit increase in \(X\) is associated with a multiplicative change of \(e^{\beta_1}\) in the mean of \(Y\).</p>
+
+<p>\(E(\log Y│X=x)=\beta_0+\beta_1\log(x)\): A change in \(X\) from \(x\) to \(cx\) is associated with a multiplicative change of \(c^{\beta_1}\) in the mean of \(Y\).</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checking Model Structure</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Checking Model Structure',
+                        subtitle: 'Chapter 6 of LMWR2, Chapter 9 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Motivation</h2></hgroup><article  id="motivation">
+
+</article></slide><slide class=""><hgroup><h2>Regression Diagnostics</h2></hgroup><article  id="regression-diagnostics">
+
+<p>Estimation and inference for a regression model depend on several assumptions.</p>
+
+<p>These assumptions must be checked using regression diagnostics.</p>
+
+</article></slide><slide class=""><hgroup><h2>Assumptions</h2></hgroup><article  id="assumptions">
+
+<p>There are three main categories of linear regression assumptions:</p>
+
+<p><strong>Model:</strong> The structural (mean) part of the model is correct, i.e., \(E(y)=X\beta\).</p>
+
+<p><strong>Error:</strong> \(\epsilon\sim N(0,\sigma^2 I)\), i.e., that the errors are normally distributed, independent, and identically distributed with mean 0 and variance \(\sigma^2\).</p>
+
+<p><strong>Unusual observations:</strong> All observations are equally reliable and have approximately equal role in determining the regression results and in influencing conclusions.</p>
+
+</article></slide><slide class=""><hgroup><h2>Diagnostics</h2></hgroup><article  id="diagnostics">
+
+<p>Diagnostics techniques may be:</p>
+
+<ul>
+<li>Graphical</li>
+<li>More flexible, but require interpretation</li>
+<li>Numerical</li>
+<li>Narrower in scope, but easier to interpret</li>
+</ul>
+
+<p>Regression diagnostics often suggest improvements, causing you to fit another model, do more diagnostics, etc.</p>
+
+<p>Model building is an iterative process!</p>
+
+<p>At this time, we will only concern ourselves with checking model structure, which is the most important assumption.</p>
+
+<p>Note: most of the functions we will use are in the car package.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Model Specification Diagnostics</h2></hgroup><article  id="model-specification-diagnostics">
+
+</article></slide><slide class=""><hgroup><h2>Residual Plots</h2></hgroup><article  id="residual-plots">
+
+<p>If the linear model is correctly specified, then \(cor(\hat{\epsilon},\hat{y})=0\) and \(cor(\hat{\epsilon},x_j )=0\).</p>
+
+<p>Patterns in the plots of \(\hat{\epsilon}\) versus \(\hat{y}\) or \(\hat{\epsilon}\) versus \(x_j\) can occur only if some of the model assumptions are violated.</p>
+
+<p>These plots should be &ldquo;null plots&rdquo; with no systematic features.</p>
+
+<ul>
+<li>The conditional mean of the residuals should not change with the fitted values or the regressors.</li>
+<li>There shouldn’t be any systematic curves or patterns.</li>
+<li>The residuals should be symmetrically scattered around a horizontal line at \(\hat{\epsilon}=0\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Hypothesis Tests</h2></hgroup><article  id="hypothesis-tests">
+
+<p>A <strong>lack-of-fit</strong> test can be used to examine a plot of the residuals versus the regressors.</p>
+
+<ul>
+<li>This is simply a test of whether the squared regressor is significant when added to the original fitted model.</li>
+</ul>
+
+<p><strong>Tukey’s test for nonadditivity</strong> can be used to examine the plot of the residuals versus fitted values.</p>
+
+<ul>
+<li>This is simply a test of whether the square of \(\hat{y}\) is significant when added to the original fitted model.</li>
+</ul>
+
+<p>If either of these tests are significant, it suggests there is unaccounted curvature in the data that is not captured by the fitted model.</p>
+
+<p>The <code>residualPlots</code> function can be used to easily produce these residual plots and perform the associated tests.</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p>We examine the relationship between occupational &ldquo;prestige&rdquo; and various predictors among Canadians.</p>
+
+<p>The data include the variables:</p>
+
+<ul>
+<li><code>education</code> - Average education of occupational incumbents, years, in 1971.</li>
+<li><code>income</code> - Average income of incumbents, dollars, in 1971.</li>
+<li><code>women</code> - Percentage of incumbents who are women.</li>
+<li><code>prestige</code> - Pineo-Porter prestige score for occupation, from a social survey conducted in the mid-1960s.</li>
+<li><code>census</code> - Canadian Census occupational code.</li>
+<li><code>type</code> - Type of occupation. A factor variable with levels (note: out of order): <code>bc</code>, Blue Collar; <code>prof</code>, Professional, Managerial, and Technical; <code>wc</code>, White Collar.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Residual Plot <code>prestige ~ education + income + type</code></h2></hgroup><article  id="residual-plot-prestige-education-income-type">
+
+<pre class = 'prettyprint lang-r'>data(Prestige, package = &#39;carData&#39;)
+lmod = lm(prestige ~ education + income + type, data = Prestige)
+car::residualPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<pre >##            Test stat Pr(&gt;|Test stat|)   
+## education    -0.6836         0.495942   
+## income       -2.8865         0.004854 **
+## type                                    
+## Tukey test   -2.6104         0.009043 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Tests <code>prestige ~ education + income + type</code></h2></hgroup><article  id="tests-prestige-education-income-type">
+
+<pre class = 'prettyprint lang-r'>data(Prestige, package = &#39;carData&#39;)
+lmod = lm(prestige ~ education + income + type, data = Prestige)
+knitr::kable(car::residualPlots(lmod, plot = F, test = F))</pre>
+
+<pre >##            Test stat Pr(&gt;|Test stat|)   
+## education    -0.6836         0.495942   
+## income       -2.8865         0.004854 **
+## type                                    
+## Tukey test   -2.6104         0.009043 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+Test stat
+
+</th>
+
+<th style="text-align:right;">
+
+Pr(&gt;|Test stat|)
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+education
+
+</td>
+
+<td style="text-align:right;">
+
+-0.6836062
+
+</td>
+
+<td style="text-align:right;">
+
+0.4959420
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+income
+
+</td>
+
+<td style="text-align:right;">
+
+-2.8864740
+
+</td>
+
+<td style="text-align:right;">
+
+0.0048544
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+type
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Tukey test
+
+</td>
+
+<td style="text-align:right;">
+
+-2.6104250
+
+</td>
+
+<td style="text-align:right;">
+
+0.0090430
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>How the tests work</h2></hgroup><article  id="how-the-tests-work">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income +I(income^2) + type , data = Prestige)
+summary(lmod)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = prestige ~ education + income + I(income^2) + type, 
+##     data = Prestige)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -13.6515  -4.4852   0.3803   4.6601  19.1576 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3.148e+00  5.108e+00  -0.616  0.53930    
+## education    3.175e+00  6.404e-01   4.957 3.25e-06 ***
+## income       2.648e-03  6.049e-04   4.377 3.17e-05 ***
+## I(income^2) -6.376e-08  2.209e-08  -2.886  0.00485 ** 
+## typeprof     7.249e+00  3.746e+00   1.935  0.05606 .  
+## typewc      -1.118e+00  2.485e+00  -0.450  0.65389    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.831 on 92 degrees of freedom
+##   (4 observations deleted due to missingness)
+## Multiple R-squared:  0.8486, Adjusted R-squared:  0.8403 
+## F-statistic: 103.1 on 5 and 92 DF,  p-value: &lt; 2.2e-16</pre>
+
+</article></slide><slide class=""><hgroup><h2>How the tests work</h2></hgroup><article  id="how-the-tests-work-1">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income  + type , data = Prestige)
+Prestige_new &lt;- cbind(na.omit(Prestige), data.frame(fitted = lmod$fitted.values))
+lmod1 = lm(prestige ~ education + income  + type + I(fitted^2) , data = Prestige_new)
+summary(lmod1)$coefficients</pre>
+
+<pre >##                  Estimate   Std. Error   t value     Pr(&gt;|t|)
+## (Intercept) -23.354787776 1.007721e+01 -2.317584 2.268987e-02
+## education     7.041975447 1.432323e+00  4.916472 3.830669e-06
+## income        0.002326133 5.467194e-04  4.254710 5.028966e-05
+## typeprof     12.597502393 4.514985e+00  2.790154 6.404466e-03
+## typewc       -6.373808834 2.808685e+00 -2.269321 2.558554e-02
+## I(fitted^2)  -0.009658421 3.699942e-03 -2.610425 1.055735e-02</pre>
+
+<pre class = 'prettyprint lang-r'>pnorm(summary(lmod1)$coefficients[6,3])</pre>
+
+<pre >## [1] 0.00452149</pre>
+
+</article></slide><slide class=""><hgroup><h2>What we get</h2></hgroup><article  id="what-we-get">
+
+<p>The education variable shows no systematic patterns.</p>
+
+</article></slide><slide class=""><hgroup><h2>What we get</h2></hgroup><article  id="what-we-get-1">
+
+<p>The education variable shows no systematic patterns.</p>
+
+<p>The income variable has a somewhat non-linear pattern, which is confirmed by the lack-of-fit test.</p>
+
+</article></slide><slide class=""><hgroup><h2>What we get</h2></hgroup><article  id="what-we-get-2">
+
+<p>The education variable shows no systematic patterns.</p>
+
+<p>The income variable has a somewhat non-linear pattern, which is confirmed by the lack-of-fit test.</p>
+
+<p>The type variable shows no clear systematic pattern (prof has a median slightly above 0, but that can certainly happen due to sampling variation).</p>
+
+</article></slide><slide class=""><hgroup><h2>What we get</h2></hgroup><article  id="what-we-get-3">
+
+<p>The education variable shows no systematic patterns.</p>
+
+<p>The income variable has a somewhat non-linear pattern, which is confirmed by the lack-of-fit test.</p>
+
+<p>The type variable shows no clear systematic pattern (prof has a median slightly above 0, but that can certainly happen due to sampling variation).</p>
+
+<p>There is clear non-linearity in the plot of the residuals versus fitted values, as confirmed Tukey’s test for nonadditivity.</p>
+
+</article></slide><slide class=""><hgroup><h2>Limitation of Residual Plot</h2></hgroup><article  id="limitation-of-residual-plot">
+
+<p>Residual plots can detect nonlinearity, but they cannot be used to determine whether the nonlinearity is monotonic (think a log relationship) or non-monotonic (think a quadratic relationship).</p>
+
+<p>Consider two data sets, A and B. Fit the following models to the data sets:</p>
+
+<p>A: \(y=\beta_0+\beta_1 \sqrt{x}+\epsilon\)</p>
+
+<p>B: \(y=\beta_0+\beta_1 x+\beta_2 x^2+\epsilon\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Limitation of Residual Plot</h2></hgroup><article  id="limitation-of-residual-plot-1">
+
+<p><img src="images/residual_diag.png" width="443" style="display: block; margin: auto;" /></p>
+
+<p>Surprisingly, the residual plots for the two fitted models (the lower panels) are identical, even though data set A needed a monotonic transformation (log) of x, while data set B required a non-monotonic (quadratic) transformation of x.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Marginal Model Plots</h2></hgroup><article  id="marginal-model-plots">
+
+</article></slide><slide class=""><hgroup><h2>Marginal Model Plots</h2></hgroup><article  id="marginal-model-plots-1">
+
+<p>The marginal model plot compares the marginal relationship between the response and each regressor.</p>
+
+<p>This plot consists of:</p>
+
+<ol>
+<li>The plot of \(y\) vs \(x_j\) for each quantitative, non-interactive regressor.</li>
+<li>A nonparametric, smoothed line of \(\hat{y}\) versus \(x_j\). Call this the &ldquo;model&rdquo; line.</li>
+<li>A nonparametric, smoothed line of \(y\) versus \(x_j\). Call this the &ldquo;data&rdquo; line.</li>
+</ol>
+
+<p>The <code>car</code> package uses the <code>loess</code> smoother.</p>
+
+</article></slide><slide class=""><hgroup><h2>How to use?</h2></hgroup><article  id="how-to-use">
+
+<p>For a non-problematic fitted model:</p>
+
+<ul>
+<li>The model and data lines should be similar.<br/></li>
+<li>The lines should follow the pattern of the data.</li>
+</ul>
+
+<p>For genuine, real-life, noisy data, it is possible neither line fits the data very well, but they should match any obvious structural patterns.</p>
+
+<p>The <code>marginalModelPlots</code> function generates these graphs.</p>
+
+<p>Note: not seeing a problem does NOT indicate we have a good model, only that there are no apparent problems.</p>
+
+</article></slide><slide class=""><hgroup><h2>Example: <code>prestige ~ education + income + type</code></h2></hgroup><article  id="example-prestige-education-income-type">
+
+<pre class = 'prettyprint lang-r'>car::marginalModelPlots(lmod)</pre>
+
+<pre >## Warning in mmps(...): Interactions and/or factors skipped</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-6-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we get?</h2></hgroup><article  id="what-we-get-4">
+
+<p>The marginal model plots do not provide clear evidence of a model problem for the occupational prestige data, though the plot of \(y\) versus \(\hat{y}\) is suspicious.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Added Variable Plots</h2></hgroup><article  id="added-variable-plots">
+
+</article></slide><slide class=""><hgroup><h2>What is it?</h2></hgroup><article  id="what-is-it">
+
+<p>Added variable (av) plots (or partial regression plots) help to isolate the impact of regressor \(x_i\) on the response \(y\), after accounting for the effect of the other regressors in the model.</p>
+
+<ul>
+<li>Marginal model plots displayed the marginal relationships between the response and regressors while ignoring the other regressors in the model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>How to Construct?</h2></hgroup><article  id="how-to-construct">
+
+<ul>
+<li>Regress \(y\) on all regressors except \(x_i\), then get the residuals, \(\hat{\delta}\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>How to Construct?</h2></hgroup><article  id="how-to-construct-1">
+
+<ul>
+<li>Regress \(y\) on all regressors except \(x_i\), then get the residuals, \(\hat{\delta}\).</li>
+<li>This represents the part of \(y\) not explained by the the other regressors.</li>
+<li>Regress \(x_i\) on all regressors except \(x_i\), then get the residuals \(\hat{\gamma}\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>How to Construct?</h2></hgroup><article  id="how-to-construct-2">
+
+<ul>
+<li>Regress \(y\) on all regressors except \(x_i\), then get the residuals, \(\hat{\delta}\).</li>
+<li>This represents the part of \(y\) not explained by the the other regressors.</li>
+<li>Regress \(x_i\) on all regressors except \(x_i\), then get the residuals \(\hat{\gamma}\).<br/></li>
+<li>This represents the part of \(x_i\) not explained by the other regressors.</li>
+<li>The <strong>added variable plot</strong> displays \(\hat{\delta}\) versus \(\hat{\gamma}\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>What it gives?</h2></hgroup><article  id="what-it-gives">
+
+<p>Added variable plots can identify a non-linear relationship between the response and a regressor.</p>
+
+<ul>
+<li><p>If the data follow a clear non-linear pattern in comparison with the least-squares line, then there is a structural problem with our model.</p></li>
+<li><p>A curve in the points and a dramatic change in the structure of the points would indicate a problem with the structural component of the model.</p></li>
+<li><p>The added variable plot cannot suggest a transformation because the x-axis is not the original predictor.</p></li>
+<li><p>The plot CAN indicate whether the transformation should be monotonic or non-monotonic.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Some Properties</h2></hgroup><article  id="some-properties">
+
+<ul>
+<li>The OLS linear fit to the data in an added variable plot will for regressor \(x_j\) will have slope \(\beta_i\) and intercept 0.</li>
+<li>Though scaled differently, we can still see which observations have high leverage with respect to each regressor.</li>
+<li>For factor variables, an added variable plot is constructed for each contrast that is used to define the factor, so redefining the contrasts will change the added variable plots.</li>
+</ul>
+
+<p>The <code>avPlots</code> function can be used to generate added variable plots for a fitted model.</p>
+
+</article></slide><slide class=""><hgroup><h2>What to look for?</h2></hgroup><article  id="what-to-look-for">
+
+<p>Added variable plots can be used to assess the strength of the relationship between the response and a regressor.</p>
+
+<ul>
+<li>A flat band of points around the fitted line would indicate that there is no relationship or a weak relationship between the response and regressor \(x_i\), after accounting for the other regressors.</li>
+</ul>
+
+<p>Added variable plots can be used to identify outliers and/or high leverage observations that seem to be influential in determining the estimated coefficient for \(x_i\).</p>
+
+<ul>
+<li>Does the OLS line follow the overall pattern of the data, or are there a few points that seem to be &ldquo;pulling&rdquo; the line toward them?</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example: <code>prestige ~ education + income + type</code></h2></hgroup><article  id="example-prestige-education-income-type-1">
+
+<pre class = 'prettyprint lang-r'>car::avPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-7-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Component Plus Residual Plots</h2></hgroup><article  id="component-plus-residual-plots">
+
+</article></slide><slide class=""><hgroup><h2>What is it?</h2></hgroup><article  id="what-is-it-1">
+
+<p>The <strong>component plus residual (cr) plot</strong> (a.k.a, <strong>partial residual plot</strong>) is a competitor to the added variable plot.</p>
+
+<p>The <strong>cr plot</strong> shows \(\hat{\beta}_i x_i+\hat{\epsilon}\) versus \(x_i\).</p>
+
+<ul>
+<li><p>\(\hat{\beta}_i x_i\) is the &ldquo;component&rdquo; for \(x_i\).</p></li>
+<li><p>This is motivated by the relationship \[y - \sum\limits_{j\neq i} x_j\hat{\beta}_j = \hat{y} +\hat{\epsilon} - \sum\limits_{j\neq i} x_j\hat{\beta}_j =x_i\hat{\beta}_i+\hat{\epsilon}.\]</p></li>
+<li><p>The idea is to compare the impact of the \(i\)th regressor on the fitted values.</p></li>
+<li><p><strong>cr</strong> plots are useful for checking nonlinear relationships in the variable being considered for inclusion in the model.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>What it gives?</h2></hgroup><article  id="what-it-gives-1">
+
+<ul>
+<li>They can also suggest potential transformation of the data so that the relationship is linear.</li>
+<li>If the scatter plot does not appear to be linear, then there is a nonlinear relationship between the regressor and the response (after accounting for the other regressors).<br/></li>
+<li>The slope of the line fit to the cr plot is \(\hat{\beta}_i\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>How to get it?</h2></hgroup><article  id="how-to-get-it">
+
+<p>The <code>crPlots</code> function can be used to generate component plus residual plots for a fitted model.</p>
+
+<ul>
+<li>The plot includes the OLS line for the data (with slope \(\hat{\beta}_i\)) and well as a the line from a nonparametric smooth.<br/></li>
+<li>Ideally, the two lines would be similar and match the pattern of the data.</li>
+<li>The nonparametric smooth makes it easier to see deficient fits.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example: <code>prestige ~ education + income + women</code></h2></hgroup><article  id="example-prestige-education-income-women">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income + women, data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-8-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Simulated Example</h2></hgroup><article  id="simulated-example">
+
+<pre class = 'prettyprint lang-r'>set.seed(10)
+y&lt;-c(1:1000)
+x1&lt;-c(1:1000)*runif(1000,min=0,max=2)
+x2&lt;-(c(1:1000)*runif(1000,min=0,max=2))^2
+x3&lt;-log(c(1:1000)*runif(1000,min=0,max=2))
+dat = data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+pairs(dat)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Simulated Example</h2></hgroup><article  id="simulated-example-1">
+
+<pre class = 'prettyprint lang-r'>lmod1&lt;-lm(y~.,data = dat)
+car::crPlots(lmod1)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Try Some Transformation</h2></hgroup><article  id="try-some-transformation">
+
+<pre class = 'prettyprint lang-r'>lmod2 = lm(y ~ x1 + sqrt(x2)+exp(x3))
+car::crPlots(lmod2)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-11-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Transformations</h2></hgroup><article  id="transformations">
+
+</article></slide><slide class=""><hgroup><h2>Bulging Rule</h2></hgroup><article  id="bulging-rule">
+
+<p>If a relationship is nonlinear but monotone and simple, Mosteller and Tukey’s bulging rule can be used to guide the selection of linearizing transformations.</p>
+
+<p>Compare the graphic below with the type of &ldquo;bulge&rdquo; seen in your data; move along the &ldquo;ladder of transformations&rdquo; for your response or predictors to determine a helpful transformation.</p>
+
+<ul>
+<li>Note: in multiple regression, transforming the response will impact the relationship with all of the regressors, while transforming a single regressor will have less impact on the relationship between the response and the other regressors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Bulging Rule</h2></hgroup><article  id="bulging-rule-1">
+
+<p><img src="images/bulging.png" width="196" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Correct <code>prestige ~ education + income + women</code></h2></hgroup><article  id="correct-prestige-education-income-women">
+
+<p>Let’s look at the cr Plot of the model again:</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income + women, data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-13-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Correct <code>prestige ~ education + income + women</code></h2></hgroup><article  id="correct-prestige-education-income-women-1">
+
+<p>Let’s look at the cr Plot of the model again:</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income + women, data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-14-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>The bulge suggests a log or square root transformation of income.</p>
+
+</article></slide><slide class=""><hgroup><h2>Square Root Transformation</h2></hgroup><article  id="square-root-transformation">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + sqrt(income) + women, data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>The <code>log</code> Transformation</h2></hgroup><article  id="the-log-transformation">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + log(income) + women, data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-16-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Transformation on any other predictors?</h2></hgroup><article  id="transformation-on-any-other-predictors">
+
+</article></slide><slide class=""><hgroup><h2>Transformation on any other predictors?</h2></hgroup><article  id="transformation-on-any-other-predictors-1">
+
+<p>Adding a quadratic for women might further improve the model fit.</p>
+
+</article></slide><slide class=""><hgroup><h2>Transformation on any other predictors?</h2></hgroup><article  id="transformation-on-any-other-predictors-2">
+
+<p>Adding a quadratic for women might further improve the model fit.</p>
+
+<p>Adding raw polynomials (x,x<sup>2,x</sup>3,…) to our model can be problematic.</p>
+
+<ul>
+<li>They can induce instability in the model since they can become highly correlated.</li>
+<li>It is generally recommended that one centers x (i.e., subtracts the mean) before generating the polynomials.</li>
+<li>Use the poly function to generate orthogonal polynomials, which reduce the potential for model instability.</li>
+</ul>
+
+<p>Orthogonal polynomials have the benefit that adding the higher order term doesn’t impact the estimated coefficients for the other polynomials!</p>
+
+</article></slide><slide class=""><hgroup><h2>Finally</h2></hgroup><article  id="finally">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + log(income) + poly(women,2), data = Prestige)
+car::crPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-17-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Use of <strong>Logistic</strong> Function</h2></hgroup><article  id="use-of-logistic-function">
+
+<p>When a predictor variable is a number between 0 and 1 (or a percentage between 0 and 100), it is not uncommon to observe a <strong>logistic</strong> relationship between the predictor and the response (e.g, in the cr plot).</p>
+
+<p>In that case, one might transform that predictor using the <code>logit</code> function in the car package to help improve the model fit.</p>
+
+</article></slide><slide class=""><hgroup><h2>Logit Function</h2></hgroup><article  id="logit-function">
+
+<pre >## Warning in car::logit(x): proportions remapped to (0.025, 0.975)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-18-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>CERES Plots</h2></hgroup><article  id="ceres-plots">
+
+</article></slide><slide class=""><hgroup><h2>What is it?</h2></hgroup><article  id="what-is-it-2">
+
+<p>If the relationships between the regressors are strongly nonlinear and not well described by polynomials, then component plus residuals plots may not be effective in identifying nonlinear partial relationships between the response and the regressors.</p>
+
+<p>The <strong>CERES plot</strong> (Combining conditional Expectations and RESiduals plots) (can) use nonparametric smoothers rather than polynomial regression to adjust for nonlinearities, so it is supposed to be a bit more robust in detecting nonlinearities.</p>
+
+<ul>
+<li>The fitted line and nonparametric line should be similar and match the pattern of the data.</li>
+<li>The <code>ceresPlots</code> function can be used to generate CERES plots.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>How to get it?</h2></hgroup><article  id="how-to-get-it-1">
+
+<p>To construct a CERES plot (for predictor \(x_1\)):</p>
+
+<p>Let \(\hat{x}_{ij} = \hat{g}_{ij}(x_{i1})\) be the fitted value for the \(i\)th observation when regressing \(x_j\) on \(x_1\).</p>
+
+<ul>
+<li>The model could be a simple linear regression, a quadratic regression, or a non-linear regression.</li>
+<li>This is why the CERES plots are more flexible than the cr plots.</li>
+</ul>
+
+<p>Estimate the coefficients of the model:</p>
+
+<p>\[y = \alpha + \beta_2^{&#39;&#39;}x_{i2}+\dots + \beta_{p-1}^{&#39;&#39;}x_{i,p-1} + \gamma_{12}\hat{x}_{i2}+\dots +\gamma_{1,p-1}\hat{x}_{i,p-1}+\epsilon_i^{&#39;&#39;}.\] Plot the adjusted residuals \[\hat{\epsilon}_i^{(1)} = \hat{\epsilon}^&quot;_i+\hat{\gamma}_{12}\hat{x}_{12}+\dots + \hat{\gamma}_{1,p-1}\hat{x}_{1,p-1}\]</p>
+
+<p>against \(x_1\).</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(prestige ~ education + income + women, data = Prestige)
+car::ceresPlots(lmod)</pre>
+
+<p><img src="structure_files/figure-html/unnamed-chunk-19-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Example</h2></hgroup><article  id="example-1">
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example">
+
+<p>The <code>savings</code> data has data related to 5 savings-related variables in 50 countries, averaged over the period 1960-1970. The data has the following variables:</p>
+
+<ul>
+<li><code>sr</code> - savings rate. Personal saving divided by disposable income</li>
+<li><code>pop15</code> - percent population under age of 15</li>
+<li><code>pop75</code> - percent population over age of 75</li>
+<li><code>dpi</code> - per-capita disposable income in dollars</li>
+<li><code>ddpi</code> - percent growth rate of dpi</li>
+</ul>
+
+<p>Assess whether there are any structural problems for the model regressing savings rate on all other variables.</p>
+
+</article></slide><slide class=""><hgroup><h2>Final Note</h2></hgroup><article  id="final-note">
+
+<p>The transformation approaches presented here are simple, and only work for data with simple non-linearaties.</p>
+
+<p>Other approaches (available in the car package) are the:</p>
+
+<ul>
+<li>Box-Cox transformation for the response variable</li>
+<li>Box-Tidwell transformation for the predictors.</li>
+</ul>
+
+<p>For complicated data, no simple transformation or basic linear regression may capture the relationship between the response and regressors.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Polynomials</h2></hgroup><article  id="polynomials">
+
+</article></slide><slide class=""><hgroup><h2>Raw vs Orthogonal Polynomials</h2></hgroup><article  id="raw-vs-orthogonal-polynomials">
+
+<p>Raw polynomials can become highly correlated very quickly, leading to numerical instability.</p>
+
+<p>Orthogonal polynomials deal will this by centering each polynomial and (essentially) utilizing the Q part of the QR decomposition of the centered polynomials. (See <a href='https://stackoverflow.com/a/19484716/2993948' title=''>https://stackoverflow.com/a/19484716/2993948</a>).</p>
+
+</article></slide><slide class=""><hgroup><h2>Raw polynomials are highly correlated</h2></hgroup><article  id="raw-polynomials-are-highly-correlated">
+
+<pre class = 'prettyprint lang-r'>x = rnorm(50)
+# generate polynomials of degree 5
+xp = sapply(1:5, function(p) x^p)
+# highly correlated
+knitr::kable(round(cor(xp), 3))</pre>
+
+<table>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:right;">
+
+1.000
+
+</td>
+
+<td style="text-align:right;">
+
+0.084
+
+</td>
+
+<td style="text-align:right;">
+
+0.847
+
+</td>
+
+<td style="text-align:right;">
+
+0.233
+
+</td>
+
+<td style="text-align:right;">
+
+0.653
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0.084
+
+</td>
+
+<td style="text-align:right;">
+
+1.000
+
+</td>
+
+<td style="text-align:right;">
+
+0.286
+
+</td>
+
+<td style="text-align:right;">
+
+0.909
+
+</td>
+
+<td style="text-align:right;">
+
+0.458
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0.847
+
+</td>
+
+<td style="text-align:right;">
+
+0.286
+
+</td>
+
+<td style="text-align:right;">
+
+1.000
+
+</td>
+
+<td style="text-align:right;">
+
+0.525
+
+</td>
+
+<td style="text-align:right;">
+
+0.937
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0.233
+
+</td>
+
+<td style="text-align:right;">
+
+0.909
+
+</td>
+
+<td style="text-align:right;">
+
+0.525
+
+</td>
+
+<td style="text-align:right;">
+
+1.000
+
+</td>
+
+<td style="text-align:right;">
+
+0.725
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0.653
+
+</td>
+
+<td style="text-align:right;">
+
+0.458
+
+</td>
+
+<td style="text-align:right;">
+
+0.937
+
+</td>
+
+<td style="text-align:right;">
+
+0.725
+
+</td>
+
+<td style="text-align:right;">
+
+1.000
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Orthogonal Polynomial</h2></hgroup><article  id="orthogonal-polynomial">
+
+<p>Correlation between the \(Q\) matrix of the \(QR\) decomposition of the centered polynomials and the results produced by the poly function:</p>
+
+<pre class = 'prettyprint lang-r'> # center each polynomial
+ xpc = scale(xp, scale = FALSE)
+ # find the Q matrix of the QR
+ # decomposition of xpc
+ xpoly = qr.Q(qr(xpc))
+ # correlation between xpoly and poly func.
+ knitr::kable(round(cor(xpoly, poly(x, 5)), 3))</pre>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:right;">
+
+1
+
+</th>
+
+<th style="text-align:right;">
+
+2
+
+</th>
+
+<th style="text-align:right;">
+
+3
+
+</th>
+
+<th style="text-align:right;">
+
+4
+
+</th>
+
+<th style="text-align:right;">
+
+5
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:right;">
+
+-1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+-1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

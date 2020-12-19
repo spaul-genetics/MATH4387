@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Identifying Unusual Observations</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Identifying Unusual Observations',
+                        subtitle: 'Chapter 6 of LMWR2, Chapter 9 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/3/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Unusual Observations</h2></hgroup><article  id="unusual-observations">
+
+<p>An implicit assumption made when fitting a regression model is that all observations should be equally reliable and have approximately equal role in determining the regression results and in influencing conclusions.</p>
+
+<ul>
+<li><p>A <strong>leverage</strong> point is an observation that is unusual in the predictor space.</p></li>
+<li><p>An <strong>outlier</strong> is an observation whose response does not match the pattern of the fitted model.</p></li>
+<li><p>An <strong>influential observation</strong> is one that causes a substantial change in the fitted model based on its inclusion or deletion from the model.</p>
+
+<ul>
+<li>An influential observation is usually either a leverage point, an outlier, or a combination of the two.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Leverage</h2></hgroup><article  id="leverage">
+
+</article></slide><slide class=""><hgroup><h2>What is leverage</h2></hgroup><article  id="what-is-leverage">
+
+<ul>
+<li><p>The fitted value \(\hat{y}_i\) is a linear combination of the observed \(Y\)</p></li>
+<li><p>\(h_{ii}\), the \(i\)th diagonal element of \(H\)</p></li>
+<li><p>\(h_{ii}\) is the weight of observation \(y_i\) in determining the fitted value \(\hat{y}_i\)</p></li>
+<li><p>The larger is \(h_{ii}\), the more important is \(y_i\) determining \(\hat{y}_i\)</p></li>
+<li><p>\(h_{ii}\) measures the role of the \(X\) values in determining how important \(y_i\) is in affecting \(\hat{y}_i\)</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Properties of Leverage</h2></hgroup><article  id="properties-of-leverage">
+
+<ul>
+<li>\(h_{ii}\) is called the leverage value of the \(i\) th observation.</li>
+<li>Sometimes we write \(h_{ii}\) as \(h_i\)</li>
+<li>\(0\leq h_{ii}\leq 1\)</li>
+<li>\(\sum h_{ii} = p\)</li>
+<li>\(h_{ii}\) is a measure of distance between the \(X\) values for the \(i\)th observation from the mean of the \(X\) values of all \(n\) observations.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Effect on variance</h2></hgroup><article  id="effect-on-variance">
+
+<p>\[var(\hat{\epsilon}) = (I-H)\sigma^2\]</p>
+
+<ul>
+<li><p>\(var(\hat{\epsilon}_i) = (1-h_{ii})\sigma^2\)</p></li>
+<li><p>As \(h_{ii}\to 1\), \(\hat{y}_i\to y_i\)</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Identifying leverage points</h2></hgroup><article  id="identifying-leverage-points">
+
+<p>The <strong>leverage values</strong> are the diagonal elements of the hat matrix \(H=X(X^T X)^{-1} X^T\).</p>
+
+<p>The \(i\)th leverage value is given by \(h_i=H_{ii}\), the \(i\)th diagonal position of the hat matrix.</p>
+
+<p>A half-normal plot of the leverage values can be used to identify observations with unusually high leverage.</p>
+
+<ul>
+<li>A half-normal plot compares the sorted data against the positive normal quantiles.</li>
+</ul>
+
+<p>Rule of Thumb</p>
+
+<ul>
+<li>A leverage value \(h_i\) is usually considered large if it is more than twice as large as the mean leverage value.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Steps</h2></hgroup><article  id="steps">
+
+<p>The steps are:</p>
+
+<ul>
+<li>Sort the data: \(h_{[1]} \leq \dots h_{[n]}\) .</li>
+<li>Compute \(u_i=\phi^{-1} \left(\frac{n+i}{2n+1}\right)\).</li>
+<li>Plot \(h_{[i]}\) versus \(u_i\).</li>
+</ul>
+
+<p>The leverage points are the points in the plot that diverge substantially from the rest of the data. If the half-normal plot is approximately a straight line of points, then there are no leverage points. If the half-normal plot looks like a hockey stick, then the points on the blade are leverage points.</p>
+
+</article></slide><slide class=""><hgroup><h2>Visual</h2></hgroup><article  id="visual">
+
+<pre class = 'prettyprint lang-r'>y[15] = y[15] + 12</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Index Plot</h2></hgroup><article  id="index-plot">
+
+<p>An index plot of the leverage values can also be used to identify leverage points.</p>
+
+<ul>
+<li>An index plot plots the statistic of an observation versus its observation number.</li>
+<li>You want to focus on observations where the statistics are large or small relative to the other values.</li>
+</ul>
+
+<p>The <code>car::infIndexPlot</code> function can be used to generate index plots related to many influence-related statistics.</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example">
+
+<p>Consider the <code>savings</code> data frame in the <code>faraway</code> package that includes 5 savings-related variables in 50 countries averaged over the period 1960-1970. Fit the model regressing <code>sr</code> on the other four variables. Are there any leverage points?</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-1">
+
+<pre class = 'prettyprint lang-r'>data(savings, package = &#39;faraway&#39;)
+lmod = lm(sr~.,data = savings)
+n = nrow(savings)
+u = (n+c(1:n))/(2*n+1)
+plot(u, sort(hatvalues(lmod)), xlab = &#39;Half-normal quantile&#39;, ylab = &#39;leverage&#39;)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Using <code>faraway</code> package</h2></hgroup><article  id="using-faraway-package">
+
+<pre class = 'prettyprint lang-r'>countries &lt;- row.names(savings)
+faraway::halfnorm(hatvalues(lmod), labs = countries, nlab = 2, ylab = &quot;leverage&quot;)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-3-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Index Plot</h2></hgroup><article  id="index-plot-1">
+
+<pre class = 'prettyprint lang-r'>car::infIndexPlot(lmod, vars = &quot;hat&quot;)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Outliers</h2></hgroup><article  id="outliers">
+
+</article></slide><slide class=""><hgroup><h2>Identifying Outliers</h2></hgroup><article  id="identifying-outliers">
+
+<p>An outlier is a point that does not fit the current model.</p>
+
+<ul>
+<li>An outlier is context specific! An outlier for one model may not be an outlier for a different model.</li>
+</ul>
+
+<p>Leave-one-out statistics are statistics computed from the model fitted without the ith observation.</p>
+
+<ul>
+<li>\(\hat{\beta}_{(i)}\) is the vector of leave-one-out estimated coefficients.</li>
+<li>\(\hat{\sigma}_{(i)}\) is the leave-one-out estimate of the error standard deviation.<br/></li>
+<li>\(\hat{y}_{(i)}\) is the leave-one-out fitted value for the ith observation.</li>
+<li>The \((i)\) means that these statistics were estimated for the model fitted without the ith observation.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Identifying Outliers</h2></hgroup><article  id="identifying-outliers-1">
+
+<p>If the leave-one-out residual (deleted residual) \(y_i-\hat{y}_{(i)}\) is large, then observation \(i\) is an outlier.</p>
+
+<ul>
+<li>The OLS residuals may not be suitable for identifying outliers since truly influential observations will pull the fitted model close to themselves, making the residual smaller.</li>
+</ul>
+
+<p>When the model is correct and \(\epsilon∼N(0,\sigma^2 I)\), the externally <strong>studentized</strong> residual</p>
+
+<p>\[t_i = \frac{y_i -\hat{y}_{(i)}}{\hat{\sigma}_{(i)}\sqrt{1+x_i^T\left(X_{(i)}^TX_{(i)} \right)^{-1}x_i}} \sim T_{n-p-1}.\] We can calculate a p-value to assess whether observation \(i\) is an outlier.</p>
+
+</article></slide><slide class=""><hgroup><h2>Bonferonni Correction</h2></hgroup><article  id="bonferonni-correction">
+
+<p>If performing multiple hypothesis tests at level \(\alpha\), the probability of making at least one type I error will be more than \(\alpha\). We must adjust the level of each test so that overall (familywise) type I error rate is satisfied. Suppose we want a level \(\alpha\) test for \(n\) tests, i.e., we want P(no type I errors in \(n\) tests)=\(1-\alpha\).</p>
+
+<p>\[\begin{aligned}
+P(\text{no type I errors in }n \text{ tests}) = &amp; P\left(\bigcap_{i=1}^n (\text{no type I error in test }i)\right)\\
+ = &amp; 1- P\left(\bigcup_{i=1}^n (\text{type I error in test }i)\right)\\
+ \geq &amp; 1- \sum_{i=1}^n P\left( \text{type I error in test }i\right)\\
+ =&amp;1-n\alpha
+\end{aligned}\]</p>
+
+<p>To get an overall level \(\alpha\) test, we should use the level \(\alpha/n\) in each of the individual tests.</p>
+
+</article></slide><slide class=""><hgroup><h2>Bonferonni Correction</h2></hgroup><article  id="bonferonni-correction-1">
+
+<p>This approach is known as the <strong>Bonferonni correction</strong>, and is used in many contexts to make proper simultaneous inference (not just for outliers or regression).</p>
+
+<p>The Bonferonni correction is a very conservative method.</p>
+
+<ul>
+<li>It doesn’t reject \(H_0\) as often as it should.</li>
+<li>It gets more conservative as \(n\) gets larger.</li>
+</ul>
+
+<p>A observation is considered an outlier if \(|t_i|\geq t_{n-p-1}^{\alpha/2n}\).</p>
+
+<ul>
+<li>Why do we divide by 2n and not just n?</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-2">
+
+<pre class = 'prettyprint lang-r'>stud &lt;- rstudent(lmod)
+max(abs(stud))</pre>
+
+<pre >## [1] 2.853558</pre>
+
+<pre class = 'prettyprint lang-r'>qt(1 - .05/(50*2), df = 44)</pre>
+
+<pre >## [1] 3.525801</pre>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-3">
+
+<pre class = 'prettyprint lang-r'>stud &lt;- rstudent(lmod)
+max(abs(stud))</pre>
+
+<pre >## [1] 2.853558</pre>
+
+<pre class = 'prettyprint lang-r'>qt(1 - .05/(50*2), df = 44)</pre>
+
+<pre >## [1] 3.525801</pre>
+
+<pre class = 'prettyprint lang-r'>alpha = 0.05
+qt(1 - alpha/(nrow(lmod$model)*2), df = lmod$df.residual - 1) </pre>
+
+<pre >## [1] 3.525801</pre>
+
+<p>The studentized residuals are all within the expected range based on the quantile from the t distribution.</p>
+
+<p>There is insufficient evidence to conclude that any observations are outliers.</p>
+
+</article></slide><slide class=""><hgroup><h2>Using <code>car</code> package</h2></hgroup><article  id="using-car-package">
+
+<p>The outlier test can be done almost automatically using the <code>outlierTest</code> function in the <code>car</code> package.</p>
+
+<ul>
+<li>Compare the Bonferonni p-value to the desired significance level.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>car::outlierTest(lmod)</pre>
+
+<pre >## No Studentized residuals with Bonferroni p &lt; 0.05
+## Largest |rstudent|:
+##        rstudent unadjusted p-value Bonferroni p
+## Zambia 2.853558          0.0065667      0.32833</pre>
+
+</article></slide><slide class=""><hgroup><h2>Index Plot</h2></hgroup><article  id="index-plot-2">
+
+<pre class = 'prettyprint lang-r'>car::infIndexPlot(lmod, vars = c(&quot;Studentized&quot;, &quot;Bonf&quot;))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-8-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Notes</h2></hgroup><article  id="notes">
+
+<ul>
+<li>Two or more outliers next to each other can &ldquo;hide&rdquo; each other.</li>
+<li>If we fit a new model, we may get different or no outliers.</li>
+<li>If the error distribution is nonnormal, it is very reasonable to get large residuals.</li>
+<li>Individual outliers are less of a problem in larger datasets because they are not likely to have a large leverage.</li>
+<li>It is still good to identify the outliers.</li>
+<li>They probably won’t be an issue unless they occur in clusters.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Star Example</h2></hgroup><article  id="star-example">
+
+<p>Consider data of the log of the surface temperature and the log of the light intensity of 47 stars in the star cluster CYG OB1, which is in the direction of Cygnus.</p>
+
+<p>The overall pattern of the data suggests a positive linear relationship, but the four stars create a major change!</p>
+
+<p>Consider the model fit depending on whether the outliers are included in the model.</p>
+
+<p>This is easy to visualize because we are only working in two dimensions—it gets much more difficult in higher dimensions.</p>
+
+<ul>
+<li>Robust regression would be the best approach here.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Star Example</h2></hgroup><article  id="star-example-1">
+
+<pre class = 'prettyprint lang-r'>data(star, package = &#39;faraway&#39;)
+lmod_w_outlier = lm(log(light) ~ log(temp), data = star)
+plot(log(light) ~ log(temp), data = star)
+abline(lmod_w_outlier)
+lmod_wo_outlier = lm(log(light) ~ log(temp), data = star[log(star$temp)&gt;1.3, ])
+abline(lmod_wo_outlier,lty = 2)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Influential Observation</h2></hgroup><article  id="influential-observation">
+
+</article></slide><slide class=""><hgroup><h2>Identifying influential observations</h2></hgroup><article  id="identifying-influential-observations">
+
+<p>An <strong>influential observation</strong> is one whose removal from the dataset would cause a large change in the fitted model.</p>
+
+<ul>
+<li>An influential observation is usually a leverage point, an outlier, or both.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential">
+
+<p>In the plots below, an &ldquo;additional&rdquo; point is marked with a cross. The solid line is fit using the 10 original points and the dashed line is fit with original data and the added point.</p>
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-1">
+
+<p>In the plots below, an &ldquo;additional&rdquo; point is marked with a cross. The solid line is fit using the 10 original points and the dashed line is fit with original data and the added point.</p>
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-11-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>The additional point is an outlier but has little effect on fit.</p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-2">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-12-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-3">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-13-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>The additional point has large leverage but not an outlier or influential.</p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-4">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-14-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-5">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>The additional point is outlier and influential.</p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-6">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-16-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Influential?</h2></hgroup><article  id="influential-7">
+
+<pre class = 'prettyprint lang-r'>abline(lm(y[-11]~x[-11]))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-17-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>High leverage: For sure. Outlier: Most probably. Influential: Yes.</p>
+
+</article></slide><slide class=""><hgroup><h2>Measure Influece</h2></hgroup><article  id="measure-influece">
+
+<p>Natural measures of influence are:</p>
+
+<ul>
+<li>\(\hat{y}_i - \hat{y}_{(i)}\), which will require us to look at vectors of length \(n\) for each observation \(i\).<br/></li>
+<li>\(\text{DFBETA}_i=\hat{\beta} - \hat{\beta}_{(i)}\), which is a \(p\)-dimensional vector indicating how the estimated coefficients change when observations \(i\) is deleted from the data.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Cook’s Distance</h2></hgroup><article  id="cooks-distance">
+
+<p>The Cook’s distance is a popular inferential tool because it reduces influence information to a single value for each observation.</p>
+
+<p>The Cook’s distance for the ith observation is</p>
+
+<p>\[D_i = \frac{(\hat{y} - \hat{y}_{(i)})^T(\hat{y} - \hat{y}_{(i)})}{p\hat{\sigma}^2} = \frac{1}{p}r_i^2\frac{h_i}{1-h_i}\]</p>
+
+<p>Cook’s distance values can be obtained using the <code>cooks.distance</code> function.</p>
+
+<p>A half-normal plot or index plot can be used.</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example: Half-Normal Plot</h2></hgroup><article  id="savings-example-half-normal-plot">
+
+<pre class = 'prettyprint lang-r'>lmod = lm(sr~.,data = savings)
+cook &lt;- cooks.distance(lmod)
+countries = row.names(savings)
+faraway::halfnorm(cook, n = 3, labs = countries, 
+         ylab = &quot;Cook&#39;s distances&quot;)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-18-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example: Index Plot</h2></hgroup><article  id="savings-example-index-plot">
+
+<pre class = 'prettyprint lang-r'>car::infIndexPlot(lmod, var = &quot;Cook&quot;, id = list(n = 3))</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-19-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Experiment</h2></hgroup><article  id="experiment">
+
+<p>How does the model fit change when we remove Libya from the data?</p>
+
+<pre class = 'prettyprint lang-r'>lmod2 &lt;- lm(sr ~ ., data = savings, subset = (countries != &quot;Libya&quot;))
+knitr::kable(car::compareCoefs(lmod, lmod2, print = F))</pre>
+
+<p>1: lm(formula = sr ~ ., data = savings) 2: lm(formula = sr ~ ., data = savings, subset = (countries != &ldquo;Libya&rdquo;))</p>
+
+<pre >          Model 1   Model 2</pre>
+
+<p>(Intercept) 28.57 24.52 SE 7.35 8.22</p>
+
+<p>pop15 -0.461 -0.391 SE 0.145 0.158</p>
+
+<p>pop75 -1.69 -1.28 SE 1.08 1.15</p>
+
+<p>dpi -0.000337 -0.000319 SE 0.000931 0.000929</p>
+
+<p>ddpi 0.410 0.610 SE 0.196 0.269</p>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+Model 1
+
+</th>
+
+<th style="text-align:right;">
+
+Model 2
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+(Intercept)
+
+</td>
+
+<td style="text-align:right;">
+
+28.5660865
+
+</td>
+
+<td style="text-align:right;">
+
+24.5240460
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+SE
+
+</td>
+
+<td style="text-align:right;">
+
+7.3545161
+
+</td>
+
+<td style="text-align:right;">
+
+8.2240263
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+pop15
+
+</td>
+
+<td style="text-align:right;">
+
+-0.4611931
+
+</td>
+
+<td style="text-align:right;">
+
+-0.3914401
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+SE
+
+</td>
+
+<td style="text-align:right;">
+
+0.1446422
+
+</td>
+
+<td style="text-align:right;">
+
+0.1579095
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+pop75
+
+</td>
+
+<td style="text-align:right;">
+
+-1.6914977
+
+</td>
+
+<td style="text-align:right;">
+
+-1.2808669
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+SE
+
+</td>
+
+<td style="text-align:right;">
+
+1.0835989
+
+</td>
+
+<td style="text-align:right;">
+
+1.1451821
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+dpi
+
+</td>
+
+<td style="text-align:right;">
+
+-0.0003369
+
+</td>
+
+<td style="text-align:right;">
+
+-0.0003189
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+SE
+
+</td>
+
+<td style="text-align:right;">
+
+0.0009311
+
+</td>
+
+<td style="text-align:right;">
+
+0.0009293
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+ddpi
+
+</td>
+
+<td style="text-align:right;">
+
+0.4096949
+
+</td>
+
+<td style="text-align:right;">
+
+0.6102790
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+SE
+
+</td>
+
+<td style="text-align:right;">
+
+0.1961971
+
+</td>
+
+<td style="text-align:right;">
+
+0.2687784
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+<td style="text-align:right;">
+
+NA
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<p>The coefficient for ddpi changed by about 50%, which is fairly large.</p>
+
+</article></slide><slide class=""><hgroup><h2>DFBETA</h2></hgroup><article  id="dfbeta">
+
+<p>An index plot of the DFBETA statistics can be useful for assessing the direct impact of an observation on the estimated coefficients.</p>
+
+<ul>
+<li>DFBETA is the difference in the estimated coefficients when leaving out observation \(i\).</li>
+<li>DFBETAs is the DFBETA values divided by the leave-one-out estimate of the coefficient standard errors.</li>
+</ul>
+
+<p>The <code>car::dfBetaPlots</code> or <code>car::dfBetasPlots</code> can be used to construct index plots of these statistics.</p>
+
+</article></slide><slide class=""><hgroup><h2>DFBETA PLOTS</h2></hgroup><article  id="dfbeta-plots">
+
+<pre class = 'prettyprint lang-r'>car::dfbetaPlots(lmod, id.n = 3)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-21-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Using Influence Plot</h2></hgroup><article  id="using-influence-plot">
+
+<p>An <strong>influence plot</strong> plots the studentized residuals versus the leverage values.</p>
+
+<ul>
+<li>This <code>car::influencePlot</code> function can be used to create this.</li>
+<li>Look for observations that have unusually large residuals, leverage values, and especially both.</li>
+<li>The circles are sized proportionally to the magnitude of the Cook’s distances</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Influence Plot</h2></hgroup><article  id="influence-plot">
+
+<pre class = 'prettyprint lang-r'>car::influencePlot(lmod)</pre>
+
+<p><img src="unusual_obs_files/figure-html/unnamed-chunk-22-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<pre >##                  StudRes        Hat      CookD
+## Chile         -2.3134295 0.03729796 0.03781324
+## Japan          1.6032158 0.22330989 0.14281625
+## United States -0.3546151 0.33368800 0.01284481
+## Zambia         2.8535583 0.06433163 0.09663275
+## Libya         -1.0893033 0.53145676 0.26807042</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>What should we do about outliers and influential observations?</h2></hgroup><article  id="what-should-we-do-about-outliers-and-influential-observations">
+
+</article></slide><slide class=""><hgroup><h2>Correct or Delete the Observation(s)</h2></hgroup><article  id="correct-or-delete-the-observations">
+
+<ul>
+<li><p>If they’re data entry errors, correct the problem. If they can’t be fixed, remove them (they’re wrong, so they don’t tell us anything useful).</p></li>
+<li><p>Remove them if they’re not part of the population of interest (you are studying dogs, but this observation is a cat).</p></li>
+<li><p>Remove them because they break the model.</p></li>
+<li><p>This is a bad idea.</p></li>
+<li><p>Make sure to indicate that you removed them from the data set and explain why.</p></li>
+<li><p><em>THIS IS A BAD IDEA.</em></p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Fit a Different Model</h2></hgroup><article  id="fit-a-different-model">
+
+<ul>
+<li>An outlier/influential point for one model may not be for another.</li>
+<li>Examine the physical context—why did it happen?</li>
+<li>An outlier/influential point may be interesting in itself.
+
+<ul>
+<li>An outlier in a statistical analysis of credit card transactions may indicate fraud!</li>
+</ul></li>
+<li>This may suggest a better model.</li>
+<li>Use robust regression, which is not as affected by outliers/influential observations.</li>
+<li>Never automatically remove outliers/influential points!</li>
+<li>They provide important information that may otherwise be missed.</li>
+<li>Fit the model with and without the influential observation(s).</li>
+<li>Do your results substantively change?</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Summary of R Functions</h2></hgroup><article  id="summary-of-r-functions">
+
+</article></slide><slide class=""><hgroup><h2>Leverage points:</h2></hgroup><article  id="leverage-points">
+
+<ul>
+<li><code>hatvalues</code> extracts the leverage values from a fitted model.</li>
+<li><code>faraway::halfnorm</code> constructs a half-normal plot</li>
+<li><code>infIndexPlot(lmod, vars = &quot;hat&quot;)</code> creates an index plot of the leverage values.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Outliers:</h2></hgroup><article  id="outliers-1">
+
+<ul>
+<li><code>car::outlierTest</code> performs a Bonferonni outlier test</li>
+<li><code>infIndexPlot(lmod, vars = &quot;Studentized&quot;)</code> creates an index plot of the studentized residuals.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Influential observations:</h2></hgroup><article  id="influential-observations">
+
+<ul>
+<li><code>cooks.distance</code> extracts the Cook’s distances from a fitted model.</li>
+<li><code>faraway::halfnorm</code> constructs a half-normal plot</li>
+<li><code>infIndexPlot(lmod, vars = &quot;Cook&quot;)</code> constructs an index plot of the Cook’s distances.</li>
+<li><code>plot(lmod, which = 4)</code> constructs an index plot of the Cook’s statistics.</li>
+<li><code>car::dfBetaPlots</code> and <code>car::dfBetasPlots</code> construct index plots of DFBETA and DFBETAS, respectively.</li>
+<li><code>car::influencePlot</code> constructs an influence plot of the studentized residuals versus the leverage values.</li>
+<li><code>plot(lmod, which = 4)</code> constructs an influence plot of the standardized residuals versus the leverage values.</li>
+<li><code>influence(lmod)</code> computes a number of leave-one-out-related measures of observational influence.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Exercise</h2></hgroup><article  id="exercise">
+
+<p>Using the <code>sat</code> dataset in the <strong>faraway</strong> package, fit a model with the <strong>total</strong> SAT score as the response and <code>expend</code>, <code>salary</code>, <code>ratio</code>, and <code>takers</code> as predictors. Perform regression diagnostics on this model to answer the following questions.</p>
+
+<ul>
+<li>Check for leverage points.</li>
+<li>Check for outliers.</li>
+<li>Check for influential points.</li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

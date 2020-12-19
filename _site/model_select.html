@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Model Selection</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Model Selection',
+                        subtitle: 'Chapter 2 of LMWR2, Chapter 2 and 3 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: #797979;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Overview</h2></hgroup><article  id="overview">
+
+</article></slide><slide class=""><hgroup><h2>Why Model Selection?</h2></hgroup><article  id="why-model-selection">
+
+<p>Variable selection is intended to (objectively) find the &ldquo;best&rdquo; subset of predictors.</p>
+
+<p>Reasons for this include:</p>
+
+<ul>
+<li>We want the simplest model that adequately explains the data.</li>
+<li>Unnecessary regressors will add noise to all model estimates.</li>
+<li>Degrees of freedom are wasted.</li>
+<li>A smaller model might achieve more precise estimates and predictions.</li>
+<li>Removing excess regressors aids in interpretation and helps to prevent problems with linearly dependent regressors.</li>
+<li>If the model is to be used for prediction, we can save time and/or money by not having to measure extra predictors (and improve our prediction!).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Caution</h2></hgroup><article  id="caution">
+
+<p>Variable selection is affected by: • Outliers/influential observations. • Transformation of variables.</p>
+
+<p>Iteration and experimentation are essential to finding better models, BUT be very careful not to overtrain your model to the sample data!</p>
+
+</article></slide><slide class=""><hgroup><h2>Two aspects</h2></hgroup><article  id="two-aspects">
+
+<p>There are two aspects to variable selection:</p>
+
+<ul>
+<li>The criterion used to compare models.</li>
+<li>The strategy used to search for the &ldquo;optimal&rdquo; model.</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Selection Criteria</h2></hgroup><article  id="selection-criteria">
+
+</article></slide><slide class=""><hgroup><h2>p-values</h2></hgroup><article  id="p-values">
+
+<p>P-values are a common criterion for selecting regressors to keep in our regression model.</p>
+
+<p>This criterion keeps the regressors with the smallest p-values in the model, specifically the regressors with p-values less than some threshold, \(\alpha_\text{crit}\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Information Criteria</h2></hgroup><article  id="information-criteria">
+
+<p><strong>Akaike’s Information Criterion (AIC)</strong> and the <strong>Bayesian Information Criterion (BIC)</strong> are two information-based criteria for variable selection.</p>
+
+<ul>
+<li><p>\(AIC(\mathcal{M})=-2L(\mathcal{M})+2p_\mathcal{M}\), where \(\mathcal{M}\) is the model, \(L(\mathcal{M})\) is the log likelihood of the model using the MLE estimates of the parameters, and \(p_\mathcal{M}\) is the number of regression coefficients in model \(\mathcal{M}\).</p></li>
+<li><p>\(BIC(\mathcal{M})=-2L(\mathcal{M})+\log(n)p_\mathcal{M}\).</p></li>
+</ul>
+
+<p>For linear regression models, \(-2L(\mathcal{M})=n\log(RSS_\mathcal{M}/n) + c\), where \(c\) is a constant that depends only on the observed data and not on the model, and \(RSS_\mathcal{M}\) is the RSS of model \(\mathcal{M}\).</p>
+
+<ul>
+<li>c can be ignored when comparing between models.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Smaller the better</h2></hgroup><article  id="smaller-the-better">
+
+<p>The information criteria capture two aspects of model fit:</p>
+
+<ul>
+<li>The \(-2L(\mathcal{M})\) measures how well the fitted model matches the observed data.</li>
+<li>The second component penalizes the model according to the number of parameters it includes (its complexity).</li>
+<li>The more parameters, the larger the penalty.</li>
+<li>Models with more parameters will fit better (reducing the RSS), but will be penalized more for having additional parameters.</li>
+<li>AIC and BIC provide criteria for balancing model fit with model complexity.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>AIC vs BIC</h2></hgroup><article  id="aic-vs-bic">
+
+<p>BIC tends to penalize complex models more heavily than AIC (anytime \(\log(n)&gt;2\), i.e., \(n\geq 8\)), so it tends to suggest simpler models than the AIC criterion.</p>
+
+<p>AIC and BIC are used as selection criteria for many types of models, not just linear regression models.</p>
+
+</article></slide><slide class=""><hgroup><h2>Predictive Value</h2></hgroup><article  id="predictive-value">
+
+<p>\(R^2\) never decreases as new regressors are added to the model.</p>
+
+<ul>
+<li>It is useless for comparing models with different numbers of regressors.</li>
+</ul>
+
+<p>Adjusted \(R^2\), \(R_a^2\), is a better criterion for assessing model fit.</p>
+
+<ul>
+<li>The adjusted \(R^2\) criterion penalizes for the number of parameters in the model.</li>
+</ul>
+
+<p>For model \(\mathcal{M}\) with \(p_\mathcal{M}\) regression coefficients,</p>
+
+<p>\[R_a^2 = 1-\frac{\frac{RSS_\mathcal{M}}{n-p_\mathcal{M}}  }{\frac{TSS}{n-1}} = 1-\left(\frac{n-1}{n-p_\mathcal{M}} \right)(1-R^2) = 1-\frac{\hat{\sigma}_\mathcal{M}^2}{\hat{\sigma}^2_{null}}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Why \(R^2_a\)</h2></hgroup><article  id="why-r2_a">
+
+<p>Adding a regressor to a model only increases \(R_a^2\) if the regressor has some predictive value.</p>
+
+<ul>
+<li>This is because minimizing the variance of the prediction error amounts to minimizing \(\hat{\sigma}_\mathcal{M}^2\), which in turn maximizes \(R_a^2\).</li>
+</ul>
+
+<p><strong>We favor models that produce larger \(R_a^2\).</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Mallow’s \(C_p\) Statistic</h2></hgroup><article  id="mallows-c_p-statistic">
+
+<p>Mallow’s \(C_p\) statistic is a criterion designed to quantify the predictive usefulness of a model.</p>
+
+<p>At its core, Mallow’s \(C_p\) statistic is trying to estimate the standardized total mean square prediction error, given by \[\frac{1}{\sigma^2}\sum\limits_i E\left(\hat{y}_i - E(y_i) \right)^2 = \frac{1}{\sigma^2} \sum\limits_iMSE(\hat{y}_i),\]</p>
+
+<p>where \(MSE(\hat{y}_i)=var(\hat{y}_i )+Bias(\hat{y}_i)^2\)</p>
+
+<p>For model</p>
+
+<p>For model \(\mathcal{M}\) with \(p_\mathcal{M}\) regression coefficients, this quantity is estimated by \[C_{p_\mathcal{M}} = RSS_\mathcal{M}/\hat{\sigma}_\Omega^2 + 2p_\mathcal{M} -n \]</p>
+
+<p>where \(\hat{\sigma}_\Omega^2\) is the estimated error variance for the model with all regressors and \(RSS_\mathcal{M}\) is the residual sum of squares for model \(\mathcal{M}\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Notes on Mellow’s \(C_p\)</h2></hgroup><article  id="notes-on-mellows-c_p">
+
+<ul>
+<li><p>For the model with all regressors (model \(\Omega\) with \(p_\Omega\) regression coefficients), \(C_{p_\Omega}=p_\Omega\).</p></li>
+<li><p>If a model with \(p_\mathcal{M}\) regression coefficients fits the data well and has little or no bias, then \(E(C_{p_\mathcal{M}} )\approx p_\mathcal{M}\).</p></li>
+<li><p>A model with a biased fit will have \(C_{p_\mathcal{M}}\) much larger than \(p_\mathcal{M}\). (Models with \(C_{p_\mathcal{M}}\) less than \(p_\mathcal{M}\) do not show evidence of bias).</p></li>
+<li><p>It is common to plot \(C_{p_\mathcal{M}}\) versus \(p_\mathcal{M}\) and compare this to \(45^{o}\) line \((C_{p_\mathcal{M}}=p_\mathcal{M})\).</p></li>
+</ul>
+
+<p><strong>We favor models with small \(p_\mathcal{M}\) and \(C_{p_\mathcal{M}}\) close to \(p_\mathcal{M}\).</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>MSE</h2></hgroup><article  id="mse">
+
+<p>The <strong>mean squared error (MSE)</strong> for prediction is simply the average of the squared deviations between the fitted values and the observed data, i.e., \(\frac{1}{n}\sum (y_i-\hat{y}_i )^2\)</p>
+
+<ul>
+<li><p>We favor models with smaller mean squared error, but the search algorithm is very important, otherwise you just use the model with the most regressors.</p></li>
+<li><p>The RMSE (root mean squared error) is simply the square root of the MSE, and is sometimes used in place of the MSE.</p></li>
+<li><p>The RMSE or MSE will produce identical variable selection results since they are 1-1 transformations of each other.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Cross-Validation</h2></hgroup><article  id="cross-validation">
+
+<p><strong>Cross-validation</strong> breaks the data into a <strong>training</strong> dataset and a <strong>test</strong> dataset to get a more accurate assessment of the predictive accuracy of a model.</p>
+
+<ul>
+<li>A model is fit to the training dataset and then the fitted model is used to predict the responses of the test dataset, from which an error criterion (e.g, the MSE) is calculated for the test dataset.</li>
+<li>We favor the model the minimizes the MSE (or optimizes some other measure of prediction accuracy).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Variations of CV</h2></hgroup><article  id="variations-of-cv">
+
+<p>There are many variations of how to choose the training and testing datasets for crossvalidation.</p>
+
+<ul>
+<li><p>Leave-one-out crossvalidation uses each observation (individually) as a test data set, using the other n-1 observations as the training data.</p></li>
+<li><p>In principle, we must fit n models to find the mean squared error, though this can be done using only a single model if you scale things correctly..</p></li>
+<li><p>\(k\)-fold crossvalidation breaks the data into \(k\) unique sets.<br/></p></li>
+<li><p>For each set, the other \(k-1\) sets are used as training data, and then the fitted model is used to predict the responses for the kth testing set.</p></li>
+<li><p>We must fit \(k\) models to determine the mean squared error.</p></li>
+<li><p>There are other mechanisms for choosing the training and test datasets, but these are the most common.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Selection Criterion for CV</h2></hgroup><article  id="selection-criterion-for-cv">
+
+<p><strong>When using cross-validation as your selection criterion, we prefer the model that produces the lowest MSE or RMSE.</strong></p>
+
+<ul>
+<li>You typically don’t do an exhaustive search or stepwise selection search.</li>
+<li>You often use one of the other selection criteria/search strategies to narrow down the possible models to a few final candidate models and then use cross-validation to make a final decision.</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Search Strategies</h2></hgroup><article  id="search-strategies">
+
+</article></slide><slide class=""><hgroup><h2>Exhaustive Search</h2></hgroup><article  id="exhaustive-search">
+
+<p>An <strong>exhaustive search</strong> looks at all possible models using all available regressors.</p>
+
+<ul>
+<li>This is not feasible unless the number of regressors is relatively small.<br/></li>
+<li>If the number of regressors (including the intercept) is \(p_\Omega\), there are \(2^{p_\Omega}\) possible models.</li>
+</ul>
+
+<p>Because of our error criteria, our search often simplifies to finding the model that minimizes \(RSS_\mathcal{M}\) for each value of \(p_\mathcal{M}\).</p>
+
+<ul>
+<li>This is the best subset searching strategy.</li>
+<li>It’s really just a smart way to do an exhaustive search.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Stepwise Selection</h2></hgroup><article  id="stepwise-selection">
+
+<p>When the previous strategies may take too long, <strong>stepwise selection</strong> can be used to iteratively build models, choosing the next model as the one that maximizes or minimizes the criterion of interest.</p>
+
+<ul>
+<li>Backwards selection starts with the model having all regressors, then prunes the regressors one at a time until we can no longer improve the error criterion by removing a single regressor.</li>
+<li>Forward selection starts with the null model (only an intercept), and adds regressors one at a time until we can no longer improve the error criterion by adding a single regressor.<br/></li>
+<li>&ldquo;Both&rdquo; (or commonly, stepwise selection) is similar to backward selection, except that we can add a regressor back into the model if it improves the error criterion.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Additional Notes</h2></hgroup><article  id="additional-notes">
+
+<ul>
+<li><p>Stepwise selection can miss the optimal model because we do not consider all possible models due to the one-at-a-time nature of adding/removing regressors.</p></li>
+<li><p>P-values should not be taken as very accurate in stepwise or best subset searches because we are bound to see small p-values due to chance alone.</p></li>
+<li><p>Stepwise selection tends to produce simpler models that are not necessarily the best for prediction.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Model Hierarchy</h2></hgroup><article  id="model-hierarchy">
+
+<p>We must respect hierarchy in models when it is naturally present.</p>
+
+<ul>
+<li>In polynomial models, \(x^2\) is a higher order term than \(x\).</li>
+<li>A lower order term should be retained if a higher order term is retained to increase the flexibility.
+
+<ul>
+<li>E.g., for the model \(y=\beta_0+\beta_2 x^2+\epsilon\), the maximum/minimum value MUST occur at \(x=0\).<br/></li>
+<li>For the model \(y=\beta_0+\beta_1 x+\beta_2 x^2+\epsilon\), the maximum/minimum value can occur anywhere along the real line (depending on what the data suggest).</li>
+</ul></li>
+</ul>
+
+<p>Example: If we fit the model \(y=\beta_0+\beta_1 x+\beta_2 x^2+\epsilon\) and \(\beta_1\) is not significant, it would NOT make sense to remove \(x\) from the model but still keep \(x^2\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p>The U.S. Bureau of the Census collected data from the 50 states in the 1970s. Measured variables include:</p>
+
+<ul>
+<li><code>Population</code>: population estimate as of July 1, 1975</li>
+<li><code>Income</code>: per capita income (1974)</li>
+<li><code>Illiteracy</code>: illiteracy (1970, percent of population)</li>
+<li><code>Life.Exp</code>: life expectancy in years (1969–71)</li>
+<li><code>Murder</code>: murder and non-negligent manslaughter rate per 100,000 population (1976)</li>
+<li><code>HS Grad</code>: percent high-school graduates (1970)</li>
+<li><code>Frost</code>: mean number of days with minimum temperature below freezing (1931–1960) in capital or large city</li>
+<li><code>Area</code>: land area in square miles</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Backward selection using p-values and \(\alpha_\text{crit}\).</h2></hgroup><article  id="backward-selection-using-p-values-and-alpha_textcrit.">
+
+<pre class = 'prettyprint lang-r'>statedata = data.frame(state.x77)
+lmod_full &lt;- lm(Life.Exp ~ ., data = statedata)
+knitr::kable(summary(lmod_full)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">70.9432241</td>
+<td align="right">1.7479754</td>
+<td align="right">40.5859402</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Population</td>
+<td align="right">0.0000518</td>
+<td align="right">0.0000292</td>
+<td align="right">1.7747731</td>
+<td align="right">0.0831835</td>
+</tr>
+<tr class="odd">
+<td align="left">Income</td>
+<td align="right">-0.0000218</td>
+<td align="right">0.0002444</td>
+<td align="right">-0.0892060</td>
+<td align="right">0.9293422</td>
+</tr>
+<tr class="even">
+<td align="left">Illiteracy</td>
+<td align="right">0.0338203</td>
+<td align="right">0.3662799</td>
+<td align="right">0.0923346</td>
+<td align="right">0.9268712</td>
+</tr>
+<tr class="odd">
+<td align="left">Murder</td>
+<td align="right">-0.3011232</td>
+<td align="right">0.0466207</td>
+<td align="right">-6.4589973</td>
+<td align="right">0.0000001</td>
+</tr>
+<tr class="even">
+<td align="left">HS.Grad</td>
+<td align="right">0.0489295</td>
+<td align="right">0.0233233</td>
+<td align="right">2.0978818</td>
+<td align="right">0.0419718</td>
+</tr>
+<tr class="odd">
+<td align="left">Frost</td>
+<td align="right">-0.0057350</td>
+<td align="right">0.0031432</td>
+<td align="right">-1.8245568</td>
+<td align="right">0.0751868</td>
+</tr>
+<tr class="even">
+<td align="left">Area</td>
+<td align="right">-0.0000001</td>
+<td align="right">0.0000017</td>
+<td align="right">-0.0442593</td>
+<td align="right">0.9649075</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove Least Significant Predictor</h2></hgroup><article  id="remove-least-significant-predictor">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Life.Exp ~ .-Area, data = statedata)
+knitr::kable(summary(lmod)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">70.9893185</td>
+<td align="right">1.3874544</td>
+<td align="right">51.1651541</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Population</td>
+<td align="right">0.0000519</td>
+<td align="right">0.0000288</td>
+<td align="right">1.8022535</td>
+<td align="right">0.0785181</td>
+</tr>
+<tr class="odd">
+<td align="left">Income</td>
+<td align="right">-0.0000244</td>
+<td align="right">0.0002343</td>
+<td align="right">-0.1043161</td>
+<td align="right">0.9174036</td>
+</tr>
+<tr class="even">
+<td align="left">Illiteracy</td>
+<td align="right">0.0284588</td>
+<td align="right">0.3416329</td>
+<td align="right">0.0833023</td>
+<td align="right">0.9339978</td>
+</tr>
+<tr class="odd">
+<td align="left">Murder</td>
+<td align="right">-0.3018231</td>
+<td align="right">0.0433443</td>
+<td align="right">-6.9633836</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">HS.Grad</td>
+<td align="right">0.0484723</td>
+<td align="right">0.0206673</td>
+<td align="right">2.3453662</td>
+<td align="right">0.0236917</td>
+</tr>
+<tr class="odd">
+<td align="left">Frost</td>
+<td align="right">-0.0057758</td>
+<td align="right">0.0029702</td>
+<td align="right">-1.9445503</td>
+<td align="right">0.0583888</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove Least Significant Predictor (Illiteracy)</h2></hgroup><article  id="remove-least-significant-predictor-illiteracy">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- update(lmod,. ~ . - Illiteracy)
+knitr::kable(summary(lmod)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">71.0657509</td>
+<td align="right">1.0289415</td>
+<td align="right">69.0668559</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Population</td>
+<td align="right">0.0000511</td>
+<td align="right">0.0000271</td>
+<td align="right">1.8877836</td>
+<td align="right">0.0656610</td>
+</tr>
+<tr class="odd">
+<td align="left">Income</td>
+<td align="right">-0.0000248</td>
+<td align="right">0.0002316</td>
+<td align="right">-0.1069555</td>
+<td align="right">0.9153104</td>
+</tr>
+<tr class="even">
+<td align="left">Murder</td>
+<td align="right">-0.3000077</td>
+<td align="right">0.0370418</td>
+<td align="right">-8.0991613</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">HS.Grad</td>
+<td align="right">0.0477580</td>
+<td align="right">0.0185908</td>
+<td align="right">2.5689048</td>
+<td align="right">0.0136703</td>
+</tr>
+<tr class="even">
+<td align="left">Frost</td>
+<td align="right">-0.0059099</td>
+<td align="right">0.0024678</td>
+<td align="right">-2.3948100</td>
+<td align="right">0.0209534</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove Least Significant Predictor (Income)</h2></hgroup><article  id="remove-least-significant-predictor-income">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- update(lmod,. ~ . - Income)
+knitr::kable(summary(lmod)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">71.0271285</td>
+<td align="right">0.9528530</td>
+<td align="right">74.541541</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Population</td>
+<td align="right">0.0000501</td>
+<td align="right">0.0000251</td>
+<td align="right">1.996017</td>
+<td align="right">0.0520051</td>
+</tr>
+<tr class="odd">
+<td align="left">Murder</td>
+<td align="right">-0.3001488</td>
+<td align="right">0.0366095</td>
+<td align="right">-8.198669</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">HS.Grad</td>
+<td align="right">0.0465822</td>
+<td align="right">0.0148271</td>
+<td align="right">3.141704</td>
+<td align="right">0.0029681</td>
+</tr>
+<tr class="odd">
+<td align="left">Frost</td>
+<td align="right">-0.0059433</td>
+<td align="right">0.0024209</td>
+<td align="right">-2.455017</td>
+<td align="right">0.0180178</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Remove <code>Population</code>?</h2></hgroup><article  id="remove-population">
+
+<p>Whether we should remove Population is a close call. We should probably keep it if it makes the model more interpretable.</p>
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- update(lmod,. ~ . - Population)
+knitr::kable(summary(lmod)$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">71.0363788</td>
+<td align="right">0.9832622</td>
+<td align="right">72.245614</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Murder</td>
+<td align="right">-0.2830652</td>
+<td align="right">0.0367313</td>
+<td align="right">-7.706370</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">HS.Grad</td>
+<td align="right">0.0499487</td>
+<td align="right">0.0152011</td>
+<td align="right">3.285856</td>
+<td align="right">0.0019504</td>
+</tr>
+<tr class="even">
+<td align="left">Frost</td>
+<td align="right">-0.0069117</td>
+<td align="right">0.0024475</td>
+<td align="right">-2.824025</td>
+<td align="right">0.0069877</td>
+</tr>
+</table>
+
+<p>All variables are now significant at \(\alpha_\text{crit}=0.05\).</p>
+
+</article></slide><slide class=""><hgroup><h2>How did we do?</h2></hgroup><article  id="how-did-we-do">
+
+<pre class = 'prettyprint lang-r'>summary(lmod_full)$r.squared</pre>
+
+<pre >## [1] 0.7361563</pre>
+
+<pre class = 'prettyprint lang-r'>summary(lmod)$r.squared</pre>
+
+<pre >## [1] 0.7126624</pre>
+
+<pre class = 'prettyprint lang-r'>summary(lmod_full)$adj.r.squared</pre>
+
+<pre >## [1] 0.6921823</pre>
+
+<pre class = 'prettyprint lang-r'>summary(lmod)$adj.r.squared</pre>
+
+<pre >## [1] 0.693923</pre>
+
+<p>The \(R^2\) for the full model is 0.736. Our final model has an \(R^2\) of 0.713, which is only slightly lower.</p>
+
+<ul>
+<li>Removal of four predictors causes only a minor reduction in fit. This is NOT surprising.</li>
+<li>A better question might be: what would the effect of removing these variables be on a new independent sample?</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Replace <code>HS.Grad</code> with <code>Illiteracy</code></h2></hgroup><article  id="replace-hs.grad-with-illiteracy">
+
+<pre class = 'prettyprint lang-r'>knitr::kable(summary(lm(Life.Exp ~ Illiteracy + Murder + Frost, statedata))$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">74.5567171</td>
+<td align="right">0.5842507</td>
+<td align="right">127.610835</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Illiteracy</td>
+<td align="right">-0.6017607</td>
+<td align="right">0.2989270</td>
+<td align="right">-2.013069</td>
+<td align="right">0.0499811</td>
+</tr>
+<tr class="odd">
+<td align="left">Murder</td>
+<td align="right">-0.2800474</td>
+<td align="right">0.0433940</td>
+<td align="right">-6.453594</td>
+<td align="right">0.0000001</td>
+</tr>
+<tr class="even">
+<td align="left">Frost</td>
+<td align="right">-0.0086910</td>
+<td align="right">0.0029595</td>
+<td align="right">-2.936708</td>
+<td align="right">0.0051663</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Replace <code>HS.Grad</code> with <code>Illiteracy</code></h2></hgroup><article  id="replace-hs.grad-with-illiteracy-1">
+
+<pre class = 'prettyprint lang-r'>knitr::kable(summary(lm(Life.Exp ~ Illiteracy + Murder + Frost, statedata))$coefficients)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">74.5567171</td>
+<td align="right">0.5842507</td>
+<td align="right">127.610835</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Illiteracy</td>
+<td align="right">-0.6017607</td>
+<td align="right">0.2989270</td>
+<td align="right">-2.013069</td>
+<td align="right">0.0499811</td>
+</tr>
+<tr class="odd">
+<td align="left">Murder</td>
+<td align="right">-0.2800474</td>
+<td align="right">0.0433940</td>
+<td align="right">-6.453594</td>
+<td align="right">0.0000001</td>
+</tr>
+<tr class="even">
+<td align="left">Frost</td>
+<td align="right">-0.0086910</td>
+<td align="right">0.0029595</td>
+<td align="right">-2.936708</td>
+<td align="right">0.0051663</td>
+</tr>
+</table>
+
+<ul>
+<li>Illiteracy does have some association with life expectancy</li>
+<li>High school graduation rate and illiteracy are likely correlated</li>
+<li>Impossible to know which is the important/causal variable</li>
+<li>Both could be important or both could be proxies for a third variable.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example 2</h2></hgroup><article  id="example-2">
+
+<p>Use best subset selection to minimize the AIC criterion.</p>
+
+<ul>
+<li>The regsubsets function in the leaps package can be used to do this.<br/></li>
+<li>For each number of regression coefficients p, it finds the model that minimizes the RSS.</li>
+<li>For each value of \(p\), the model that minimizes the RSS will have the smallest AIC, BIC, \(R_a^2\), and Mallow’s \(C_p\).</li>
+<li>NOTE: By default, regsubsets only goes up to p=9. You have to set nvmax = j, where j is the number of regressors you want to consider.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example 2</h2></hgroup><article  id="example-2-1">
+
+<pre class = 'prettyprint lang-r'>library(leaps)
+b &lt;- regsubsets(Life.Exp ~ ., data = statedata)
+rs &lt;- summary(b) # summarize model that minimizes RSS for each p
+knitr::kable(rs$which) # best subset models (in terms of RSS)</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">(Intercept)</th>
+<th align="left">Population</th>
+<th align="left">Income</th>
+<th align="left">Illiteracy</th>
+<th align="left">Murder</th>
+<th align="left">HS.Grad</th>
+<th align="left">Frost</th>
+<th align="left">Area</th>
+</tr>
+<tr class="odd">
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Use AIC</h2></hgroup><article  id="use-aic">
+
+<pre class = 'prettyprint lang-r'>p = 1:7
+aic &lt;- rs$bic + p*(2-log(50))
+plot(aic)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Use AIC</h2></hgroup><article  id="use-aic-1">
+
+<pre class = 'prettyprint lang-r'>p = 1:7
+aic &lt;- rs$bic + p*(2-log(50))
+plot(aic)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-11-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>Model \(p=5\): Predictors - &lsquo;Population&rsquo;, &lsquo;Murder&rsquo;, &lsquo;HS.Grad&rsquo;, &lsquo;Frost&rsquo;.</p>
+
+</article></slide><slide class=""><hgroup><h2>Use BIC</h2></hgroup><article  id="use-bic">
+
+<pre class = 'prettyprint lang-r'>car::subsets(b, abbrev = 1, legend = F)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-12-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>We reach a similar conclusion using the BIC criterion.</p>
+
+</article></slide><slide class=""><hgroup><h2>Use \(C_p\)</h2></hgroup><article  id="use-c_p">
+
+<pre class = 'prettyprint lang-r'>car::subsets(b, abbrev = 1, legend = F, statistic = &#39;cp&#39;)
+abline(0,1,col=&#39;red&#39;)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-13-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Use \(R_a^2\)</h2></hgroup><article  id="use-r_a2">
+
+<pre class = 'prettyprint lang-r'>car::subsets(b, abbrev = 1, legend = F, statistic = &#39;adjr2&#39;)
+abline(0,1,col=&#39;red&#39;)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-14-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Stepwise selection with AIC</h2></hgroup><article  id="stepwise-selection-with-aic">
+
+<pre class = 'prettyprint lang-r'>step_model = step(lmod_full, direction = &#39;both&#39;)</pre>
+
+<pre >## Start:  AIC=-22.18
+## Life.Exp ~ Population + Income + Illiteracy + Murder + HS.Grad + 
+##     Frost + Area
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Area        1    0.0011 23.298 -24.182
+## - Income      1    0.0044 23.302 -24.175
+## - Illiteracy  1    0.0047 23.302 -24.174
+## &lt;none&gt;                    23.297 -22.185
+## - Population  1    1.7472 25.044 -20.569
+## - Frost       1    1.8466 25.144 -20.371
+## - HS.Grad     1    2.4413 25.738 -19.202
+## - Murder      1   23.1411 46.438  10.305
+## 
+## Step:  AIC=-24.18
+## Life.Exp ~ Population + Income + Illiteracy + Murder + HS.Grad + 
+##     Frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Illiteracy  1    0.0038 23.302 -26.174
+## - Income      1    0.0059 23.304 -26.170
+## &lt;none&gt;                    23.298 -24.182
+## - Population  1    1.7599 25.058 -22.541
+## + Area        1    0.0011 23.297 -22.185
+## - Frost       1    2.0488 25.347 -21.968
+## - HS.Grad     1    2.9804 26.279 -20.163
+## - Murder      1   26.2721 49.570  11.569
+## 
+## Step:  AIC=-26.17
+## Life.Exp ~ Population + Income + Murder + HS.Grad + Frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Income      1     0.006 23.308 -28.161
+## &lt;none&gt;                    23.302 -26.174
+## - Population  1     1.887 25.189 -24.280
+## + Illiteracy  1     0.004 23.298 -24.182
+## + Area        1     0.000 23.302 -24.174
+## - Frost       1     3.037 26.339 -22.048
+## - HS.Grad     1     3.495 26.797 -21.187
+## - Murder      1    34.739 58.041  17.456
+## 
+## Step:  AIC=-28.16
+## Life.Exp ~ Population + Murder + HS.Grad + Frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## &lt;none&gt;                    23.308 -28.161
+## + Income      1     0.006 23.302 -26.174
+## + Illiteracy  1     0.004 23.304 -26.170
+## + Area        1     0.001 23.307 -26.163
+## - Population  1     2.064 25.372 -25.920
+## - Frost       1     3.122 26.430 -23.877
+## - HS.Grad     1     5.112 28.420 -20.246
+## - Murder      1    34.816 58.124  15.528</pre>
+
+</article></slide><slide class=""><hgroup><h2>Final Model using Stepwise AIC</h2></hgroup><article  id="final-model-using-stepwise-aic">
+
+<pre class = 'prettyprint lang-r'>anova(step_model)</pre>
+
+<pre >## Analysis of Variance Table
+## 
+## Response: Life.Exp
+##            Df Sum Sq Mean Sq  F value    Pr(&gt;F)    
+## Population  1  0.409   0.409   0.7895  0.378981    
+## Murder      1 57.445  57.445 110.9068 1.002e-13 ***
+## HS.Grad     1  4.015   4.015   7.7523  0.007818 ** 
+## Frost       1  3.122   3.122   6.0271  0.018018 *  
+## Residuals  45 23.308   0.518                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compare full and final model using 10-fold CV</h2></hgroup><article  id="compare-full-and-final-model-using-10-fold-cv">
+
+<pre class = 'prettyprint lang-r'>library(caret)
+# define training/test (control) data
+cv_10fold &lt;- trainControl(method=&quot;cv&quot;, number = 10) # 10-fold crossvalidation train/test data
+cv_loo &lt;- trainControl(method=&quot;LOOCV&quot;) # leave-one-out crossvalidation train/test data
+f1 = Life.Exp ~ . # formula for full model
+f2 = Life.Exp~Population + Murder + HS.Grad + Frost 
+modela &lt;- train(f1, data = statedata, trControl=cv_10fold, method = &quot;lm&quot;)
+modelb &lt;- train(f2, data = statedata, trControl=cv_10fold, method = &quot;lm&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compare full and final model using 10-fold CV</h2></hgroup><article  id="compare-full-and-final-model-using-10-fold-cv-1">
+
+<pre class = 'prettyprint lang-r'>print(modela)</pre>
+
+<pre >## Linear Regression 
+## 
+## 50 samples
+##  7 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 46, 46, 44, 45, 44, 44, ... 
+## Resampling results:
+## 
+##   RMSE       Rsquared   MAE      
+##   0.8864039  0.6017725  0.7364396
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compare full and final model using 10-fold CV</h2></hgroup><article  id="compare-full-and-final-model-using-10-fold-cv-2">
+
+<pre class = 'prettyprint lang-r'>print(modelb)</pre>
+
+<pre >## Linear Regression 
+## 
+## 50 samples
+##  4 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 46, 45, 46, 45, 45, 44, ... 
+## Resampling results:
+## 
+##   RMSE       Rsquared   MAE     
+##   0.7266738  0.7140054  0.636507
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</pre>
+
+<p><strong>The smaller model is preferred (since it has smaller RMSE) using 10-fold crossvalidation</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Compare full and final model using LOO CV</h2></hgroup><article  id="compare-full-and-final-model-using-loo-cv">
+
+<pre class = 'prettyprint lang-r'>modelc &lt;- train(f1, data = statedata, trControl=cv_loo, method = &quot;lm&quot;)
+print(modelc) # full, loo</pre>
+
+<pre >## Linear Regression 
+## 
+## 50 samples
+##  7 predictor
+## 
+## No pre-processing
+## Resampling: Leave-One-Out Cross-Validation 
+## Summary of sample sizes: 49, 49, 49, 49, 49, 49, ... 
+## Resampling results:
+## 
+##   RMSE       Rsquared   MAE      
+##   0.9090885  0.5469535  0.7196334
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compare full and final model using LOO CV</h2></hgroup><article  id="compare-full-and-final-model-using-loo-cv-1">
+
+<pre class = 'prettyprint lang-r'>modeld &lt;- train(f2, data = statedata, trControl=cv_loo, method = &quot;lm&quot;)
+print(modeld) # reduced, loo</pre>
+
+<pre >## Linear Regression 
+## 
+## 50 samples
+##  4 predictor
+## 
+## No pre-processing
+## Resampling: Leave-One-Out Cross-Validation 
+## Summary of sample sizes: 49, 49, 49, 49, 49, 49, ... 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE      
+##   0.770042  0.6657615  0.6377097
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</pre>
+
+<p><strong>The smaller model is preferred (since it has smaller RMSE) using leave-one-out crossvalidation</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Effect of outliers</h2></hgroup><article  id="effect-of-outliers">
+
+<p>Alaska is a high leverage point. What’s the effect if we remove it?</p>
+
+<pre class = 'prettyprint lang-r'>lmod = lm(Life.Exp ~.,data = statedata)
+car::influencePlot(lmod)</pre>
+
+<p><img src="model_select_files/figure-html/unnamed-chunk-22-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<pre >##               StudRes       Hat       CookD
+## Alaska     -1.6061632 0.8095223 1.320803928
+## California -0.1590567 0.4088569 0.002239186
+## Hawaii      2.7352416 0.3787617 0.493948906
+## Maine      -2.2322062 0.1218190 0.078915835</pre>
+
+</article></slide><slide class=""><hgroup><h2>Remove Alaska</h2></hgroup><article  id="remove-alaska">
+
+<pre class = 'prettyprint lang-r'>b &lt;- regsubsets(Life.Exp ~., data = statedata, subset = (state.abb!=&quot;AK&quot;))
+rs &lt;- summary(b)
+rs$which[which.max(rs$adjr), ]</pre>
+
+<pre >## (Intercept)  Population      Income  Illiteracy      Murder     HS.Grad 
+##        TRUE        TRUE       FALSE       FALSE        TRUE        TRUE 
+##       Frost        Area 
+##        TRUE        TRUE</pre>
+
+<p>We now choose a 5 regressor model using \(R_a^2\), whereas we chose 4 before.</p>
+
+</article></slide><slide class=""><hgroup><h2>Exercise</h2></hgroup><article  id="exercise">
+
+<p>For the teengamb data in the faraway package, use the methods learned in this chapter to identify the &ldquo;best&rdquo; models.</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

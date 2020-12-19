@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checking Error Assumptions</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Checking Error Assumptions',
+                        subtitle: 'Chapter 6 of LMWR2, Chapter 9 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Motivation</h2></hgroup><article  id="motivation">
+
+<p>Estimation and inference for a regression model depend on several assumptions. The three main categories of assumptions are:</p>
+
+<p><strong>Model</strong>: The structural (mean) part of the model is correct, i.e., \(E(y)=X\beta\).</p>
+
+<p><strong>Error</strong>: \(\epsilon\sim N(0,\sigma^2 I)\), i.e., that the errors are normally distributed, independent, and identically distributed with mean 0 and variance \(\sigma^2\).</p>
+
+<p><strong>Unusual observations</strong>: All observations should be equally reliable and have approximately equal role in determining the regression results and in influencing conclusions.</p>
+
+</article></slide><slide class=""><hgroup><h2>Using Residuals to Check Error Assumptions</h2></hgroup><article  id="using-residuals-to-check-error-assumptions">
+
+<p>Assumptions for \(\epsilon\) are tricky to check because \(\epsilon\) is not observed.</p>
+
+<p>Assumptions for \(\epsilon\) allow us to derive expected properties for our residuals, \(\hat{\epsilon}\).</p>
+
+<ul>
+<li>The residuals are NOT interchangeable with the errors and have different properties.</li>
+</ul>
+
+<p>Assumptions for ϵ are checked using \(\hat{\epsilon}\).</p>
+
+<ul>
+<li>If the observed residual behavior doesn’t match the expected behavior, we believe this was caused by a violation of the relevant error assumption.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Fact about OLS Residuals</h2></hgroup><article  id="fact-about-ols-residuals">
+
+<ul>
+<li>If \(E(\epsilon)=0\), then \(E(\hat{\epsilon}) = 0.\)</li>
+<li>If \(var(\epsilon)=\sigma^2 I\), i.e., the errors are uncorrected and have constatn variance, then \(var(\hat{\epsilon}) = \sigma^2(I-H)\), where \(H = X(X^TX)^{-1}X^T\) is the hat matrix.</li>
+<li>If \(E(\epsilon)=0\) and \(var(\epsilon)=\sigma^2I\), then \(cov(\hat{\epsilon}, \hat{y})=0_{n\times n}.\)</li>
+<li>If \(x_i\) is the \(i\)th regressor, then \(cov(\hat{\epsilon}, x_i)=0\).</li>
+<li>If an intercept is included in the fitted model, then \(\sum \hat{\epsilon}_i=0\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Checking the mean zero error assumption</h2></hgroup><article  id="checking-the-mean-zero-error-assumption">
+
+<p>The mean zero assumption means that the average deviation of each error from the true regression model is zero.</p>
+
+<ul>
+<li>Since we only observe a single value for each residual, we assess this assumption using the set of all residuals.</li>
+</ul>
+
+<p>If the mean-zero error assumption is reasonable, then a plot of \(\hat{\epsilon}\) versus \(\hat{y}\) or \(\hat{\epsilon}\) versus \(x_i\) should be approximately symmetric around zero.</p>
+
+<ul>
+<li>This check implicitly assumes \(E(y)=X\beta\) and the errors are uncorrelated.</li>
+</ul>
+
+<p>If the mean-zero error assumption is violated, then a plot of \(\hat{\epsilon}\) versus \(\hat{y}\) or \(x_i\) will have a systematic, asymmetrical pattern deviating from zero.</p>
+
+</article></slide><slide class=""><hgroup><h2>Null Plot</h2></hgroup><article  id="null-plot">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Mean-zero assumption is violated</h2></hgroup><article  id="mean-zero-assumption-is-violated">
+
+<pre class = 'prettyprint lang-r'>x &lt;- seq(-3,3,length.out = 200)
+y&lt;-c()
+y[1:50] &lt;- 2*x[1:50] + rnorm(50)
+y[51:100] &lt;- 2*x[51:100] + rnorm(50, mean = -4)
+y[101:150] &lt;- 2*x[101:150] + rnorm(50, mean = 8)
+y[151:200] &lt;- 2*x[151:200] + rnorm(50, mean =12)
+lmod = lm(y~x)
+plot(lmod$residuals ~ lmod$fitted.values, main = &#39;Residuals vs Fitted Values&#39;, xlab = &#39;Fitted Values&#39;, ylab =&#39;residuals&#39;)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Hold On</h2></hgroup><article  id="hold-on">
+
+<pre class = 'prettyprint lang-r'>x &lt;- seq(-3,3,length.out = 200)
+y &lt;- 2*x + rnorm(200, mean = 500)
+lmod = lm(y~x)
+plot(lmod$residuals ~ x, main = &#39;Where is the non-zero mean?&#39;, xlab = &#39;Fitted Values&#39;, ylab =&#39;residuals&#39;)
+abline(0,0,col=&#39;red&#39;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Hold On</h2></hgroup><article  id="hold-on-1">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>If Violation Detected</h2></hgroup><article  id="if-violation-detected">
+
+<p>If a violation is detected, then you need to correct the structure of your model.</p>
+
+<ul>
+<li>This may include transforming the response or predictors in the model.</li>
+<li>This may include adding or deleting predictors from the model.</li>
+<li>You may need to consider more advanced forms of regression.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Plotting in R</h2></hgroup><article  id="plotting-in-r">
+
+<p>If the fitted R model is lmod:</p>
+
+<ul>
+<li><code>car::residualPlot(lmod)</code> constructs a plot of \(\hat{\epsilon}\) versus \(\hat{y}\).</li>
+<li><code>car::residualPlots(lmod)</code> constructs plots of \(\hat{\epsilon}\) versus \(\hat{y}\) each each predictor.</li>
+<li><code>plot(lmod, which = 1)</code> construct a plot of \(\hat{\epsilon}\) versus \(\hat{y}\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example">
+
+<p>The savings data frame in the faraway package includes 5 savings-related variables in 50 countries averaged over the period 1960-1970:</p>
+
+<ul>
+<li><code>sr</code> - savings rate. Personal saving divided by disposable income</li>
+<li><code>pop15</code> – percentage of population under age of 15</li>
+<li><code>pop75</code> – percentage of population over age of 75</li>
+<li><code>dpi</code> - per-capita disposable income in dollars</li>
+<li><code>ddpi</code> - percent growth rate of <code>dpi</code></li>
+</ul>
+
+<p>Is the mean-zero error assumption reasonable for the model regressing <code>sr</code> on the other four variables?</p>
+
+<pre class = 'prettyprint lang-r'>data(savings, package = &quot;faraway&quot;)
+lmod = lm(sr ~ ., data = savings)
+library(car)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Residuals vs. Fitted Values</h2></hgroup><article  id="residuals-vs.-fitted-values">
+
+<pre class = 'prettyprint lang-r'>residualPlot(lmod, quadratic = FALSE)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-6-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>plot of residuals versus fitted values</h2></hgroup><article  id="plot-of-residuals-versus-fitted-values">
+
+<pre class = 'prettyprint lang-r'>plot(lmod, which = 1)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-7-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>plot of residuals versus predictors</h2></hgroup><article  id="plot-of-residuals-versus-predictors">
+
+<pre class = 'prettyprint lang-r'>residualPlots(lmod, quadratic = FALSE, fitted = FALSE, tests = FALSE)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-8-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Symmetric, non-constant variance plot:</h2></hgroup><article  id="symmetric-non-constant-variance-plot">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Constant variance example</h2></hgroup><article  id="constant-variance-example">
+
+<pre class = 'prettyprint lang-r'>x&lt;-seq(1,100,length.out = 200)
+y &lt;- 5*x -20 + rnorm(200)
+plot(lm(y~x), which = 3)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Non-constat variance example</h2></hgroup><article  id="non-constat-variance-example">
+
+<pre class = 'prettyprint lang-r'>x&lt;-seq(1,100,length.out = 200)
+y &lt;- 5*x -20
+y = y + c(rnorm(100,0, 1), rnorm(100, 0, 10))
+lmod1 = lm(y~x)
+plot(lmod1, which = 3)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-11-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Non-constant variance example</h2></hgroup><article  id="non-constant-variance-example">
+
+<pre class = 'prettyprint lang-r'>x1 &lt;- seq(1,100, length.out = 200)
+x2 &lt;- seq(1, 10, length.out = 200)
+y &lt;- 5*x1 + 2*x2^2 - 20 + rnorm(200, 0, 5)
+plot(lm(y~x1), which = 3)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-12-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Checking for non-constant error variance</h2></hgroup><article  id="checking-for-non-constant-error-variance">
+
+<p>The constant variance assumption means that the average squared deviation of each error from the true regression model should be the same for every observation.</p>
+
+<ul>
+<li>Since we only observe a single value for each residual, we assess this assumption using the set of all residuals.</li>
+</ul>
+
+<p>If the constant error variance assumption is correct, then a plot of ϵ ̂ versus y ̂ or x_i should be a random scatter of points and the spread of the residuals should have a constant thickness as you move from left to right along the x-axis of the plot.</p>
+
+<ul>
+<li>This check implicitly assumes the errors are uncorrelated.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Non-constant variance</h2></hgroup><article  id="non-constant-variance">
+
+<p>If the constant error variance assumption is violated, then a plot of \(\hat{\epsilon}\) versus \(\hat{y}\) or \(x_i\) will have a systematic, varying spread of the residuals.</p>
+
+</article></slide><slide class=""><hgroup><h2>plot sqrt absolute residuals vs fitted values</h2></hgroup><article  id="plot-sqrt-absolute-residuals-vs-fitted-values">
+
+<pre class = 'prettyprint lang-r'>plot(lmod, which = 3)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-13-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we do?</h2></hgroup><article  id="what-we-do">
+
+<p>If the non-constant error variance assumption is violated you should:</p>
+
+<ul>
+<li><p>Transformation of the response and/or predictors.</p>
+
+<ul>
+<li>Square root and \(\log(y+c)\) transformations are common.</li>
+<li>Transfomation of variables also correct for issues with model structure</li>
+</ul></li>
+<li><p>Consider fitting a weighted least squares (WLS) regression model instead of OLS.</p>
+
+<ul>
+<li>Specially when the structure is approximately correct</li>
+<li>Example : when measurement error of the response depends on the response variable</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-14-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>Left figure: <code>Species ~ .</code></p>
+
+<p>Right figure : <code>$\sqrt{Species}$ ~ .</code></p>
+
+</article></slide><slide class=""><hgroup><h2>Simulated Example</h2></hgroup><article  id="simulated-example">
+
+<pre class = 'prettyprint lang-r'>x1 = seq(1,100,length.out = 200)
+y &lt;- 5*x - 20 + rnorm(200) # Error for factor other than measurement 
+y &lt;- y + rnorm(200, 0, y^2/10) # Measurement error increase with y
+plot(x1,y)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<p>Use WLS.</p>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-1">
+
+<pre class = 'prettyprint lang-r'>par(mfrow = c(1,2))
+data(savings,package=&quot;faraway&quot;)
+lmod &lt;- lm(sr ~ pop15+pop75+dpi+ddpi,savings)
+plot(fitted(lmod),residuals(lmod),xlab=&quot;Fitted&quot;,ylab=&quot;Residuals&quot;)
+abline(h=0)
+plot(fitted(lmod),sqrt(abs(residuals(lmod))), xlab=&quot;Fitted&quot;,ylab=
+    expression(sqrt(hat(epsilon))))</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-16-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Test for equality of two variances</h2></hgroup><article  id="test-for-equality-of-two-variances">
+
+<p>Suppose we have samples from two populations (\(Y = \{y_1,\dots y_n\}\) and \(T = \{t_1, \dots t_m\}\)). We can test if the variances \(\sigma_Y^2\) and \(\sigma_T^2\) are equal.</p>
+
+<ul>
+<li>Test statistic</li>
+</ul>
+
+<p>\[\frac{S_Y^2}{S_T^2}\]</p>
+
+<ul>
+<li>Distribution</li>
+</ul>
+
+<p>The test statistic follows a \(F(n-1,m-1)\) distribution.</p>
+
+</article></slide><slide class=""><hgroup><h2>More into savings example</h2></hgroup><article  id="more-into-savings-example">
+
+<pre class = 'prettyprint lang-r'>par(mfrow = c(1,2))
+plot(savings$pop15,residuals(lmod), xlab=&quot;Population under 15&quot;,ylab
+=&quot;Residuals&quot;)
+abline(h=0)
+plot(savings$pop75,residuals(lmod), xlab=&quot;Population over 75&quot;,ylab =&quot;Residuals&quot;)
+abline(h=0)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-17-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Test for equality of variances</h2></hgroup><article  id="test-for-equality-of-variances">
+
+<pre class = 'prettyprint lang-r'>sample1 = residuals(lmod)[savings$pop15&gt;35]
+sample2 = residuals(lmod)[savings$pop15&lt;35]
+var.test(sample1, sample2)</pre>
+
+<pre >## 
+##  F test to compare two variances
+## 
+## data:  sample1 and sample2
+## F = 2.7851, num df = 22, denom df = 26, p-value = 0.01358
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  1.240967 6.430238
+## sample estimates:
+## ratio of variances 
+##           2.785067</pre>
+
+</article></slide><slide class=""><hgroup><h2>Checking Normality Assumption</h2></hgroup><article  id="checking-normality-assumption">
+
+<p>A q-q plot (quantile-quantile plot) of the residuals can be used to assess the assumption of normal errors.</p>
+
+<ul>
+<li><p>A q-q plot compares the residuals to &ldquo;ideal&rdquo; observations from a normal distribution.</p></li>
+<li><p>The sorted residuals are plotted against \(\phi^{-1}\left(\frac{i}{n+1}\right)\) for \(i=1,2,\dots ,n\), where \(\phi^{-1}\) is the inverse cdf (quantile) function of a standard normal distribution.</p></li>
+<li><p>If the residuals are distributed similarly to observations coming from a normal distribution, then the points of a q-q plot will lie approximately in a straight line at a 45 degree angle.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example (Normal)</h2></hgroup><article  id="example-normal">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-19-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Limitation of Boxplots and histogram</h2></hgroup><article  id="limitation-of-boxplots-and-histogram">
+
+<p>Histograms and boxplots are not as useful for checking normality as a q-q plot.</p>
+
+<ul>
+<li>Boxplots can obscure a lot of information.</li>
+<li>The shape of a histogram strongly depends on the number and size of the bins.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-20-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Shapiro-Wilk test</h2></hgroup><article  id="shapiro-wilk-test">
+
+<p>A formal test of normality can be performed using the Shapiro-Wilk test.</p>
+
+<ul>
+<li>The null hypothesis of the Shapiro-Wilk test is that the residuals are a random sample from a normal distribution.<br/></li>
+<li>The alternative is that the residuals are not a sample from a normal distribution.</li>
+<li>A statistical decision is made using the usual approach with p-values.</li>
+</ul>
+
+<p>While the Shapiro-Wilk test is a tidy way to assess normality, it is not as flexible as the q-q plot.</p>
+
+<ul>
+<li>It also does not suggest a way to correct the problem.</li>
+<li>It is easily influenced by the number of observations so that even minor departures from normality are detected, even when there is little reason to abandon the least squares approach.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>When the errors are nonnormal:</h2></hgroup><article  id="when-the-errors-are-nonnormal">
+
+<ul>
+<li>Estimates will still be unbiased (assuming the model is correct and the error mean is zero).</li>
+<li>Tests and confidence intervals will not be exact, but the central limit theorem says that the intervals and tests will be increasingly accurate as the sample size increases.</li>
+<li>The consequences can generally be ignored for short-tailed distributions.</li>
+<li>For skewed errors, a transformation may solve the problem.</li>
+<li>For heavy-tailed errors, it is best to use robust methods that give less weight to outlying observations.</li>
+<li>You may consider a different model. The problem may not be present in a different model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-2">
+
+<pre class = 'prettyprint lang-r'>qqPlot(lmod)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-21-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+<pre >##  Chile Zambia 
+##      7     46</pre>
+
+</article></slide><slide class=""><hgroup><h2>Savings Example</h2></hgroup><article  id="savings-example-3">
+
+<pre class = 'prettyprint lang-r'>shapiro.test(residuals(lmod))</pre>
+
+<pre >## 
+##  Shapiro-Wilk normality test
+## 
+## data:  residuals(lmod)
+## W = 0.98698, p-value = 0.8524</pre>
+
+</article></slide><slide class=""><hgroup><h2>Checking for uncorrelated errors</h2></hgroup><article  id="checking-for-uncorrelated-errors">
+
+<p>It is difficult to check for correlated errors because there are so many possible patterns of correlation that may occur.</p>
+
+<ul>
+<li>The structure of temporal or spatial data make this easier to check.</li>
+</ul>
+
+<p>If the errors are uncorrelated, then the residuals are typically close to uncorrelated.</p>
+
+</article></slide><slide class=""><hgroup><h2>Uncorrelated errors</h2></hgroup><article  id="uncorrelated-errors">
+
+<p>A plot of \(\hat{\epsilon}\) versus time should be a random scatter of points if the errors are uncorrelated.</p>
+
+<ul>
+<li>Correlation among the errors is suggested when these plots have a clear pattern, e.g., lots of positive or negative residuals strung together or strings of residuals with alternating signs.</li>
+</ul>
+
+<p>A plot of \(\hat{\epsilon}_{i+1}\) versus \(\hat{\epsilon}_i\) for \(i=1,\dots,n-1\), should be a random scatter of points if the errors are uncorrelated.</p>
+
+<ul>
+<li>If the errors are positively correlated, we expect this plot to have a positive slope among the points.</li>
+<li>If the errors are negatively correlated, we expect this plot to have a negative slope among the points.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example: Global warming</h2></hgroup><article  id="example-global-warming">
+
+<p>The issue of global warming has attracted significant interest in recent years. Reliable records of annual temperatures taken with thermometers are only available back to the 1850s. Information about temperatures prior to this can be extracted from proxies such as tree rings. We can build a linear model to predict temperature since 1856 and then subsequently use this to predict earlier temperatures based on proxy information. The data we use here are included in the <code>globwarm</code> data set in the <code>faraway</code> package. The data are derived from Jones and Mann (2004).</p>
+
+</article></slide><slide class=""><hgroup><h2>Model</h2></hgroup><article  id="model">
+
+<p>Consider a model of temperature regressed on eight proxies.</p>
+
+<ul>
+<li><p>There are some missing values for <code>nhtemp</code> prior to 1856, so these observations are (automatically) omitted (by R) from our model.</p></li>
+<li><p>We then plot the residuals vs time.</p></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>data(globwarm,package=&quot;faraway&quot;)
+lmod = lm(nhtemp ~ wusa + jasper + westgreen +
+          chesapeake + tornetrask + urals + 
+          mongolia + tasman, data = globwarm)</pre>
+
+</article></slide><slide class=""><hgroup><h2>residuals vs time</h2></hgroup><article  id="residuals-vs-time">
+
+<pre class = 'prettyprint lang-r'>plot(residuals(lmod) ~ year, 
+     data = na.omit(globwarm), ylab = &quot;residuals&quot;)
+abline(h = 0)</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-24-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we see</h2></hgroup><article  id="what-we-see">
+
+<p>If the errors are uncorrelated, we expect a random scatter of points around \(\hat{\epsilon}=0\), which is certainly not the case here.</p>
+
+<p>The cyclical pattern suggests positive serial correlation.</p>
+
+<ul>
+<li>Another approach to check for serial correlation is to plot successive pairs of residuals.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Serial Correlation</h2></hgroup><article  id="serial-correlation">
+
+<pre class = 'prettyprint lang-r'>n = nobs(lmod)
+plot(tail(residuals(lmod), n - 1) ~ 
+     head(residuals(lmod), n - 1), 
+     xlab = expression(hat(epsilon)[i]),
+     ylab =expression(hat(epsilon)[i+1]))
+abline(h= 0 , v = 0, col = grey(0.75))</pre>
+
+<p><img src="error_assumption_files/figure-html/unnamed-chunk-25-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Durbin-Watson</h2></hgroup><article  id="durbin-watson">
+
+<p>The positive linear trend in the previous plot suggests positive serial correlation.</p>
+
+<p>A formal test of serial correlation between residuals is the Durbin-Watson test. The Durbin-Watson test decides between:</p>
+
+<p>\[H_0:\ \rho=0 \text{ versus } H_a:\ \rho&gt;0,\rho&lt;0,or \rho\neq 0\]</p>
+
+<p>where \(\rho\) is the temporal correlation between successive residuals.</p>
+
+<p>The Durbin-Watson test uses the statistic</p>
+
+<p>\[DW = \frac{\sum_{i=2}^n \left(\hat{\epsilon}_i - \hat{\epsilon}_{i-1}\right)^2}{\sum_{i=1}^n \hat{\epsilon}_i^2}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Durbin-Watson Test</h2></hgroup><article  id="durbin-watson-test">
+
+<p>Under the null hypothesis of uncorrelated errors, the test statistic follows a linear combination of \(\chi^2\) distributions. The test is implemented in the lmtest package.</p>
+
+<pre class = 'prettyprint lang-r'>library(lmtest)
+dwtest(nhtemp ~ wusa + jasper + westgreen + chesapeake + tornetrask + urals + mongolia + tasman, data=globwarm)</pre>
+
+<pre >## 
+##  Durbin-Watson test
+## 
+## data:  nhtemp ~ wusa + jasper + westgreen + chesapeake + tornetrask +     urals + mongolia + tasman
+## DW = 0.81661, p-value = 1.402e-15
+## alternative hypothesis: true autocorrelation is greater than 0</pre>
+
+</article></slide><slide class=""><hgroup><h2>Comment on autocorrelation</h2></hgroup><article  id="comment-on-autocorrelation">
+
+<p>Generalized least squares (which takes into account dependence) can be used for data with correlated errors.</p>
+
+<p>When there is no apparent temporal or spatial link between observations, it is almost impossible to check for correlation between errors.</p>
+
+<ul>
+<li>On the other hand, there is generally no reason to suspect it either!</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<p>Summary of methods for checking error assumptions</p>
+
+<ul>
+<li>Mean-zero error assumption:
+
+<ul>
+<li>Plot of residuals versus fitted values</li>
+</ul></li>
+<li>Constant error variance assumption:
+
+<ul>
+<li>Plot of residuals versus fitted values</li>
+<li>Plot of √(|ϵ ̂|) versus fitted values.</li>
+</ul></li>
+<li>Normal error assumption:
+
+<ul>
+<li>q-q of residuals</li>
+<li>Shapiro-wilk test</li>
+</ul></li>
+<li>Autocorrelated errors:
+
+<ul>
+<li>Plot of residuals versus time</li>
+<li>Plot of successive pairs of residuals</li>
+<li>Durbin-Watson test</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of R function</h2></hgroup><article  id="summary-of-r-function">
+
+<p>Summary of useful R functions for checking error assumptions</p>
+
+<p>Residuals:</p>
+
+<ul>
+<li><code>residuals(lmod)</code> extracts the OLS residuals.</li>
+<li><code>rstandard(lmod)</code> extracts the standardized residuals.</li>
+<li><code>rstudent(lmod)</code> extracts the studentized residuals.</li>
+</ul>
+
+<p>Mean-zero error assumption:</p>
+
+<ul>
+<li><code>car::residualPlot</code> constructs a plot of the residuals versus fitted values.</li>
+<li><code>plot(lmod, which = 1)</code> constructs a plot of the residuals versus fitted values.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of R function</h2></hgroup><article  id="summary-of-r-function-1">
+
+<p>Constant error variance assumption:</p>
+
+<ul>
+<li><code>car::residualPlots</code> constructs a plots of the residuals versus each predictor and the residuals versus the fitted values.</li>
+<li><code>plot(lmod, which = 3)</code> constructs a plot of \(\sqrt{|\hat{\epsilon}|}\) versus the fitted values.</li>
+</ul>
+
+<p>Normal error assumption:</p>
+
+<ul>
+<li><code>car::qqPlot</code> constructs a q-q of the studentized residuals with 95% pointwise confidence bands.</li>
+<li><code>plot(lmod, which = 2)</code> constructs a q-q plot of the standardized residuals.</li>
+<li><code>shapiro.test(residuals(lmod))</code> performs a Shapiro-Wilk test on the residuals.</li>
+</ul>
+
+<p>Autocorrelated errors:</p>
+
+<ul>
+<li><code>lmtest::dwtest</code> performs a Durbin-Watson test on the residuals of a fitted model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Importance of Linear Regression Assumptions</h2></hgroup><article  id="importance-of-linear-regression-assumptions">
+
+<p>Some assumptions are more important than others because their violation can cause seriously inaccurate conclusions.</p>
+
+<p>We can order these assumptions according to their importance:</p>
+
+<ol>
+<li>The systematic form of the model. If you get this seriously wrong, then predictions will be inaccurate and any explanation of the relationship between the variables may be biased in misleading ways.</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Importance of Linear Regression Assumptions</h2></hgroup><article  id="importance-of-linear-regression-assumptions-1">
+
+<ol>
+<li>Dependence of errors. The presence of strong dependence means that there is less information in the data than the sample size may suggest. Furthermore, there is a risk that the analyst will mistakenly introduce systematic components to the model in an attempt to deal with an unsuspected dependence in the errors. Unfortunately, it is difficult to detect dependence in the errors using regression diagnostics except in special situations such as temporal data. For other types of data, the analyst will need to rely on less testable assumptions about independence based on contextual knowledge.</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Importance of Linear Regression Assumptions</h2></hgroup><article  id="importance-of-linear-regression-assumptions-2">
+
+<ol>
+<li><p>Nonconstant variance. A failure to address this violation of the linear model assumptions may result in inaccurate inferences. In particular, prediction uncertainty may not be properly quantified. Even so, excepting serious violations, the adequacy of the inference may not be seriously compromised.</p></li>
+<li><p>Normality. This is the least important assumption. For large datasets, the inference will be quite robust to a lack of normality as the central limit theorem will mean that the approximations will tend to be adequate. Unless the sample size is quite small or the errors very strongly abnormal, this assumption is not crucial to success.</p></li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Conclusion</h2></hgroup><article  id="conclusion">
+
+<p>Although it is not part of regression diagnostics, it is worth mentioning that an even more important assumption is that the data at hand are relevant to the question of interest.</p>
+
+<p>This requires some qualitative judgment and is not checkable by plots or tests.</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

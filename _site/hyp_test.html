@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hypothesis Testing and Confidence Intervals</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Hypothesis Testing and Confidence Intervals',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Hypothesis Testing</h2></hgroup><article  id="hypothesis-testing">
+
+</article></slide><slide class=""><hgroup><h2>Overview</h2></hgroup><article  id="overview">
+
+<p>A statistical test of hypotheses is a statistical procedure used to decide between a null hypothesis, H_0, and an alternative hypothesis, H_a or H_1.</p>
+
+<ul>
+<li>The <strong>null hypothesis</strong> is usually a hypothesis that nothing interesting is going on.</li>
+<li>The <strong>alternative hypothesis</strong> is (generally) the complement of the null hypothesis and is usually what we want to show is true. It is also knows as <strong>claim</strong></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Test Statistic</h2></hgroup><article  id="test-statistic">
+
+<p>A test statistic is used to decide between \(H_0\) and \(H_a\).</p>
+
+<ul>
+<li><p>It’s a function of the data (and possibly the parameters in the hypotheses) that measures the support of the data for the \(H_a\).</p></li>
+<li><p>Assuming \(H_0\) is true (which is why it is called the null or default hypothesis), we determine the sampling distribution (at least approximately) of the test statistic.</p></li>
+<li><p>We can assess what a typical test statistic would be if \(H_0\) is true, and what would be an unusual test statistic.</p></li>
+<li><p>The distribution of the test statistic assuming \(H_0\) is true is called the <strong>null distribution</strong>.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Types of Error</h2></hgroup><article  id="types-of-error">
+
+<p>There are two types of errors we can make when doing hypothesis testing:</p>
+
+<ul>
+<li>Type I error is rejecting H_0 when H_0 is true.</li>
+<li>Type II error is failing to reject H_0 when H_a is true.</li>
+</ul>
+
+<p>We can control the Type I error rate at a specified level \(\alpha\) (called the significance level) since we know the distribution of the test statistic under the assumption that \(H_0\) is true.</p>
+
+<ul>
+<li>We reject \(H_0\) if the test statistic falls in the rejection region, which is the set of test statistics that are the $$100% most unlikely if \(H_0\) is true.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Decision Making</h2></hgroup><article  id="decision-making">
+
+<p>The test statistic is used to compute the p-value, which quantifies the probability of seeing a test statistic at least as supportive of \(H_a\) if \(H_0\) is true.</p>
+
+<ul>
+<li>If we specify a level of α beforehand, we reject \(H_0\) and conclude \(H_a\) when the p-value \(&lt;\alpha\). Otherwise, we fail to reject \(H_0\).</li>
+</ul>
+
+<p>Note: People sometimes say that the smaller the p-value, the stronger the evidence that \(H_a\) is true and \(H_0\) is false. This is not technically true, because a p-value\(\sim U(0,1)\) if \(H_0\) is true. However, if the \(H_a\) is true, the p-value is more likely to be small, which makes us think \(H_a\) is true for really small p-values. So we’ll still use a strength of evidence interpretation of p-values.</p>
+
+</article></slide><slide class=""><hgroup><h2>Strength of Evidence</h2></hgroup><article  id="strength-of-evidence">
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left">p-value</th>
+<th align="left">Evidence</th>
+</tr>
+<tr class="odd">
+<td align="left">p-value &gt; 0.10</td>
+<td align="left">No evidence for \(H_a\)</td>
+</tr>
+<tr class="even">
+<td align="left">0.05 &lt; p-value \(\leq\) 0.10</td>
+<td align="left">Weak evidence for \(H_a\)</td>
+</tr>
+<tr class="odd">
+<td align="left">0.01 &lt; p-value \(\leq\) 0.05</td>
+<td align="left">Moderate evidence for \(H_a\)</td>
+</tr>
+<tr class="even">
+<td align="left">0.001 &lt; p-value \(\leq\) 0.01</td>
+<td align="left">Strong evidence for \(H_a\)</td>
+</tr>
+<tr class="odd">
+<td align="left">p-value \(\leq\) 0.001</td>
+<td align="left">Very strong evidence for \(H_a\)</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p>Suppose that \(Y_1,\dots ,Y_n\) is a random sample from a population having a normal distribution with unknown mean \(\mu\) and variance 1.</p>
+
+<p>We would like to decide between the following two hypotheses: \(H_0:\mu=0\) and \(H_a:\mu\neq 0\)</p>
+
+<p>If \(H_0\) is true, then the statistic \(\overline{Y} \sim N(0,1/n)\) and the test statistic</p>
+
+<p>\[Z^* = \frac{\overline{Y}}{1/\sqrt{n}} = \sqrt{n}\overline{Y} \sim N(0,1)\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-1">
+
+<p>If \(\alpha=0.1\), then the 10% of test statistics that are most unlikely if \(H_0\) is true (i.e., most supportive of \(H_a\)) are more extreme than \(z^{0.95}\) and \(z^{0.05}\), the 0.05 and 0.95 quantiles of a standard normal distribution, respectively.</p>
+
+<ul>
+<li>The 0.05 quantile of the standard normal distribution is -1.65 and the 0.95 quantile is 1.65.
+
+<ul>
+<li>In R: <code>qnorm(c(0.05,0.95))</code></li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Distribution of Test Statistic</h2></hgroup><article  id="distribution-of-test-statistic">
+
+<pre class = 'prettyprint lang-r'>x = seq(-4,4,length.out = 1000)
+y = dnorm(x, 0, 1)
+plot(x,y,xlab = &#39;Z&#39;, ylab = &#39;density&#39;)
+abline(v = qnorm(0.95))
+abline(v = qnorm(0.05))</pre>
+
+<p><img src="hyp_test_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Decision</h2></hgroup><article  id="decision">
+
+<p>\(H_0\) should be rejected when \(Z^*\) is less than -1.65 or more than 1.65, i.e., the rejection region is \((-\infty ,-1.65)\bigcup (1.65,\infty)\).</p>
+
+<p>Alternatively, we could compute the p-value using the formula \(2P(Z\geq |Z^* |)\) in order to make our choice between the hypotheses.</p>
+
+<p>Suppose z^*=1.74 and α=0.10:</p>
+
+<ul>
+<li>The test statistic is in the rejection region, so we would conclude that \(H_a\) is true.</li>
+<li>The p-value is \(2P(Z\geq 1.74)=0.082\)</li>
+<li>In R: <code>2*(1-pnorm(1.74))</code></li>
+</ul>
+
+<p>There is weak evidence that the population mean differs from 0.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Confidence Interval</h2></hgroup><article  id="confidence-interval">
+
+</article></slide><slide class=""><hgroup><h2>Review</h2></hgroup><article  id="review">
+
+<p>A confidence interval provides us with plausible values of a target parameter.</p>
+
+<p>A confidence interval has an associated confidence level.</p>
+
+<ul>
+<li>Under repeated independent trials, a confidence interval procedure will produce intervals containing the target parameter with probability equal to the confidence level.</li>
+</ul>
+
+<p>The formulas for confidence intervals are usually derived from a <strong>pivotal quantity</strong>.</p>
+
+<ul>
+<li>A <strong>pivotal quantity</strong> is a function of the data and the target parameter whose distribution does not depend on the value of the target parameter.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-2">
+
+<p>Suppose \(Y_1, Y_2, \dots , Y_n \sim N(\mu, 1)\) and i.i.d.</p>
+
+<p>The random variable \[Z=\frac{\overline{Y}-\mu}{1/\sqrt{n}}\sim N(0,1)\] is a pivotal quantity.</p>
+
+<p>Since \(P(-1.96\leq Z\leq 1.96) = 0.95\), we can derive that \[P\left(\overline{Y} - 1.96 \times \frac{1}{\sqrt{n}} \leq \mu \leq \overline{Y} + 1.96 \times \frac{1}{\sqrt{n}}\right)=0.95 \] Our 95% confidence interval for \(\mu\) (in this context) is \[\left[\overline{Y} - 1.96 \times \frac{1}{\sqrt{n}}, \overline{Y} + 1.96 \times \frac{1}{\sqrt{n}}\right].\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-3">
+
+<p>If \(\overline{y} = 0.551\), then the associated 95% confidence interval for \(\mu\) when \(n=10\) is [-0.070,1.171].</p>
+
+<p>Note: the confidence level is associated with the <strong>procedure, not a specific interval</strong>.</p>
+
+<ul>
+<li>A 95% confidence interval procedure will produce intervals that contain the target parameter 95% of the time.</li>
+</ul>
+
+<p>If we used the CI formula given above to produce 100 intervals from independent data sets, then about 95% of them would contain the true mean, but about 5% would not.</p>
+
+</article></slide><slide class=""><hgroup><h2>Interpretation</h2></hgroup><article  id="interpretation">
+
+<p><img src="images/animation.gif" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>CI and Hypothesis Test</h2></hgroup><article  id="ci-and-hypothesis-test">
+
+<p>CIs are directly linked to hypothesis tests.</p>
+
+<p>A 100(1-\(\alpha\))% two-sided confidence interval for target parameter \(\theta\) is linked with a hypothesis test of \(H_0:\theta=c\) versus \(H_a:\theta\neq c\) tested at level \(\alpha\).</p>
+
+<ul>
+<li><p>Any point that lies within the \(100(1-\alpha)\)% confidence interval for \(\theta\) represents a value of \(c\) for which the associated null hypothesis would not be rejected at significance level \(\alpha\).</p></li>
+<li><p>Any point outside of the confidence interval is a value of \(c\) for which the associated null hypothesis would be rejected.</p></li>
+</ul>
+
+<p>Similar relationships hold for one-sided CIs and hypothesis tests.</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-4">
+
+<p>Consider the 95% confidence interval for \(\mu\) we previously constructed [-0.070,1.171].</p>
+
+<p>Consider a statistical test of \(H_0:\mu=c\) versus \(H_a:\mu\neq c\) using \(\alpha=0.05\).</p>
+
+<p>For what values of \(c\) would we fail to reject \(H_0\)?</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>For what values of \(c\) would we reject \(H_0\)?</p>
+
+</article></slide><slide class=""><hgroup><h2>CI vs Hypothesis Test</h2></hgroup><article  id="ci-vs-hypothesis-test">
+
+<p>A CI provides us with much of the same information as a hypothesis test, but it doesn’t provide the p-value or allow us to do hypothesis tests at different significance levels.</p>
+
+<p>Confidence regions are often preferred over hypothesis tests because they provide additional information in the form of plausible parameters values.</p>
+
+</article></slide><slide class=""><hgroup><h2>Bootstrap Confidence Intervals</h2></hgroup><article  id="bootstrap-confidence-intervals">
+
+<p>The conventional parametric confidence interval assumes we know the distribution of the population in order to find a pivotal quantity.</p>
+
+<ul>
+<li>The population distribution is needed to determine the sampling distribution of our statistic.</li>
+</ul>
+
+<p>A bootstrap confidence interval can be constructed if the population distribution is unknown.</p>
+
+</article></slide><slide class=""><hgroup><h2>Lack of Theory?</h2></hgroup><article  id="lack-of-theory">
+
+<p>How would we estimate the sampling distribution of a statistic without statistical theory?</p>
+
+<p><em>Estimating the Sampling Distribution of a statistic for a Known Population</em></p>
+
+<ul>
+<li>Obtain a random sample of size n from the population.</li>
+<li>Compute the statistic for the random sample.</li>
+<li>Perform steps 1 and 2 a large number of times.</li>
+<li>Determine the empirical distribution of the statistics from the independent samples.</li>
+</ul>
+
+<p>Consider a comparison of the estimated sampling distribution (the empirical distribution) and the true sampling distribution of \(\overline{Y}\) when sampling \(n=10\) observations from a \(N(0,1)\) population.</p>
+
+</article></slide><slide class=""><hgroup><h2>Sampling Distribution of \(\overline{Y}\)</h2></hgroup><article  id="sampling-distribution-of-overliney">
+
+<p>Let, \(Y_1,\dots, Y_10\sim N(0,1)\), so, \(\overline{Y}\sim N(0, 1/n)\).</p>
+
+<p><img src="hyp_test_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Bootstrap Method</h2></hgroup><article  id="bootstrap-method">
+
+<p>The <strong>bootstrap method</strong> allows us to approximate the sampling distribution of a statistic by using the observed data to produce simulated data sets.</p>
+
+<p>The <strong>bootstrap method</strong> uses the observed data to approximate the shape, spread, and bias of the sampling distribution of a statistic.</p>
+
+<p>A bootstrap sample is a sample <strong>with replacement</strong> of size n from the observed data.</p>
+
+</article></slide><slide class=""><hgroup><h2>Estimation using Bootstrap</h2></hgroup><article  id="estimation-using-bootstrap">
+
+<p>Estimating the Sampling Distribution Using the Bootstrap Method</p>
+
+<ul>
+<li>Obtain a bootstrap sample of the observed data by selecting with replacement a sample of size n from the observed data.</li>
+<li>Compute the statistic for the random sample.</li>
+<li>Perform steps 1 and 2 a large number of times.</li>
+<li>Determine the empirical distribution of the statistics from the independent bootstrap samples (a.k.a., the bootstrap distribution).</li>
+</ul>
+
+<p>Consider a comparison of the bootstrap, empirical, and true sampling distributions of \(\overline{Y}\) when the data are obtained from a \(N(0,1)\) population.</p>
+
+</article></slide><slide class=""><hgroup><h2>Comparison</h2></hgroup><article  id="comparison">
+
+<pre class = 'prettyprint lang-r'>set.seed(10)
+x = seq(-1.3, 1.3, length.out = 10000)
+Truth = dnorm(x, sd = 1/sqrt(10))
+
+nsim = 4000
+Empirical = sapply(1:nsim, function(x) mean(rnorm(10)))
+
+y = rnorm(10)
+boot_ybar = sapply(1:nsim, function(x) mean(sample(y, replace = T)))
+
+plot(x,Truth,col=&#39;red&#39;,type = &#39;l&#39;, lwd = 2, 
+     xlab = &#39;Sample Mean&#39;, ylab = &#39;Density&#39;, 
+     main = &#39;Comparison of Empirical, Bootstrap, and True \n Sampling Distributions of the Sample Mean&#39;)
+lines(density(Empirical), lwd = 2)
+lines(density(boot_ybar),lwd = 2, col=&#39;blue&#39;)
+legend(&#39;topright&#39;,legend = c(&#39;Truth&#39;,&#39;Empirical&#39;,&#39;Bootstrap&#39;), 
+       col = c(&#39;red&#39;,&#39;black&#39;,&#39;blue&#39;), lty = 1,lwd = 2)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Comparison</h2></hgroup><article  id="comparison-1">
+
+<p><img src="hyp_test_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>CI from Bootstrap</h2></hgroup><article  id="ci-from-bootstrap">
+
+<p>A 100(1-\(\alpha\))% confidence interval for a target parameter \(\theta\) can be obtained by determining the \(\alpha\)/2 and 1-\(\alpha\)/2 quantiles of the bootstrap distribution for \(\hat{\theta}\). E.g., a 95% CI for a population mean \(\mu\) could be obtained by taking the 0.025 and 0.975 quantiles of the bootstrap distribution for \(\overline{Y}\).</p>
+
+<p>Example (continued): Continuing our previous example, the 95% bootstrap confidence interval for \(\mu\) is.</p>
+
+<pre class = 'prettyprint lang-r'>quantile(boot_ybar, prob = c(0.025, 0.975))</pre>
+
+<pre >##       2.5%      97.5% 
+## -0.7689507  0.9525203</pre>
+
+<p>The parametric 95% confidence interval is [-0.070,1.171].</p>
+
+</article></slide><slide class=""><hgroup><h2>Suggestion</h2></hgroup><article  id="suggestion">
+
+<p>The parametric and bootstrap methods of constructing confidence intervals will NOT produce identical intervals, though the intervals should be similar if the distributional assumptions are satisfied.</p>
+
+<p>If you are unsure whether the distributional assumptions are satisfied, you should use the bootstrap method to construct your confidence interval.</p>
+
+</article></slide><slide class=""><hgroup><h2>Exercise</h2></hgroup><article  id="exercise">
+
+<p>Grogan and Wirth (1981) provide data on the wing length in millimeters of nine members of a species of midge (small, two-winged flies). From these nine measurements, we wish to make inference about the population mean \(\mu\). Assume that the data are an i.i.d. sample from a \(N(\mu,\sigma^2)\) population with \(\mu\) and \(\sigma^2\) unknown.</p>
+
+<p>The data are: 1.64, 1.70, 1.72, 1.74, 1.82, 1.82, 1.82, 1.90, 2.08</p>
+
+<ol>
+<li>Construct a 98% parametric confidence interval for \(\mu\).<br/></li>
+<li>Construct a 98% bootstrap confidence interval for \(\mu\).</li>
+<li>Perform a hypothesis test of whether \(\mu\)&gt;2 at \(\alpha\)=0.02.</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Solution</h2></hgroup><article  id="solution">
+
+<pre class = 'prettyprint lang-r'>dat = c(1.64, 1.70, 1.72, 1.74, 1.82, 1.82, 1.82, 1.90, 2.08)
+ybar = mean(dat)
+s = sd(dat)
+er = qt(0.99, df = length(dat)-1) * s/sqrt(length(dat))
+print(paste0(&#39;98% parametric CI is [&#39;, round(ybar - er,3), &#39;, &#39;, round(ybar +er,3),&#39;]&#39;))</pre>
+
+<pre >## [1] &quot;98% parametric CI is [1.679, 1.93]&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>boot_ybar = sapply(1:4000, function(x) mean(sample(dat, replace = T)))
+print(paste0(&#39;98% bootstrap CI is [&#39;,round(quantile(boot_ybar, probs = 0.025),3),&#39;, &#39;,
+             round(quantile(boot_ybar, probs = 0.975),3),&#39;]&#39;))</pre>
+
+<pre >## [1] &quot;98% bootstrap CI is [1.731, 1.887]&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>ttest = (ybar - 2)/(s/sqrt(length(dat)))
+print(paste0(&#39;t-test statistics: &#39;, round(ttest,3)))</pre>
+
+<pre >## [1] &quot;t-test statistics: -4.516&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>print(paste0(&#39;p-value:&#39;, round(1-pt(ttest,df = length(dat)-1) ,3)))</pre>
+
+<pre >## [1] &quot;p-value:0.999&quot;</pre></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

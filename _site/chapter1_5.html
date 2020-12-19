@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Review of Random Variables, Vectors, and Matrices</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Review of Random Variables, Vectors, and Matrices',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Probability Basics</h2></hgroup><article  id="probability-basics">
+
+<p>The <strong>sample space</strong> \(\Omega\) is the set of possible outcomes of an experiment.</p>
+
+<p>Points \(\omega\) in \(\Omega\) are called <strong>sample outcomes</strong>, <strong>realizations</strong>, or <strong>elements</strong>.</p>
+
+<p>Subsets of \(\Omega\) are <strong>events</strong>.</p>
+
+<p>A function \(P\) that assigns a real number \(P(A)\) to every event \(A\) is a probability distribution if it satisfies three properties:</p>
+
+<ul>
+<li>\(P(A)\geq 0\) for all \(A\in \Omega\)</li>
+<li>\(P(\Omega)=1\)</li>
+<li>If $A_1, A_2, … $ are disjoint, then \(P\left(\cup_{i=1}^\infty A_i \right)=\sum_{i=1}^\infty P(A_i)\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Independence</h2></hgroup><article  id="independence">
+
+<p>A set of events \(\{A_i:i\in I\}\) is independent if</p>
+
+<p>\[P\left(\cap_{i\in J} A_i \right)=\prod_{i\in J} P(A_i ) \]</p>
+
+<p>for every finite subset \(J\) of \(I\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Random Variables</h2></hgroup><article  id="random-variables">
+
+<p>A <strong>random variable</strong> \(Y\) is a mapping \[Y:\Omega→\mathbb{R}\] that assigns a real number \(Y(\omega)\) to each outcome \(\omega\).</p>
+
+<p>The <strong>cumulative distribution function (CDF)</strong> of \(Y\) is a function \(F_Y:\mathbb{R}\to [0,1]\) defined by \(F_Y (y)=P(Y\leq y)\).</p>
+
+<p>\(Y\) is a <strong>discrete</strong> random variable if it takes countably many values \(\{x_1,x_2,\dots \}\).</p>
+
+<p>The <strong>probability mass function (pmf)</strong> for \(Y\) is \(f_Y (y)=P(Y=y)\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Random Variables</h2></hgroup><article  id="random-variables-1">
+
+<p>\(Y\) is a continuous random variable if there exists a function \(f_Y (y)\) such that: - \(f_Y (y)\geq 0\) for all \(y\), - \(\int_{-\infty}^\infty f_Y (y) dy = 1\), - and for \(a\leq b\), \(P(a&lt;Y&lt;b)=\int_a^b f_Y (y) dy\).</p>
+
+<p>The function \(f_Y\) is called the <strong>probability density function (pdf)</strong>.</p>
+
+<p>Additionally, \(F_Y (y)=\int_{-\infty}^y f_Y (y) dy\) and \(f_Y (y)=F&#39;_Y(y)\) at any point \(y\) at which \(F_Y\) is differentiable.</p>
+
+</article></slide><slide class=""><hgroup><h2>Expected value and Variance</h2></hgroup><article  id="expected-value-and-variance">
+
+<p>The expected value, mean, or first moment of \(Y\) is defined as</p>
+
+<p>\[E(Y)= \begin{cases}\sum\limits_y yf(y)  &amp; \text{if }Y\text{ is discrete}\\ ∫yf(y)  dy &amp;\text{if } Y\text{ is continuous}\end{cases}\] assuming the sum and integral are well-defined.</p>
+
+<p>The <strong>variance</strong> of \(Y\) is defined by \[var(Y)=E(Y-E(Y))^2\] and the <strong>standard deviation</strong> of Y is \[SD(Y)=\sqrt{var(Y)  }\].</p>
+
+</article></slide><slide class=""><hgroup><h2>Bivariate distributions</h2></hgroup><article  id="bivariate-distributions">
+
+<p>Consider two random variables \(X\) and \(Y\). Let \(S\) be the joint <strong>support</strong> of \(X\) and \(Y\) (all the possible combinations of X and Y).</p>
+
+<p>The joint CDF of the random variables is \[F(x,y)=P(X\leq x,Y\leq y)\].</p>
+
+<p>If \(X\) and \(Y\) are jointly discrete, the joint pmf \(f(x,y)\) specifies \(P(X=x,Y=y)\) and satisfies the following properties:</p>
+
+<ul>
+<li>\(0\leq f(x,y)\leq 1\)</li>
+<li>\(\sum\sum_{(x,y)\in S} f(x,y) =1\)</li>
+<li>\(P((X,Y)\in A)=\sum\sum_{(x,y)\in A} f(x,y)\) .</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Marginal Density of Discrete RV</h2></hgroup><article  id="marginal-density-of-discrete-rv">
+
+<p>If \(X\) and \(Y\) are jointly discrete with joint pmf \(f(x,y)\), then the marginal pmf of \(X\), \(f_X (x)\) is obtained via the formula</p>
+
+<p>\[f_X (x)=\sum _{\text{all }y}f(x,y)\] and</p>
+
+<p>\[E(XY)=\sum_{\text{all }x}\sum_{\text{all }y}xyf(x,y).\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Joint of continuous RV</h2></hgroup><article  id="joint-of-continuous-rv">
+
+<p>If \(X\) and \(Y\) are jointly continuous, \(f(x,y)\) is the joint pdf if:</p>
+
+<ul>
+<li>f\((x,y)\geq 0\) for all \((x,y)\in S\)</li>
+<li>\(\int_{-\infty}^\infty∫_{-infty}^\infty f(x,y) dx dy=1\)</li>
+<li>\(P\left((X,Y)\in A\right)=\int \int_{x,y\in A} f(x,y)dx dy\).</li>
+</ul>
+
+<p>If \(X\) and \(Y\) are jointly continuous with joint pdf \(f(x,y)\), then the marginal density of \(X\), \(f_X (x)\) is obtained via the formula</p>
+
+<p>\[f_X (x)=∫_{-\infty}^\infty f(x,y)  dy\]</p>
+
+<p>\[E(XY)=\int_{-\infty}^\infty\int_{-\infty}^\infty xyf(x,y)dy dx.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Covariance</h2></hgroup><article  id="covariance">
+
+<p>The covariance between random variables \(Y\) and \(Z\) is \[cov(Y,Z)=E[(Y-E(Y))(Z-E(Z))]=E(YZ)-E(Y)E(Z).\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of Variance and Covariance</h2></hgroup><article  id="properties-of-variance-and-covariance">
+
+<p>Let \(a\) and \(b\) be scalar constants. Then:</p>
+
+<ul>
+<li>\(E(aY)=aE(Y)\)</li>
+<li>\(E(a+Y)=a+E(Y)\)</li>
+<li>\(E(aY+bZ)=aE(Y)+bE(Z)\)</li>
+<li>\(var(aY)=a^2 var(Y)\)</li>
+<li>\(var(a+Y)=var(Y)\)</li>
+<li>\(cov(aY,bZ)=ab cov(Y,Z).\)</li>
+<li>\(var(Y+Z)=var(Y)+var(Z)+2cov(Y,Z).\)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Independence</h2></hgroup><article  id="independence-1">
+
+<p>\(Y\) and \(Z\) are independent if \(F(y,z)=F_Y (y) F_Z (z).\)</p>
+
+<p>If \(Y\) and \(Z\) are independent, then:</p>
+
+<ul>
+<li>E(YZ)=E(Y)E(Z)</li>
+<li>cov(Y,Z)=0.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Properties of random vectors</h2></hgroup><article  id="properties-of-random-vectors">
+
+<p>Let \(\mathbf{y}=(Y_1,Y_2,\dots,Y_n )^T\) be an \(n×1\) vector of random variables. \(\mathbf{y}\) is a random vector.</p>
+
+<ul>
+<li>A vector is always defined to be a column vector, even if the notation is ambiguous.</li>
+</ul>
+
+<p>\[E(\mathbf{y})=\begin{pmatrix}E(Y_1)\\E(Y_2)\\\vdots\\E(Y_n)\end{pmatrix}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of random vectors</h2></hgroup><article  id="properties-of-random-vectors-1">
+
+<p>Let \(\mathbf{y}=(Y_1,Y_2,\dots,Y_n )^T\) be an \(n×1\) vector of random variables. \(\mathbf{y}\) is a random vector.</p>
+
+<p>\[\begin{aligned}
+var(\mathbf{y})= &amp; E(\mathbf{y}\mathbf{y}^T )-E(\mathbf{y})E(\mathbf{y})^T\\ =&amp; \begin{pmatrix}var(Y_1) &amp; cov(Y_1,Y_2) &amp;\dots &amp;cov(Y_1,Y_n)\\cov(Y_2,Y_1 )&amp;var(Y_2)&amp;\dots&amp;cov(Y_2,Y_n)\\\vdots&amp;\vdots&amp;\vdots&amp;\vdots\\
+cov(Y_n,Y_1)&amp;cov(Y_n,Y_2)&amp;…&amp;var(Y_n)\end{pmatrix}\end{aligned}.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Important Properties</h2></hgroup><article  id="important-properties">
+
+<p>Define:</p>
+
+<ul>
+<li>\(A\) to be an m×n matrix of constants</li>
+<li>\(\mathbf{x}=(X_1,X_2,…,X_n )^T\)and \(\mathbf{z}=(Z_1,Z_2,…,Z_n )^T\) to be \(n×1\) random vectors.</li>
+</ul>
+
+<p>Formally, \[cov(\mathbf{x},\mathbf{y})=E(\mathbf{x}\mathbf{y}^T )-E(\mathbf{x})E(\mathbf{y})^T.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Important Properties</h2></hgroup><article  id="important-properties-1">
+
+<p>Additionally:</p>
+
+<ul>
+<li>\(E(A\mathbf{y})=AE(\mathbf{y}), E(\mathbf{y}A^T )=E(\mathbf{y}) A^T.\)</li>
+<li>\(E(\mathbf{x}+\mathbf{y})=E(\mathbf{x})+E(\mathbf{y})\)</li>
+<li>\(var(A\mathbf{y})=A\ var(\mathbf{y}) A^T\)</li>
+<li>\(cov(\mathbf{x}+\mathbf{y},\mathbf{z})=cov(\mathbf{x},\mathbf{z})+cov(\mathbf{y},\mathbf{z})\)</li>
+<li>\(cov(\mathbf{x},\mathbf{y}+\mathbf{z})=cov(\mathbf{x},\mathbf{y})+cov(\mathbf{x},\mathbf{z})\)</li>
+<li>\(cov(A\mathbf{x},\mathbf{y})=A\ cov(\mathbf{x},\mathbf{y})\text{ and } cov(\mathbf{x},A\mathbf{y})=cov(\mathbf{x},\mathbf{y}) A^T.\)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Important Properties</h2></hgroup><article  id="important-properties-2">
+
+<p>Let \(\mathbf{a}\) is an \(n×1\) vector of constants and \(\mathbf{0}_{n\times n}\) be an \(n\times n\) matrix of zeros, then</p>
+
+<p>\[var(a)=0_{n\times n},\]</p>
+
+<p>\[cov(\mathbf{a},\mathbf{y})=0_{n\times n},\]</p>
+
+<p>and</p>
+
+<p>\[var(\mathbf{a}+\mathbf{y})=var(\mathbf{y}).\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Multivariate normal (Gaussian) distribution</h2></hgroup><article  id="multivariate-normal-gaussian-distribution">
+
+<p>\(\mathbf{y}=(Y_1,\dots,Y_n )^T\) has a multivariate normal distribution with mean \(\mu\) (an \(n\times 1\) vector) and covariance \(\Sigma\) (an \(n\times n\) matrix) if the joint pdf is</p>
+
+<p>\[f(\mathbf{y})=\frac{1}{(2\pi)^{n/2} |\Sigma|^{1/2} }  \exp\left(-\frac{1}{2} (\mathbf{y}-\mathbf{\mu})^T \Sigma^{-1} (\mathbf{y}-\mathbf{\mu})\right).\]</p>
+
+<p>Note that \(\Sigma\) must be symmetric and positive definite.</p>
+
+<p>We would denote this as \(\mathbf{y}∼N(\mathbf{\mu},\Sigma)\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties</h2></hgroup><article  id="properties">
+
+<p><strong>Important fact</strong>: A linear function of a multivariate normal random vector (i.e., \(a+A\mathbf{y}\)) is also multivariate normal (though it could collapse to a single random variable).</p>
+
+<p><strong>Application</strong>: Suppose that \(\mathbf{y}∼N(\mu,\Sigma)\). For an \(m\times n\) matrix of constants \(A\), \(A\mathbf{y}∼N(A\mu,A\Sigma A^T)\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p>Gasoline is to be stocked in a bulk tank once at the beginning of each week and then sold to individual customers. Let \(Y_1\) denote the proportion of the capacity of the bulk tank that is available after the tank is stocked at the beginning of the week. Because of the limited supplies, \(Y_1\) varies from week to week. Let \(Y_2\) denote the proportion of the capacity of the bulk tank that is sold during the week. Because \(Y_1\) and \(Y_2\) are both proportions, both variables are between 0 and 1. Further, the amount sold, \(y_2\), cannot exceed the amount available, \(y_1\). Suppose the joint density function for \(Y_1\) and \(Y_2\) is given by \[f(y_1,y_2 )=3y_1;\ 0≤y_2\leq y_1\leq 1.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 1</h2></hgroup><article  id="problem-1">
+
+<p>Determine \(P(0\leq Y_1\leq 0.5;\ 0.25\leq Y_2)\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 2</h2></hgroup><article  id="problem-2">
+
+<p>Determine \(f_{Y_1 }\) and \(f_{Y_2 }\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 3</h2></hgroup><article  id="problem-3">
+
+<p>Determine \(E(Y_1)\) and \(E(Y_2)\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 4</h2></hgroup><article  id="problem-4">
+
+<p>Determine \(var(Y_1)\) and \(var(Y_2)\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 5</h2></hgroup><article  id="problem-5">
+
+<p>Determine \(E(Y_1 Y_2)\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 6</h2></hgroup><article  id="problem-6">
+
+<p>Determine \(cov(Y_1,Y_2)\)</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem 7</h2></hgroup><article  id="problem-7">
+
+<p>Determine the mean and variance of \(a^T y\), where \(a=(1,-1)^T\) and \(y=(Y_1,Y_2 )^T\). This is the expectation and variance of the different between the amount of gas available and the amount of gas sold:</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Matrix Differentiation</h2></hgroup><article  id="matrix-differentiation">
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 1</h2></hgroup><article  id="matrix-differentiation-1">
+
+<p>Let \[\mathbf{y=Ax},\] where \(\mathbf{y}\) is \(m\times 1\), \(\mathbf{x}\) is \(n\times 1\) , \(\mathbf{A}\) is \(m\times n\), and \(\mathbf{A}\) does not depend on \(\mathbf{x}\), then \[\frac{\partial \mathbf{y}}{\partial \mathbf{x}}=A\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 1 (Proof)</h2></hgroup><article  id="matrix-differentiation-1-proof">
+
+<p>Since \(i\)th element of \(\mathbf{y}\) is given by \[y_i=\sum\limits_{k=1}^{n}a_{ik}x_k,\] it follows that \[\frac{\partial y_i}{\partial x_j}=a_{ij}\] for all \(i=1,\dots ,m,\quad j=1,\dots ,n\). Hence \[\frac{\partial \mathbf{y}}{\partial \mathbf{x}}=A\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 2</h2></hgroup><article  id="matrix-differentiation-2">
+
+<p>Let the scalar \(\alpha\) be defined by \[\alpha =\mathbf{y}^T\mathbf{Ax},\] where \(\mathbf{y}\) is \(m\times 1\), \(\mathbf{x}\) is \(n\times 1\) , \(\mathbf{A}\) is \(m\times n\), and \(\mathbf{A}\) does not depend on \(\mathbf{x}\) and \(\mathbf{y}\), then \[\frac{\partial \alpha }{\partial \mathbf{x}}=\mathbf{y}^T\mathbf{A}\] \[\frac{\partial \alpha }{\partial \mathbf{y}}=\mathbf{x}^T\mathbf{A}^T\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 2 (Proof)</h2></hgroup><article  id="matrix-differentiation-2-proof">
+
+<p>Define \(\mathbf{w}^T=\mathbf{y}^T\mathbf{A}\) and note that \(\alpha =\mathbf{w}^T\mathbf{x}\)</p>
+
+<p>Hence, \[\frac{\partial \alpha}{\partial \mathbf{x}}=\mathbf{w}^T=\mathbf{y}^T\mathbf{A}.\] Since \(\alpha\) is a scalar we can write \[\alpha =\alpha^T=\mathbf{x}^T\mathbf{A}^T\mathbf{y}\] hence, \[\frac{\partial \alpha }{\partial \mathbf{y}}=\mathbf{x}^T\mathbf{A}^T\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 3</h2></hgroup><article  id="matrix-differentiation-3">
+
+<p>For the special case in which the scalar \(\alpha\) is given by the quadratic form\[\alpha=\mathbf{x}^T\mathbf{A}\mathbf{x}\] where \(\mathbf{x}\) is \(n\times 1\) , \(\mathbf{A}\) is \(n\times n\), and \(\mathbf{A}\) does not depend on \(\mathbf{x}\), then \[\frac{\partial \alpha}{\partial \mathbf{x}}=\mathbf{x}^T(\mathbf{A}+\mathbf{A}^T)\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 3 (Proof)</h2></hgroup><article  id="matrix-differentiation-3-proof">
+
+<p>By definition,\[\alpha =\sum\limits_{j=1}^{n}\sum\limits_{i=1}^{n}a_{ij}x_ix_j\] Differentiating with respect to the \(k\)th element of \(x\) we have \[\frac{\partial \alpha}{\partial x_k}=\sum\limits_{j=1}^{n}a_{kj}x_j+\sum\limits_{i=1}^{n}a_{ik}x_i\] for all \(k=1,\dots ,n\), and consequently, \[\frac{\partial \alpha }{\partial \mathbf{x}}=\mathbf{x}^T\mathbf{A}^T+\mathbf{x}^T\mathbf{A}=\mathbf{x}^T(A^T+A)\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 3.5</h2></hgroup><article  id="matrix-differentiation-3.5">
+
+<p>For the special case where \(\mathbb{A}\) is a symmetric matrix and \[\alpha=\mathbf{x}^T\mathbf{A}\mathbf{x}\] where \(\mathbf{x}\) is \(n\times 1\) , \(\mathbf{A}\) is \(n\times n\), and \(\mathbf{A}\) does not depend on \(\mathbf{x}\), then \[\frac{\partial \alpha}{\partial \mathbf{x}}=2\mathbf{x}^T\mathbb{A}.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 4</h2></hgroup><article  id="matrix-differentiation-4">
+
+<p>Let the scalar \(\alpha\) be defined by\[\alpha =\mathbf{y}^T\mathbf{x}\] where \(\mathbf{y}\) is \(n\times 1\), \(\mathbf{x}\) is \(n\times 1\), and both \(\mathbf{y}\) and \(\mathbf{x}\) are functions of the vector \(\mathbf{z}\). Then \[\frac{\partial \alpha}{\partial \mathbf{z}}=\mathbf{x}^T\frac{\partial \mathbf{y}}{\partial \mathbf{z}}+\mathbf{y}^T\frac{\partial \mathbf{x}}{\partial \mathbf{z}}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Differentiation 4.5</h2></hgroup><article  id="matrix-differentiation-4.5">
+
+<p>Let the scalar \(\alpha\) be defined by \[\alpha =\mathbf{x}^T\mathbf{x}\] where \(\mathbf{x}\) is \(n\times 1\), and \(\mathbf{x}\) is a function of the vector \(\mathbf{z}\). Then \[\frac{\partial \alpha }{\partial \mathbf{z}}=2\mathbf{x}^T\frac{\partial \mathbf{x}}{\partial \mathbf{z}}.\]</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

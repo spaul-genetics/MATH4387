@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Introduction</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Introduction',
+                        subtitle: 'Chapter 1 of LMWR2, Chapter 1 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/3/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class=""><hgroup><h2>Types of Relationships</h2></hgroup><article  id="types-of-relationships">
+
+<ol>
+<li>Deterministic or Functional Relationship</li>
+<li>Statistical Relationship</li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Deterministic Relationship</h2></hgroup><article  id="deterministic-relationship">
+
+<p>Consider relationship between temperature in degrees Celsius \((C)\) and temperature in degrees Fahrenheit \((F)\) \[F=\frac{9}{5}C+32\] <img src="chapter1_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Statistical Relationships</h2></hgroup><article  id="statistical-relationships">
+
+<ol>
+<li>Not an exact relationship</li>
+<li>A relationship in which <span style="color: red;">
+trend</span> exists between \(x\) and \(y\) <img src="chapter1_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;" /></li>
+</ol>
+
+</article></slide><slide class=""><hgroup><h2>Statistics analysis</h2></hgroup><article  id="statistics-analysis">
+
+<ol>
+<li>Starts with a problem or question of interest</li>
+<li>Proceeds with the collection of relevant data</li>
+<li>Continues with the analysis the collected data</li>
+<li>Ends with conclusion and interpretation of the results.</li>
+</ol>
+
+<p>The formulation of a problem is often more essential than its solution which may be merely a matter of mathematical or experimental skill. Albert Einstein</p>
+
+</article></slide><slide class=""><hgroup><h2>Problem Formulation</h2></hgroup><article  id="problem-formulation">
+
+<ul>
+<li>Understand the physical background.
+
+<ul>
+<li>Statisticians often work in collaboration with others and need to understand something about the subject area.</li>
+</ul></li>
+<li>Understand the objective.
+
+<ul>
+<li>What are your goals?</li>
+<li>Make sure you know what the client wants.</li>
+</ul></li>
+<li>Put the problem into statistical terms.
+
+<ul>
+<li>This is often the most challenging step and where irreparable errors are sometimes made.</li>
+<li>That a statistical method can read in and process the data is not enough. The results of an inapt analysis may be meaningless.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Essentials of R</h2></hgroup><article  id="essentials-of-r">
+
+<p>What is R?</p>
+
+<ul>
+<li>R is free statistical software.</li>
+<li>R is a programming language.
+
+<ul>
+<li>It is an open source implementation of the S programming language.</li>
+<li>It is highly extendable. Users can write functions and easily add software libraries to R.</li>
+<li>It is interactive. You type what you want and get out the corresponding results.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Help</h2></hgroup><article  id="help">
+
+<p>There are many ways to get help for R:</p>
+
+<ul>
+<li>If you know the command you want help for, from the command line type:
+
+<ul>
+<li><code>help(command)</code>
+
+<ul>
+<li>E.g., <code>help(lm)</code></li>
+<li><code>?command</code></li>
+<li>E.g., <code>?lm</code></li>
+</ul></li>
+</ul></li>
+<li>If you only know the topic you want help for, from the command line type:
+
+<ul>
+<li><code>??topic</code></li>
+<li>E.g., <code>??logarithm</code></li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Data Structure</h2></hgroup><article  id="data-structure">
+
+<p>R operates on data structures. A data structure is simply some sort of &ldquo;container&rdquo; that holds certain kinds of information.</p>
+
+<p>Common R data structures:</p>
+
+<ul>
+<li>Vector (a sequence of numerical, character, factor, or logical data).</li>
+<li>Matrices (multi-dimensional collection of vectors of the same type)</li>
+<li>Data Frame (multi-dimensional collection of possibly different data types)</li>
+<li>List (an ordered collection of possibly different data types)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Vector</h2></hgroup><article  id="vector">
+
+<p>A vector is a sequence of values of the same data type.</p>
+
+<p>The c function (concatenate) can be used to join data from end to end to create vectors.</p>
+
+<ul>
+<li><code>c(1, 2, 5.3, 6, -2, 4)</code></li>
+<li><code>c(“one”, “two”, “three”)</code></li>
+<li><code>c(TRUE, TRUE, FALSE, TRUE)</code></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>The <code>seq</code> function</h2></hgroup><article  id="the-seq-function">
+
+<pre class = 'prettyprint lang-r'>seq(1,10)</pre>
+
+<pre >##  [1]  1  2  3  4  5  6  7  8  9 10</pre>
+
+<pre class = 'prettyprint lang-r'>1:10</pre>
+
+<pre >##  [1]  1  2  3  4  5  6  7  8  9 10</pre>
+
+<pre class = 'prettyprint lang-r'>seq(1, 20, by = 2)</pre>
+
+<pre >##  [1]  1  3  5  7  9 11 13 15 17 19</pre>
+
+<pre class = 'prettyprint lang-r'>seq(1, 2, len = 8)</pre>
+
+<pre >## [1] 1.000000 1.142857 1.285714 1.428571 1.571429 1.714286 1.857143 2.000000</pre>
+
+</article></slide><slide class=""><hgroup><h2>The <code>rep</code> function</h2></hgroup><article  id="the-rep-function">
+
+<p>The rep function (replicate) can be used to create a vector by replicate values.</p>
+
+<ul>
+<li>Repeat the sequence 1, 2, 3 three times in a row.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>    rep(1:3, times = 3)</pre>
+
+<pre >## [1] 1 2 3 1 2 3 1 2 3</pre>
+
+<ul>
+<li>Repeat &ldquo;trt1&rdquo; once, &ldquo;trt2&rdquo; twice, and &ldquo;trt3&rdquo; three times.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>rep(c(&quot;trt1&quot;, &quot;trt2&quot;, &quot;trt3&quot;), times = 1:3)</pre>
+
+<pre >## [1] &quot;trt1&quot; &quot;trt2&quot; &quot;trt2&quot; &quot;trt3&quot; &quot;trt3&quot; &quot;trt3&quot;</pre>
+
+<ul>
+<li>Repeat trt1, trt2, trt3 three times each</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>rep(c(&#39;trt1&#39;, &#39;trt2&#39;, &quot;trt3&quot;),each =3)</pre>
+
+<pre >## [1] &quot;trt1&quot; &quot;trt1&quot; &quot;trt1&quot; &quot;trt2&quot; &quot;trt2&quot; &quot;trt2&quot; &quot;trt3&quot; &quot;trt3&quot; &quot;trt3&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2>Assignment</h2></hgroup><article  id="assignment">
+
+<ul>
+<li>To store a data structure in the computer’s memory we must assign it to an object or name.</li>
+<li>Data structures can be stored using the assignment operator &ldquo;&lt;-&rdquo; or &ldquo;=&rdquo;</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>    v1 &lt;- 1:5</pre>
+
+<ul>
+<li>To print the data stored in an object, we simply type the variable name into R and hit enter.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>    v1</pre>
+
+<pre >## [1] 1 2 3 4 5</pre>
+
+<pre class = 'prettyprint lang-r'>    v2 &lt;- c(1, 10, 11)
+    new &lt;- c(v1, v2)
+    new</pre>
+
+<pre >## [1]  1  2  3  4  5  1 10 11</pre>
+
+</article></slide><slide class=""><hgroup><h2>Logical</h2></hgroup><article  id="logical">
+
+<pre class = 'prettyprint lang-r'>x = seq(0,10)
+x &gt; 5</pre>
+
+<pre >##  [1] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>x[3]</pre>
+
+<pre >## [1] 2</pre>
+
+<pre class = 'prettyprint lang-r'>x[3] == 2</pre>
+
+<pre >## [1] TRUE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Floating point arithmetic</h2></hgroup><article  id="floating-point-arithmetic">
+
+<pre class = 'prettyprint lang-r'>y = seq(0,1,0.1)
+y[5]==0.4</pre>
+
+<pre >## [1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>y[9]==0.8</pre>
+
+<pre >## [1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>y[4]==0.3</pre>
+
+<pre >## [1] FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>y[4]</pre>
+
+<pre >## [1] 0.3</pre>
+
+<pre class = 'prettyprint lang-r'>sprintf(&quot;%.10f&quot;,y[4])</pre>
+
+<pre >## [1] &quot;0.3000000000&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>sprintf(&quot;%.20f&quot;,y[4])</pre>
+
+<pre >## [1] &quot;0.30000000000000004441&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2>Categorical data</h2></hgroup><article  id="categorical-data">
+
+<p>Categorical data should be stored as a factor in R.</p>
+
+<ul>
+<li>The factor function takes vectors of any data type and converts them to factors.</li>
+<li>Examples:</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>    f1 &lt;- factor(rep(1:6, times = 3))
+    f1</pre>
+
+<pre >##  [1] 1 2 3 4 5 6 1 2 3 4 5 6 1 2 3 4 5 6
+## Levels: 1 2 3 4 5 6</pre>
+
+<pre class = 'prettyprint lang-r'>    f2 &lt;- factor(c(&quot;a&quot;, 7, &quot;blue&quot;, &quot;blue&quot;))
+    f2</pre>
+
+<pre >## [1] a    7    blue blue
+## Levels: 7 a blue</pre>
+
+</article></slide><slide class=""><hgroup><h2>Commonly-used Functions</h2></hgroup><article  id="commonly-used-functions">
+
+<pre class = 'prettyprint lang-r'>  x &lt;- seq(0,10)
+    length(x) #length of x</pre>
+
+<pre >## [1] 11</pre>
+
+<pre class = 'prettyprint lang-r'>    sum(x) #sum elements in x</pre>
+
+<pre >## [1] 55</pre>
+
+<pre class = 'prettyprint lang-r'>    mean(x) #mean of elements in x</pre>
+
+<pre >## [1] 5</pre>
+
+<pre class = 'prettyprint lang-r'>    var(x) #sample variance of elements in x</pre>
+
+<pre >## [1] 11</pre>
+
+<pre class = 'prettyprint lang-r'>    sd(x) #standard deviation of elements in x</pre>
+
+<pre >## [1] 3.316625</pre>
+
+</article></slide><slide class=""><hgroup><h2>Commonly-used Functions</h2></hgroup><article  id="commonly-used-functions-1">
+
+<pre class = 'prettyprint lang-r'>  x &lt;- seq(0,10)
+    range(x) #range of elements in x</pre>
+
+<pre >## [1]  0 10</pre>
+
+<pre class = 'prettyprint lang-r'>    log(x) #ln of elements in x</pre>
+
+<pre >##  [1]      -Inf 0.0000000 0.6931472 1.0986123 1.3862944 1.6094379 1.7917595
+##  [8] 1.9459101 2.0794415 2.1972246 2.3025851</pre>
+
+<pre class = 'prettyprint lang-r'>    summary(x) #6-number summary of x</pre>
+
+<pre >##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0     2.5     5.0     5.0     7.5    10.0</pre>
+
+</article></slide><slide class=""><hgroup><h2>Functions related to statistical distributions</h2></hgroup><article  id="functions-related-to-statistical-distributions">
+
+<p>Suppose that a random variable X has the &ldquo;dist&rdquo; distribution</p>
+
+<ul>
+<li><code>p[dist](q, …)</code> – returns the cdf of X evaluated at q, i.e., p=Pra(X≤q).</li>
+<li><code>q[dist](p, …)</code> – returns the inverse cdf (or quantile function) of X evaluated at p, i.e., \(q = \inf \{x:Pr(X\leq x)\geq p\}\)</li>
+<li><code>d[dist](x, …)</code> – returns the mass or density of \(X\) evaluated at \(x\) (depending on whether it’s discrete or continuous).</li>
+<li><code>r[dist](n, …)</code> – returns an i.i.d. random sample of size \(n\) having the same distribution as \(X\).</li>
+<li>… indicates that additional arguments describing the shape of the distribution.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Examples</h2></hgroup><article  id="examples">
+
+<ul>
+<li><p><code>pnorm(1.96, mean = 0, sd = 1)</code> returns the probability that a normal random variable with mean 0 and standard deviation 1 is less than or equal to 1.96.</p></li>
+<li><p><code>qunif(0.6, min =0, max = 1)</code> returns the value x such that \(P(X\leq x)=0.6\) for a uniform random variable on the interval [0, 1].</p></li>
+<li><p><code>dbinom(2, size = 20, prob = .2)</code> returns the probability that \(Pra(X=2)\) for \(X\sim \text{Binom}(n=20,\theta=0.2)\).</p></li>
+<li><p><code>dexp(1, rate = 2)</code> returns the density of an exponential random variable with mean = 1/2.</p></li>
+<li><p><code>rchisq(100, df = 5)</code> returns a sample of 100 observations from a chi-squared random variable with 5 df.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Data Frames</h2></hgroup><article  id="data-frames">
+
+<ul>
+<li>Date frames are created by passing vectors into the <code>data.frame</code> function.
+
+<ul>
+<li>The names of the columns in the data frame are the names of the vectors you give the <code>data.frame</code> function.</li>
+</ul></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>        d &lt;- c(1, 2, 3, 4)
+        e &lt;- c(&quot;red&quot;, &quot;white&quot;, &quot;blue&quot;, NA)
+        f &lt;- c(TRUE, TRUE, TRUE, FALSE)
+        mydataframe &lt;- data.frame(d,e,f) 
+        mydataframe</pre>
+
+<pre >##   d     e     f
+## 1 1   red  TRUE
+## 2 2 white  TRUE
+## 3 3  blue  TRUE
+## 4 4  &lt;NA&gt; FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data Frames</h2></hgroup><article  id="data-frames-1">
+
+<p>The columns of a data frame can be renamed using the names function on the data frame.</p>
+
+<pre class = 'prettyprint lang-r'>    names(mydataframe) &lt;- c(&quot;ID&quot;, &quot;Color&quot;, &quot;Passed&quot;)
+    mydataframe</pre>
+
+<pre >##   ID Color Passed
+## 1  1   red   TRUE
+## 2  2 white   TRUE
+## 3  3  blue   TRUE
+## 4  4  &lt;NA&gt;  FALSE</pre>
+
+<p>The columns of a data frame can be named when you are first creating the data frame by using &ldquo;name =&rdquo; for each vector of data.</p>
+
+<pre class = 'prettyprint lang-r'>    dataframe2 &lt;- data.frame(ID=d, Color=e, Passed=f)
+    dataframe2</pre>
+
+<pre >##   ID Color Passed
+## 1  1   red   TRUE
+## 2  2 white   TRUE
+## 3  3  blue   TRUE
+## 4  4  &lt;NA&gt;  FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data Frames</h2></hgroup><article  id="data-frames-2">
+
+<p>The vectors of a data frame may be accessed using &ldquo;$&rdquo; and specifying the name of the desired vector.</p>
+
+<pre class = 'prettyprint lang-r'>    mydataframe$Color</pre>
+
+<pre >## [1] &quot;red&quot;   &quot;white&quot; &quot;blue&quot;  NA</pre>
+
+<p>The vectors of a data frame may be accessed by specifying the desired row(s) or column(s) in square brackets.</p>
+
+<pre class = 'prettyprint lang-r'>    mydataframe[1,]</pre>
+
+<pre >##   ID Color Passed
+## 1  1   red   TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>  mydataframe[,3]</pre>
+
+<pre >## [1]  TRUE  TRUE  TRUE FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data Frames</h2></hgroup><article  id="data-frames-3">
+
+<p>Access the ID column of dataframe2 and assign it to newID</p>
+
+<pre class = 'prettyprint lang-r'>    newID &lt;- dataframe2$ID</pre>
+
+<p>Create a new ID column within the dataframe2</p>
+
+<pre class = 'prettyprint lang-r'>  dataframe2$ID_new &lt;- paste(&#39;Bird_&#39;,dataframe2$ID,sep = &#39;&#39;)
+dataframe2</pre>
+
+<pre >##   ID Color Passed ID_new
+## 1  1   red   TRUE Bird_1
+## 2  2 white   TRUE Bird_2
+## 3  3  blue   TRUE Bird_3
+## 4  4  &lt;NA&gt;  FALSE Bird_4</pre>
+
+</article></slide><slide class=""><hgroup><h2>Importing Data</h2></hgroup><article  id="importing-data">
+
+<ul>
+<li>The read.table function imports data into R as a data frame.</li>
+<li>Usage: <code>read.table(file, header = TRUE, sep = &quot;,&quot;)</code></li>
+<li>file is the file path and name of the file you want to import into R
+
+<ul>
+<li>If you don’t know the file path, set <code>file = file.choose()</code> will bring up a dialog box asking you to locate the file you want to import.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2><code>header</code> option</h2></hgroup><article  id="header-option">
+
+<ul>
+<li><code>header</code> specifies whether the data file has a header (labels for each column of data in the first row of the data file).
+
+<ul>
+<li>If you don’t specify this option in R or use <code>header=FALSE</code>, then R will assume the file doesn’t have any headings.</li>
+<li><code>header=TRUE</code> tells R to read in the data as a data frame with column names taken from the first row of the data file.</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2><code>sep</code> option</h2></hgroup><article  id="sep-option">
+
+<ul>
+<li><code>sep</code> specifies the delimiter separating elements in the file.
+
+<ul>
+<li>If each column of data in the file is separated by a space, then use <code>sep = &quot; &quot;</code></li>
+<li>If each column of data in the file is separated by a comma, then use <code>sep = &quot;,&quot;</code></li>
+<li>If each column of data in the file is separated by a tab, then use <code>sep = &quot;\t&quot;</code>.</li>
+</ul></li>
+</ul>
+
+<p>Note that the <code>read_table</code> function in the <code>readr</code> package and the <code>fread</code> function in the <code>data.table</code> package are perhaps better ways of reading in tabular data and use similar syntax.</p>
+
+</article></slide><slide class=""><hgroup><h2>Accessing Elements of a Data Structure</h2></hgroup><article  id="accessing-elements-of-a-data-structure">
+
+<ul>
+<li>Subsets of the elements of a vector may be selected by appending to the name of the vector an index vector in square brackets.</li>
+<li></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>    a &lt;- seq(2, 16, by = 2)
+    a</pre>
+
+<pre >## [1]  2  4  6  8 10 12 14 16</pre>
+
+<pre class = 'prettyprint lang-r'>    a[c(2, 4, 6)] #Access the 2nd, 4th, and 6th elements of a.</pre>
+
+<pre >## [1]  4  8 12</pre>
+
+<pre class = 'prettyprint lang-r'>    a[-c(2, 4, 6)] #Access all elements in a EXCEPT the 2nd, 4th, and 6th.</pre>
+
+<pre >## [1]  2  6 10 14 16</pre>
+
+<pre class = 'prettyprint lang-r'>    a[-(3:6)] #Access all elements in a except elements 3 through 6.</pre>
+
+<pre >## [1]  2  4 14 16</pre>
+
+</article></slide><slide class=""><hgroup><h2>Logical operations</h2></hgroup><article  id="logical-operations">
+
+<p>Sometimes we need to know if the elements of an object satisfy certain conditions. This can be determined using the logical operators &lt;, &lt;=, &gt;, &gt;=, ==, !=</p>
+
+<ul>
+<li>&ldquo;==&rdquo; means &ldquo;equal to&rdquo; and &ldquo;!=&rdquo; means not equal to.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>a &lt;- sample(0:99,10)
+a</pre>
+
+<pre >##  [1] 66 87 65 18 70 68  2  9  0 99</pre>
+
+<pre class = 'prettyprint lang-r'>a&gt;50 </pre>
+
+<pre >##  [1]  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>a[a&gt;50] #values of a greater than 50</pre>
+
+<pre >## [1] 66 87 65 70 68 99</pre>
+
+<pre class = 'prettyprint lang-r'>a[a&lt;=40] #values of a less than or equal to 40</pre>
+
+<pre >## [1] 18  2  9  0</pre>
+
+</article></slide><slide class=""><hgroup><h2>Logical operations</h2></hgroup><article  id="logical-operations-1">
+
+<pre class = 'prettyprint lang-r'>a==10 #Is there 10?</pre>
+
+<pre >##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>sum(a==10)</pre>
+
+<pre >## [1] 0</pre>
+
+<pre class = 'prettyprint lang-r'>10%in%a</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Logical operations</h2></hgroup><article  id="logical-operations-2">
+
+<ul>
+<li>More complicated logical arguments can be made using <code>&amp;</code> and <code>|</code>.
+
+<ul>
+<li>&amp; means &ldquo;and&rdquo;</li>
+<li></li>
+</ul></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>(a &gt; 50) &amp; (a &lt;= 90) #Elements of a greater than 50 and less than or equal to 90</pre>
+
+<pre >##  [1]  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>a[(a &gt; 50) &amp; (a &lt;= 90)]</pre>
+
+<pre >## [1] 66 87 65 70 68</pre>
+
+<pre class = 'prettyprint lang-r'>a[(a &lt;= 30) | (a&gt;=70)]</pre>
+
+<pre >## [1] 87 18 70  2  9  0 99</pre>
+
+</article></slide><slide class=""><hgroup><h2>Other data management options</h2></hgroup><article  id="other-data-management-options">
+
+<p>Note: There is now a debate about the proper approach to organizing and working with data.</p>
+
+<p>We will typically work with base R.</p>
+
+<ul>
+<li>These are the commands and functions R offers by default.</li>
+</ul>
+
+<p>The <code>tidyverse</code> (www.tidyverse.org) is a collection of R packages that provides a unified framework for data manipulation and visualization.</p>
+
+<ul>
+<li>This is becoming extremely popular.</li>
+<li>Since this course is focuses more on modeling than data manipulation (though we will have to do this), I will typically only use functions from the tidyverse when it greatly simplifies analysis, data manipulation, or visualization.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Sample Data Analysis in R</h2></hgroup><article  id="sample-data-analysis-in-r">
+
+<p>Calculate numerical summaries:</p>
+
+<ul>
+<li>means</li>
+<li>standard deviations (SDs)</li>
+<li>maximum and minimum, correlations</li>
+<li>anything else that may be appropriate.</li>
+</ul>
+
+<p>Construct the appropriate plots.</p>
+
+<ul>
+<li>For one quantitative variable: boxplots, histograms, density plots, etc.</li>
+<li>For two quantitative variables: scatterplots.</li>
+<li>For three or more variables, construct interactive and dynamic graphics.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Kidney Example</h2></hgroup><article  id="kidney-example">
+
+<p>The National Institute of Diabetes and Digestive and Kidney Diseases conducted a study on 768 adult female Pima Indians living near Phoenix. The following variables were recorded: number of times pregnant, plasma glucose concentration at 2 hours in an oral glucose tolerance test, diastolic blood pressure (mmHg), triceps skin fold thickness (mm), 2-hour serum insulin (mu U/ml), body mass index (weight in kg/(height in m2)), diabetes pedigree function, age (years) and a test whether the patient showed signs of diabetes (coded zero if negative, one if positive). The data may be obtained from the UCI Repository of machine learning databases at archive.ics.uci.edu/ml.</p>
+
+</article></slide><slide class=""><hgroup><h2>Load data</h2></hgroup><article  id="load-data">
+
+<pre class = 'prettyprint lang-r'>data(pima, package = &quot;faraway&quot;)
+str(pima)</pre>
+
+<pre >## &#39;data.frame&#39;:    768 obs. of  9 variables:
+##  $ pregnant : int  6 1 8 1 0 5 3 10 2 8 ...
+##  $ glucose  : int  148 85 183 89 137 116 78 115 197 125 ...
+##  $ diastolic: int  72 66 64 66 40 74 50 0 70 96 ...
+##  $ triceps  : int  35 29 0 23 35 0 32 0 45 0 ...
+##  $ insulin  : int  0 0 0 94 168 0 88 0 543 0 ...
+##  $ bmi      : num  33.6 26.6 23.3 28.1 43.1 25.6 31 35.3 30.5 0 ...
+##  $ diabetes : num  0.627 0.351 0.672 0.167 2.288 ...
+##  $ age      : int  50 31 32 21 33 30 26 29 53 54 ...
+##  $ test     : int  1 0 1 0 1 0 1 0 1 1 ...</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data head and tail</h2></hgroup><article  id="data-head-and-tail">
+
+<pre class = 'prettyprint lang-r'>head(pima)</pre>
+
+<pre >##   pregnant glucose diastolic triceps insulin  bmi diabetes age test
+## 1        6     148        72      35       0 33.6    0.627  50    1
+## 2        1      85        66      29       0 26.6    0.351  31    0
+## 3        8     183        64       0       0 23.3    0.672  32    1
+## 4        1      89        66      23      94 28.1    0.167  21    0
+## 5        0     137        40      35     168 43.1    2.288  33    1
+## 6        5     116        74       0       0 25.6    0.201  30    0</pre>
+
+<pre class = 'prettyprint lang-r'>tail(pima)</pre>
+
+<pre >##     pregnant glucose diastolic triceps insulin  bmi diabetes age test
+## 763        9      89        62       0       0 22.5    0.142  33    0
+## 764       10     101        76      48     180 32.9    0.171  63    0
+## 765        2     122        70      27       0 36.8    0.340  27    0
+## 766        5     121        72      23     112 26.2    0.245  30    0
+## 767        1     126        60       0       0 30.1    0.349  47    1
+## 768        1      93        70      31       0 30.4    0.315  23    0</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data entry errors</h2></hgroup><article  id="data-entry-errors">
+
+<p>The <code>summary</code> command is a quick way to get the usual univariate summary information.</p>
+
+<ul>
+<li>Look for anything unusual or unexpected, perhaps indicating a data-entry error.</li>
+<li>The minimum blood pressure is zero! (That’s generally an indication of a problem).</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>sort(pima$diastolic)</pre>
+
+<pre >##   [1]   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+##  [19]   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  24
+##  [37]  30  30  38  40  44  44  44  44  46  46  48  48  48  48  48  50  50  50
+##  [55]  50  50  50  50  50  50  50  50  50  50  52  52  52  52  52  52  52  52
+##  [73]  52  52  52  54  54  54  54  54  54  54  54  54  54  54  55  55  56  56
+##  [91]  56  56  56  56  56  56  56  56  56  56  58  58  58  58  58  58  58  58
+## [109]  58  58  58  58  58  58  58  58  58  58  58  58  58  60  60  60  60  60
+## [127]  60  60  60  60  60  60  60  60  60  60  60  60  60  60  60  60  60  60
+## [145]  60  60  60  60  60  60  60  60  60  60  60  60  60  60  61  62  62  62
+## [163]  62  62  62  62  62  62  62  62  62  62  62  62  62  62  62  62  62  62
+## [181]  62  62  62  62  62  62  62  62  62  62  62  62  62  64  64  64  64  64
+## [199]  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64
+## [217]  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64  64
+## [235]  64  64  65  65  65  65  65  65  65  66  66  66  66  66  66  66  66  66
+## [253]  66  66  66  66  66  66  66  66  66  66  66  66  66  66  66  66  66  66
+## [271]  66  66  66  68  68  68  68  68  68  68  68  68  68  68  68  68  68  68
+## [289]  68  68  68  68  68  68  68  68  68  68  68  68  68  68  68  68  68  68
+## [307]  68  68  68  68  68  68  68  68  68  68  68  68  70  70  70  70  70  70
+## [325]  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70
+## [343]  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70
+## [361]  70  70  70  70  70  70  70  70  70  70  70  70  70  70  70  72  72  72
+## [379]  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72
+## [397]  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72  72
+## [415]  72  72  72  72  72  74  74  74  74  74  74  74  74  74  74  74  74  74
+## [433]  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74
+## [451]  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74  74
+## [469]  74  74  74  75  75  75  75  75  75  75  75  76  76  76  76  76  76  76
+## [487]  76  76  76  76  76  76  76  76  76  76  76  76  76  76  76  76  76  76
+## [505]  76  76  76  76  76  76  76  76  76  76  76  76  76  76  78  78  78  78
+## [523]  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78
+## [541]  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78  78
+## [559]  78  78  78  78  78  80  80  80  80  80  80  80  80  80  80  80  80  80
+## [577]  80  80  80  80  80  80  80  80  80  80  80  80  80  80  80  80  80  80
+## [595]  80  80  80  80  80  80  80  80  80  82  82  82  82  82  82  82  82  82
+## [613]  82  82  82  82  82  82  82  82  82  82  82  82  82  82  82  82  82  82
+## [631]  82  82  82  84  84  84  84  84  84  84  84  84  84  84  84  84  84  84
+## [649]  84  84  84  84  84  84  84  84  85  85  85  85  85  85  86  86  86  86
+## [667]  86  86  86  86  86  86  86  86  86  86  86  86  86  86  86  86  86  88
+## [685]  88  88  88  88  88  88  88  88  88  88  88  88  88  88  88  88  88  88
+## [703]  88  88  88  88  88  88  90  90  90  90  90  90  90  90  90  90  90  90
+## [721]  90  90  90  90  90  90  90  90  90  90  92  92  92  92  92  92  92  92
+## [739]  94  94  94  94  94  94  95  96  96  96  96  98  98  98 100 100 100 102
+## [757] 104 104 106 106 106 108 108 110 110 110 114 122</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data entry errors</h2></hgroup><article  id="data-entry-errors-1">
+
+<p>The first 35 values are zero—there’s a problem.</p>
+
+<ul>
+<li>It seems that 0 was used in place of a missing value.</li>
+<li>This is very bad since 0 is a real number and this problem may be overlooked, which can lead to faulty analysis!</li>
+<li>This is why we must check our data carefully for things that don’t make sense.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Assing <code>NA</code> for missing data</h2></hgroup><article  id="assing-na-for-missing-data">
+
+<p>The value for missing data in R is <code>NA</code>.</p>
+
+<p>Several variables share this problem. Let’s set the 0s that should be missing values to <code>NA</code>.</p>
+
+<pre class = 'prettyprint lang-r'>pima$diastolic[pima$diastolic == 0]  &lt;- NA
+pima$glucose[pima$glucose == 0] &lt;- NA
+pima$triceps[pima$triceps == 0]  &lt;- NA
+pima$insulin[pima$insulin == 0] &lt;- NA
+pima$bmi[pima$bmi == 0] &lt;- NA</pre>
+
+</article></slide><slide class=""><hgroup><h2>Data class</h2></hgroup><article  id="data-class">
+
+<p>The variable test is a categorical variable, not numerical.</p>
+
+<ul>
+<li>R thinks it is numerical.</li>
+<li>In R, a categorical variable is a factor.</li>
+<li>We need to convert this variable to a factor.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'> pima$test &lt;- factor(pima$test)
+ summary(pima$test)</pre>
+
+<pre >##   0   1 
+## 500 268</pre>
+
+<p>500 of the cases were negative and 268 were positive. We can provide more descriptive labels using the levels function.</p>
+
+<pre class = 'prettyprint lang-r'>levels(pima$test) &lt;-c(&quot;negative&quot;,&quot;positive&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Ploting Data</h2></hgroup><article  id="ploting-data">
+
+<p>A histogram of diastolic blood pressure.</p>
+
+<pre class = 'prettyprint lang-r'>hist(pima$dias,xlab=&quot;Diastolic&quot;,main=&quot;&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-34-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we can tell from the histogram</h2></hgroup><article  id="what-we-can-tell-from-the-histogram">
+
+<p>The histogram is approximately bell-shaped and centered around 70.</p>
+
+<pre class = 'prettyprint lang-r'>hist(pima$dias,xlab=&quot;Diastolic&quot;,main=&quot;&quot;, breaks = 20)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-35-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Density plot</h2></hgroup><article  id="density-plot">
+
+<p>Many people prefer the density plot over the histogram since the histogram is so sensitive to its options.</p>
+
+<ul>
+<li>A density plot is essentially a smoothed version of a histogram.</li>
+<li>A &ldquo;kernel&rdquo; smoother is used to construct a weighted average of data points and create a smooth surface.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Density Plot</h2></hgroup><article  id="density-plot-1">
+
+<p>The density plot isn’t as blocky (though you might see weird things happen at the boundaries).</p>
+
+<pre class = 'prettyprint lang-r'>plot(density(pima$diastolic,na.rm=TRUE),main=&quot;&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-36-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Plot points</h2></hgroup><article  id="plot-points">
+
+<p>We could simply plot the sorted data against its index.</p>
+
+<pre class = 'prettyprint lang-r'>plot(sort(pima$diastolic),ylab=&quot;Sorted Diastolic&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-37-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What we see</h2></hgroup><article  id="what-we-see">
+
+<p>This plot is most useful for identifying:</p>
+
+<ul>
+<li>Possible outliers</li>
+<li>The discreteness of the data
+
+<ul>
+<li>Are there numerous repeated data values or are they all unique?</li>
+</ul></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>plot(sort(pima$diastolic),ylab=&quot;Sorted Diastolic&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-38-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Bivariate plot</h2></hgroup><article  id="bivariate-plot">
+
+<p>A standard scatterplot of diabetes vs diastolic blood pressure.</p>
+
+<pre class = 'prettyprint lang-r'>plot(diabetes ~ diastolic, data = pima)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-39-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Bivariate plot</h2></hgroup><article  id="bivariate-plot-1">
+
+<p>A parallel boxplot of diabetes vs test result.</p>
+
+<pre class = 'prettyprint lang-r'>plot(diabetes ~ test, data = pima)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-40-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Side by side plots</h2></hgroup><article  id="side-by-side-plots">
+
+<pre class = 'prettyprint lang-r'>par(mfrow=c(1,2))
+plot(diabetes ~ diastolic, data = pima)
+plot(diabetes ~ test, data = pima)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-41-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2><code>ggplot2</code></h2></hgroup><article  id="ggplot2">
+
+<p>The plots we have just created are using the base graphics system in R. - These are very fast, simple, and professional.</p>
+
+<p>A fancier alternative is to construct plots using the <code>ggplot2</code> package.</p>
+
+<p>In its simplest form, <code>ggplot2</code> requires you to provide:</p>
+
+<ul>
+<li>A ggplot object that includes the data frame holding the data.</li>
+<li>A mapping arguments that specifies the plot aesthetics (essentially, the data that will be used in the plot).</li>
+<li>A geometry object that specifies how the aesthetics are used in a plot.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2><code>ggplot2</code> example</h2></hgroup><article  id="ggplot2-example">
+
+<pre class = 'prettyprint lang-r'>library(ggplot2)
+ggpima  = ggplot(pima, aes(x=diastolic))
+ggpima + geom_histogram(aes(x = diastolic))</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-42-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2><code>ggplot2</code> example</h2></hgroup><article  id="ggplot2-example-1">
+
+<pre class = 'prettyprint lang-r'>ggpima + geom_density(aes(x = diastolic))</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-43-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2><code>ggplot2</code> example</h2></hgroup><article  id="ggplot2-example-2">
+
+<pre class = 'prettyprint lang-r'>ggpima + geom_point(aes(x = diastolic, y = diabetes))</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-44-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Customize <code>ggplot2</code></h2></hgroup><article  id="customize-ggplot2">
+
+<pre class = 'prettyprint lang-r'>ggpima + 
+  geom_point(aes(x = diastolic, y = diabetes, shape = test)) + 
+  theme(legend.position = &quot;top&quot;, legend.direction = &quot;horizontal&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-45-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Faceting <code>ggplot2</code></h2></hgroup><article  id="faceting-ggplot2">
+
+<pre class = 'prettyprint lang-r'>ggpima + geom_point(aes(x = diastolic, y = diabetes)) + facet_grid(~ test)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-46-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Summary of <code>ggplot2</code></h2></hgroup><article  id="summary-of-ggplot2">
+
+<ul>
+<li>You first need to create a ggplot object using the <code>ggplot</code> function. Specify: o- The data frame the data is contained in (e.g., the data frame is <code>pima</code>)</li>
+<li>Map the <strong>aesthetics</strong> using <code>aes</code>. The aesthetic specifies what you see, such as position in the \(x\) or \(y\) direction or aspects such as shape or color.</li>
+<li>Specify the geometry for the plot (how you want to map the aesthetics).</li>
+<li>The advantage of <code>ggplot2</code> is more apparent in producing more complex plots involving more than just two variables.</li>
+<li>A <code>theme</code> specifies options for the appearance of the plot.</li>
+<li>We specified where the <code>legend</code> should appear in one plot and to use more than one panel (<code>facets</code>) in another.</li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>When to Use Linear Modeling</h2></hgroup><article  id="when-to-use-linear-modeling">
+
+</article></slide><slide class=""><hgroup><h2>Linear Models</h2></hgroup><article  id="linear-models">
+
+<p>Linear models are used to model the relationship between a:</p>
+
+<ul>
+<li>single variable \(Y\), called the <strong>response, outcome, output, or dependent</strong> variable and</li>
+<li>one or more <strong>predictor, input, independent, or explanatory</strong> variables.</li>
+</ul>
+
+<p>Note: the descriptions of independent and dependent variables are vague and are best avoided.</p>
+
+<p><strong>Regression analysis</strong> is another term for linear modeling, although regressions can be nonlinear.</p>
+
+</article></slide><slide class=""><hgroup><h2>Terminology and Assumptions</h2></hgroup><article  id="terminology-and-assumptions">
+
+<ul>
+<li>When we have one constant predictor and one non-constant predictor, we are doing simple regression.<br/></li>
+<li>When we have more than one non-constant predictor we are doing multiple regression.</li>
+<li>When we have more than one response, we are doing multivariate regression.</li>
+</ul>
+
+<p>Assumptions of linear models: - Y is (approximately) continuous - Predictors can be continuous, discrete, or categorical.</p>
+
+</article></slide><slide class=""><hgroup><h2>More terminology</h2></hgroup><article  id="more-terminology">
+
+<ul>
+<li>A regression with one quantitative predictor and one qualitative predictor is an <strong>analysis of covariance (ANCOVA)</strong>.</li>
+<li>A regression with all qualitative predictors is an <strong>analysis of variance (ANOVA)</strong>.</li>
+<li>A regression with a qualitative response will typically utilize <strong>logistic</strong> regression.</li>
+<li>Responses that do not have a normal distribution are modeled using <strong>generalized linear models (GLMs)</strong>.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Goals of regression</h2></hgroup><article  id="goals-of-regression">
+
+<ol>
+<li>Prediction of future or unseen responses given specified values of the predictors.</li>
+<li>Assessments of the effect of, or relationship between, explanatory variables and the response. We would like to infer causal relationships if possible.</li>
+</ol>
+
+<p>Be clear of your objective! Your choice of analysis may differ depending on the objective.</p>
+
+<p>There is generally no <strong>true</strong> model. We simply want to find a model that adequately describes the relationship between relevant explanatory variables, allows us to make good predictions, infer causality, etc.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>More discussion on scatterplots</h2></hgroup><article  id="more-discussion-on-scatterplots">
+
+</article></slide><slide class=""><hgroup><h2>Height example</h2></hgroup><article  id="height-example">
+
+<p>Scatterplots are a convenient way to study the dependence between a single response and a single predictor variable.</p>
+
+<p><strong>Inheritance of Height</strong></p>
+
+<p>Karl Pearson (1857-1936) organized the collection of n=1375 heights of mothers in the United Kingdom under the age of 65 and one of their adult daughters over the age of 18. We are interested in the inheritance from the mother to the daughter, so the mother’s height (mheight) is used as the predictor variable and the daughter’s height (dheight) is used as the response variable.</p>
+
+</article></slide><slide class=""><hgroup><h2>Heritability</h2></hgroup><article  id="heritability">
+
+<p>Do taller mothers tend to have taller daughters? Do shorter mothers tend to have shorter daughters?</p>
+
+<pre class = 'prettyprint lang-r'>library(alr3)
+data(heights)
+M = heights$Mheight
+D = heights$Dheight
+plot(M, D, pch = 23, bg = &quot;red&quot;, cex = 2, xlab = &quot;Mother&#39;s height (in)&quot;, ylab = &quot;Daughter&#39;s height (in)&quot;)</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-47-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>What the plot says</h2></hgroup><article  id="what-the-plot-says">
+
+<ul>
+<li><p>Notice that since the range of the measurements are roughly the same for the two variables, we use the same scale for the x and y-axis.</p></li>
+<li><p>There is a clear linear relationship between the heights of mothers and daughters.</p></li>
+<li><p>Notice that there are more points in the center of the data, and fewer points along the edges. This is typical for biological data.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Car data</h2></hgroup><article  id="car-data">
+
+<p>The data give the speed of cars and the distances taken to stop. Note that the data were recorded in the 1920s.</p>
+
+<pre class = 'prettyprint lang-r'>data(cars)
+names(cars)</pre>
+
+<pre >## [1] &quot;speed&quot; &quot;dist&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>plot(cars$speed, cars$dist, xlab = &#39;Speed (mph)&#39;, ylab = &#39;Stopping distance (ft)&#39;)
+abline(lm(dist~speed, data = cars), col = &#39;red&#39;)
+abline(a = mean(cars$dist), b=0)
+legend(&#39;topleft&#39;,c(&#39;OLS&#39;, &#39;Mean dist&#39;), lty = 1, col = c(&#39;red&#39;,&#39;black&#39;))</pre>
+
+<p><img src="chapter1_files/figure-html/unnamed-chunk-48-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Mean Functions</h2></hgroup><article  id="mean-functions">
+
+</article></slide><slide class=""><hgroup><h2>Mean Function</h2></hgroup><article  id="mean-function">
+
+<p>We are frequently interested in how the distribution of the response varies with changes in the predictor variable.</p>
+
+<p>The <strong>mean function</strong> is particularly important, and we define it by the relationship</p>
+
+<p>\(E(Y│X=x)=a\) function the depends on the value of x.</p>
+
+<p>We read this as the &ldquo;expected value of the response when the predictor is fixed at the value \(X=x\)&rdquo;</p>
+
+</article></slide><slide class=""><hgroup><h2>Mean Function</h2></hgroup><article  id="mean-function-1">
+
+<p>For example, in the Heights data, we might believe that</p>
+
+<p>\(E(dheight│mheight=x)=β_0+β_1 x\),</p>
+
+<p>that is, the mean function is a straight line.</p>
+
+<p>The particular mean function has two parameters, an intercept \(\beta_0\) and a slope \(\beta_1\).</p>
+
+<p>If we knew the values of the \(\beta\)s, then the mean function would be completely known. In practice, these must be estimated from the data.</p>
+
+<p>If the response variable and the predictor variable are independent (have no relationship), then \(\beta_1=0\). We will learn how to test this hypothesis later.</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

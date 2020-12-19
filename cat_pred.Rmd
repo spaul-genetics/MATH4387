@@ -257,6 +257,14 @@ plot(predictorEffect('group',lmod1))
 ```
 
 
+## Pairwise comparison
+
+```{r}
+group.emm.s = emmeans(lmod1, specs = 'group')
+knitr::kable(pairs(group.emm.s))
+```
+
+
 ## Factors and Quantitative Predictors
 
 It is common to study the effect of a factor AFTER adjusting for one or more other quantitative regressors.  

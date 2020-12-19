@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Parameter Estimation</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Parameter Estimation',
+                        subtitle: 'Chapter 2 of LMWR2, Chapter 2 and 3 of ALR4',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Subrata Paul' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.4/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">6/4/2020</p>
+          </hgroup>
+  </slide>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('url', "https://math5387.web.app");
+
+  })
+</script>
+
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+    margin-top: 0em;
+    margin-right: 0px;
+    margin-bottom: -0.2em;
+    margin-left: 0px;
+}
+footer:after {
+    font-size: 12pt;
+    content: attr(url);
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    line-height: 1.9;
+    display: block;
+  }
+slides > slide {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 26px;
+  color: black;
+  width: 900px;
+  height: 700px;
+  margin-left: -450px;
+  margin-top: -350px;
+  padding: 0px 60px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+slides > slide > hgroup + article {
+  margin-top: 5px;
+}
+</style>
+
+<slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Simple Linear Regression</h2></hgroup><article  id="simple-linear-regression">
+
+</article></slide><slide class=""><hgroup><h2>Simple Linear Regression</h2></hgroup><article  id="simple-linear-regression-1">
+
+<p>The simple linear regression model consists of the mean function \[E(Y│X=x)=\beta_0+\beta_1 x,\]</p>
+
+<p>and variance function</p>
+
+<p>\[var(Y│X=x)=\sigma^2,\] where:</p>
+
+<ul>
+<li>\(Y\) is the response</li>
+<li>\(X\) is a regressor variable</li>
+<li>\(\beta_0\) and \(\beta_1\) are known as <strong>regression parameters</strong> or <strong>coefficients</strong>.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Understanding the model</h2></hgroup><article  id="understanding-the-model">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-1-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Understanding the model</h2></hgroup><article  id="understanding-the-model-1">
+
+<p><img src="images/simple_lin_reg.png" width="1000px" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Understand Coefficients</h2></hgroup><article  id="understand-coefficients">
+
+<p><img src="images/coefficients.png" width="588" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>View from single observation</h2></hgroup><article  id="view-from-single-observation">
+
+<p>Assume that we have n observations or cases for which the response and predictor variables are measured.</p>
+
+<ul>
+<li>The responses are denoted \(y_1,y_2,\dots ,y_n\).</li>
+<li>The regressor values for regressor X are denoted \(x_1,x_2,\dots,x_n\).</li>
+</ul>
+
+<p>Each response will deviate from its associated mean, so our statistical model must include an additional source of variation.</p>
+
+<p>The statistical model for each response is \[y_i=\beta_0+\beta_1 x_i+\epsilon_i,\quad   i=1,2,\dots,n,\]</p>
+
+<p>where \(\epsilon_i\) denotes the deviation of \(y_i\) from its mean.</p>
+
+<ul>
+<li>The \(\epsilon_i\) are known as errors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Conditions on Error</h2></hgroup><article  id="conditions-on-error">
+
+<p>Conditional on knowing the regressor values, the errors have:</p>
+
+<ul>
+<li>Mean 0</li>
+<li>Variance \(\sigma^2\) (constant)</li>
+<li>And are uncorrelated.</li>
+</ul>
+
+<p>Mathematically, this is the same as:</p>
+
+<ul>
+<li>\(E(\epsilon_i│X=x_i )=0\)</li>
+<li>\(var(\epsilon_i│X=x_i )=\sigma^2\)</li>
+<li>\(cov(\epsilon_i,\epsilon_j )=0\) when \(i\neq j\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>What about the response?</h2></hgroup><article  id="what-about-the-response">
+
+<ul>
+<li><p>Mean:</p>
+
+<p>\[E[Y_i|X_i] = E[\beta_0+\beta_1X_i + \epsilon_i]= \beta_0 + \beta_1X_i\] \[Var(Y_i|X_i) = Var(\beta_0+\beta_1X_i + \epsilon_i) = Var(\epsilon_i) = \sigma^2\] \[cov(Y_i, Y_j) = 0,\quad i \neq j\] The responses \(Y_i\) come from probability distributions whose means are \(\beta_0+\beta_1X_i\) and whose variances are \(\sigma^2\), the same for all levels of \(X\). Further, any two responses \(Y_i\) and \(Y_j\) are uncorrelated.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example">
+
+<p><img src="images/simple_lin_reg_values.png" width="995" style="display: block; margin: auto;" /></p>
+
+<p>#OLS</p>
+
+</article></slide><slide class=""><hgroup><h2>Ordinary Least Square (OLS) Estimation</h2></hgroup><article  id="ordinary-least-square-ols-estimation">
+
+<p>Ordinary least squares is the method most commonly used for estimating the regression parameters.</p>
+
+<ul>
+<li>This method estimates the regression parameters by the values that minimize the residual sum of squares.</li>
+</ul>
+
+<p>The fitted value for observation i is the estimated mean response at the observed values of the regressor variables, and is given by \[\hat{y}_i= \hat{E}(Y│X=x_i )=\hat{\beta}_0+\hat{\beta}_1 x_i.\]</p>
+
+<p>The \(\hat{}\) (hat) over \(\beta_0\) and \(\beta_1\) means that these are the estimated values of the parameters.</p>
+
+<p>The fitted line is \[\hat{Y} =\hat{E} (Y│X)=\hat{\beta}_0+\hat{\beta}_1 X.\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Residuals</h2></hgroup><article  id="residuals">
+
+<p>The residual for observation i is the difference between its response and fitted value, i.e.,</p>
+
+<p>\[\hat{\epsilon}_i = y_i -\hat{y}_i\] The <strong>residual sum of squares (RSS)</strong>, is the sum of the squared residuals, i.e., \[RSS = \sum_{i=1}^n \hat{\epsilon}_i^2 = \sum_{i=1}^n (y_i-\hat{y}_i)^2 = \sum_{i=1}^n\left(y_i - (\hat{\beta}_0 + \hat{\beta}_1x_i)\right)^2.\]</p>
+
+<p>OLS estimation estimates \(\beta_0\) and \(\beta_1\) with the values of \(\hat{\beta}_0\) and \(\hat{\beta}_1\) that minimize the RSS.</p>
+
+</article></slide><slide class=""><hgroup><h2>OLS Estimators</h2></hgroup><article  id="ols-estimators">
+
+<p>\[\hat{\beta}_1 = \frac{\sum(x_i-\overline{x})(y_i-\overline{y})}{\sum(x_i-\overline{x})^2}\]</p>
+
+<p>\[\hat{\beta}_0 = \overline{y} - \hat{\beta}_1\overline{x}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>In Picture</h2></hgroup><article  id="in-picture">
+
+<p><img src="images/ols1.png" width="642" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Forbes’s Data</h2></hgroup><article  id="forbess-data">
+
+<p>James D. Forbes (1809-1868) performed a series of experiments to study the relationship between atmospheric pressure and the boiling point of water. He provided 17 pairs of measurements of atmospheric pressure in inches of mercury and boiling point in degrees Fahrenheit. <img src="chapter2_files/figure-html/unnamed-chunk-6-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Forbes’s Data</h2></hgroup><article  id="forbess-data-1">
+
+<p>Regression pressure on boiling point temperature we obtain the fitted line \[\hat{Y} =\hat{E}(press|BP) =  -81.06 + 0.52 BP\] The estimated intercept \(\hat{\beta}_0 = -81.06\), which is the esimated value of pressure when BP = 0.</p>
+
+<ul>
+<li>Since the temperatures in the data are between 194 and 212 degree Fahrenheit, this estimate does not have a useful physical interpretation. This is simply an extrapolation.</li>
+</ul>
+
+<p>The estimated slope is \(\hat{\beta} = 0.52\), meaning that for each degree increase in boiling point, we expect pressure to increase by 0.52 units.</p>
+
+</article></slide><slide class=""><hgroup><h2>Unbiasedness of OLS estimators</h2></hgroup><article  id="unbiasedness-of-ols-estimators">
+
+<p>Show that \(\hat{\beta}_0\) and \(\hat{\beta}_1\) are unbiased estimators of \(\beta_0\) and \(\beta_1\) respectively.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Linear Models in General</h2></hgroup><article  id="linear-models-in-general">
+
+</article></slide><slide class=""><hgroup><h2>Curves Vs. Lines (!)</h2></hgroup><article  id="curves-vs.-lines">
+
+<video width="720"  controls loop>
+
+<source src="chapter2_files/figure-html/unnamed-chunk-7.webm" />
+
+</video>
+
+</article></slide><slide class=""><hgroup><h2>Curve to Line</h2></hgroup><article  id="curve-to-line">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-8-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Curve to Line</h2></hgroup><article  id="curve-to-line-1">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Defining a Linear Model</h2></hgroup><article  id="defining-a-linear-model">
+
+<p>A very general way to model the response \(Y\) in terms of three regressors, \(X_1, X_2\), and \(X_3\) is</p>
+
+<p>\(Y=f(X_1,X_2,X_3 )+\epsilon\),</p>
+
+<p>where: - \(f\) is an unknown function - \(\epsilon\) is the error.</p>
+
+<p>If the function \(f\) is too general, we have no hope of estimating it.</p>
+
+</article></slide><slide class=""><hgroup><h2>Defining a Linear Model</h2></hgroup><article  id="defining-a-linear-model-1">
+
+<p>Typically, we assume a linear model, which (in this case) means</p>
+
+<p>\[Y=\beta_0+\beta_1 X_1+\beta_2 X_2+\beta_3 X_3+\epsilon.\]</p>
+
+<ul>
+<li>\(\beta_0, \beta_1, \beta_2\), and \(\beta_3\) are the <strong>regression parameters</strong> or <strong>coefficients</strong>.</li>
+<li>\(\beta_0\) is the <strong>intercept</strong>.</li>
+</ul>
+
+<p>The linear model assumption reduces the problem to the estimation of four parameters instead of an infinite-dimensional \(f\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Linearizable</h2></hgroup><article  id="linearizable">
+
+<p>A linear model has the parameters enter the model linearly; the regressors do not need to be linear.</p>
+
+<p>Linear model: \[Y=\beta_0+\beta_1 X_1+\beta_2  \ln (X_2)+\beta_3 X_1 X_2+\epsilon\]</p>
+
+<p>Non-linear model: \[Y=\beta_0+\beta_1 X_1^{\beta_2 }+\epsilon\]</p>
+
+<p>Some models are <strong>linearalizable</strong>, which means they become a linear model after a transformation, e.g., apply the ln function to \(Y=\beta_0 X_1^(\beta_1 ) \epsilon\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Flaxibility of Linear Model</h2></hgroup><article  id="flaxibility-of-linear-model">
+
+<p>Linear models are very flexible because the predictors can be transformed and combined in any way.</p>
+
+<ul>
+<li>Linear models can be expanded and modified to handle complex datasets.</li>
+<li>Linear models can be curved in space.</li>
+<li>Nonlinear models are rarely necessary, and arise more from a theoretical assumption than empirical investigation.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Flaxibility of Linear Model</h2></hgroup><article  id="flaxibility-of-linear-model-1">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Examples of Linear Models:</h2></hgroup><article  id="examples-of-linear-models">
+
+<ul>
+<li>First-order regression model
+
+<ul>
+<li><p>The regression model has p-1 predictor variables.</p>
+
+<p>\[Y=\beta_0+\beta_1 X_1+\dots+\beta_{p-1} X_{p-1}+\epsilon.\]</p></li>
+</ul></li>
+<li>Polynomial regression
+
+<ul>
+<li>Polynomial regression models contain squared and higher-order terms, making the response function curvilinear.<br/></li>
+<li>e.g., if we let \(X_2=X_1^2\), then we get the model \(Y=\beta_0+\beta_1 X_1+\beta_2 X_1^2+\epsilon\).</li>
+</ul></li>
+<li>Qualitative predictor variables -We can include qualitative predictor variables in our model using something called indicator variables.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Examples of Linear Models</h2></hgroup><article  id="examples-of-linear-models-1">
+
+<ul>
+<li>Transformed variables</li>
+<li>Models with transformed variables can involve complex, curvilinear relationships.</li>
+<li>e.g., \(\log (Y) = \beta_0+\beta_1 X_1+\beta_2 X_2+\beta_3 + \epsilon\).</li>
+<li>e.g., \(1/Y_i=\beta_0+\beta_1 X_1+\beta_2 X_2+\beta_3 X_3+\epsilon\)</li>
+<li>Interaction Effects -When the effects of regressor variables are not additive, the effect of one regressor variable depends on the levels of the other regressor variables. In this case, we need interaction variables.
+
+<ul>
+<li>E.g., \(Y=\beta_0+\beta_1 X_1+\beta_2 X_2+\beta_3 X_1 X_2+\epsilon\).</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Matrix Representation</h2></hgroup><article  id="matrix-representation">
+
+</article></slide><slide class=""><hgroup><h2>Matrix Representation of a Linear Regression Model</h2></hgroup><article  id="matrix-representation-of-a-linear-regression-model">
+
+<p>If we have a response \(Y\) and three regressors, \(X_1, X_2\), and \(X_3\), we might present the data in tabular form as \[\begin{matrix}
+y_1 &amp;   x_{11}  &amp; x_{12}    &amp; x_{13}\\  
+y_2 &amp; x_{21}    &amp; x_{22} &amp;  x_{23}\\    
+\dots &amp; \dots &amp; \dots &amp; \dots \\
+y_n &amp;   x_{n1}  &amp; x_{n2}    &amp; x_{n3}    
+\end{matrix}\]</p>
+
+<p>where \(n\) is the number of observations (or cases), in the dataset, \(y_1,\dots ,y_n\) are the n responses, and \(x_{ij}\) denotes the value of the \(j\)th regressor variable for observation \(i\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Representation of a Linear Regression Model</h2></hgroup><article  id="matrix-representation-of-a-linear-regression-model-1">
+
+<p>Our system of regression equations can be written as</p>
+
+<p>\[y_i=\beta_0+\beta_1 x_{i1}+\beta_2 x_{i2}+\beta_3 x_{i3}+\epsilon_i,\qquad i=1,…,n.\]</p>
+
+<p>It is simpler to write the regression equation as</p>
+
+<p>\[y=X\beta+\epsilon,\]</p>
+
+<p>with \(y=(y_1,y_2,…,y_n )^T,\  \beta=(\beta_0,\beta_1,\beta_2,\beta_3 )^T,\  \epsilon=(\epsilon_1,\epsilon_2,…,\epsilon_n )^T\), and</p>
+
+<p>\[\begin{pmatrix}
+1 &amp; x_{11}  &amp; x_{12}    &amp; x_{13}\\  
+1   &amp; x_{21}    &amp; x_{22} &amp;  x_{23}\\    
+\dots &amp; \dots &amp; \dots &amp; \dots \\
+1 &amp;     x_{n1}  &amp; x_{n2}    &amp; x_{n3}    
+\end{pmatrix}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Matrix Representation of a Linear Regression Model</h2></hgroup><article  id="matrix-representation-of-a-linear-regression-model-2">
+
+<p>In practice, we would have:</p>
+
+<ul>
+<li>\(p-1\) regressors instead of 3</li>
+<li>\(y\) would be an n×1 vector</li>
+<li>\(\beta\) would be a p×1 vector</li>
+<li>\(\epsilon\) would be an n×1 vector</li>
+<li>\(X\) would be an n×p matrix.</li>
+</ul>
+
+<p>The column of ones is related to the intercept term.</p>
+
+<p>We can always assume \(E(\epsilon|X)=0\) since, if this is not the case, we can always absorb it into the mean part of the model so that the errors have a zero expectation.</p>
+
+</article></slide><slide class=""><hgroup><h2>Least Squares Estimation of \(\beta\)</h2></hgroup><article  id="least-squares-estimation-of-beta">
+
+<p>The regression model, \(y=X\beta+\epsilon\), partitions the response into:</p>
+
+<ul>
+<li>A systematic (mean) component, \(X\beta\)</li>
+<li>A random component, \(\epsilon\).</li>
+</ul>
+
+<p>We would like to choose \(\beta\) so that the systematic part explains as much of the response as possible, i.e., minimize the errors \(\epsilon\) in some way.</p>
+
+</article></slide><slide class=""><hgroup><h2>Least Squares Estimation of \(\beta\)</h2></hgroup><article  id="least-squares-estimation-of-beta-1">
+
+<p>The regression parameters are most commonly estimated by finding the β that minimizes the sum of the squared errors.</p>
+
+<p>The least squares estimator of \(\beta\), denoted \(\hat{\beta}\) minimizes</p>
+
+<p>\[Q=\sum \epsilon_i^2=\epsilon^T \epsilon=(y-X\beta)^T (y-X\beta).\]</p>
+
+<p>How do we find the value of \(\beta\) that minimizes \(Q\)?</p>
+
+</article></slide><slide class=""><hgroup><h2>Derivation</h2></hgroup><article  id="derivation">
+
+<p>Simplify \(Q\)</p>
+
+<p>\[Q=y^T y-2\beta^T X^T y+\beta^T X^T X\beta\] Differentiate with respect to \(\beta\) \[\frac{\partial Q}{\partial \beta}=-2X^T y+2X^T X\beta.\]</p>
+
+<p>To minimize Q, we set the derivative equal to zero and simplify.</p>
+
+<p>The <strong>normal equations</strong> are \(X^T X\beta=X^T y\).</p>
+
+<p>Provided that \(X^T X\) is invertible:</p>
+
+<p>\[\hat{\beta}=(X^T X)^{-1} X^T y\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Fitted Values and Hat Matrix</h2></hgroup><article  id="fitted-values-and-hat-matrix">
+
+<p>The fitted values \(\hat{y} = (\hat{y}_1, \hat{y}_2, \dots , \hat{y}_n)^T\) may be written as</p>
+
+<p>\[\hat{y}=X\hat{\beta}=X(X^T X)^{-1} X^T y=Hy,\]</p>
+
+<p>where \(H=X(X^T X)^{-1} X^T\).</p>
+
+<p>H is called the hat matrix or projection matrix.</p>
+
+<ul>
+<li>This is the orthogonal projection of \(y\) onto the space spanned by \(X\).</li>
+<li>\(H\) is a useful theoretical matrix, but is often NOT computed because it is large (\(n\times n\)).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Fitted Values</h2></hgroup><article  id="fitted-values">
+
+<p>The \(i\)th fitted value is given by \[\begin{aligned}\hat{y}_i = &amp; \hat{E}\left(Y|X_1 = x_{i1}, \dots , X_{p-1} = x_{i, p-1} \right)\\ =&amp; \hat{\beta}_0 + \hat{\beta}_1x_{i1}+\hat{\beta}_2x_{i2} +\dots + \hat{\beta}_{p-1}x_{i,p-1}.\end{aligned}\]</p>
+
+<p>The \(i\)th fitted value is the estimated mean response for the ith observation.</p>
+
+<p>The <strong>fitted model</strong> is given by \[\hat{Y}=\hat{E}\left(Y|X\right) = \hat{\beta}_0 + \hat{\beta}_1X_{1}+\hat{\beta}_2X_{2} +\dots + \hat{\beta}_{p-1}X_{p-1}.\]</p>
+
+<p>The fitted model is the estimated mean response as a function of the regressors.</p>
+
+</article></slide><slide class=""><hgroup><h2>Residuals</h2></hgroup><article  id="residuals-1">
+
+<p>The residuals, \(\hat{\epsilon} = (\hat{\epsilon}_1, \hat{\epsilon}_2, \dots , \hat{\epsilon}_n)^T\), may be written as</p>
+
+<p>\[\hat{\epsilon} = y-\hat{y} = y-Hy = (I-H)y\]</p>
+
+<p>where \(I\) is the identity matrix of size \(n\times n\).</p>
+
+<p>Note that the residual of observation \(i\) is still</p>
+
+<p>\[\hat{\epsilon}_i = y_i - \hat{y}_i = y_i - (\hat{\beta}_0 + \hat{\beta}_1x_{i1}+\hat{\beta}_2x_{i2} +\dots + \hat{\beta}_{p-1}x_{i,p-1}).\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Property of \(H\)</h2></hgroup><article  id="property-of-h">
+
+<p>Show that \(H\) is symmetric.</p>
+
+</article></slide><slide class=""><hgroup><h2>Property of \(H\)</h2></hgroup><article  id="property-of-h-1">
+
+<p>Show that \(H\) is symmetric.</p>
+
+<p><strong>Proof</strong> Note that, for any square and invertible matrix \(A\), \((A^T)^{-1}= (A^{-1})^T\).</p>
+
+<p>\[\begin{aligned}
+H^T = &amp; \left(X(X^TX)^{-1}X^T\right)^T \\
+  = &amp; (X^T)^T \left((X^TX)^{-1}\right)^TX^T\\
+  = &amp; X \left((X^TX)^T\right)^{-1}X^T\\
+  = &amp; X \left(X^TX\right)^{-1}X^T\\
+  = &amp; H.
+\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Property of \(H\)</h2></hgroup><article  id="property-of-h-2">
+
+<p>Show that \(H\) is idempotent.</p>
+
+</article></slide><slide class=""><hgroup><h2>Property of \(H\)</h2></hgroup><article  id="property-of-h-3">
+
+<p>Show that \(H\) is idempotent.</p>
+
+<p><strong>Proof</strong> Note that, a matrix \(A\) is idempotent if \(AA = A\).</p>
+
+<p>\[\begin{aligned}
+HH = &amp; \left(X(X^TX)^{-1}X^T\right) \left(X(X^TX)^{-1}X^T\right)\\
+= &amp; X(X^TX)^{-1}(X^T X)(X^TX)^{-1}X^T\\
+= &amp; X(X^TX)^{-1}X^T\\
+= &amp; H.
+\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of \(I-H\)</h2></hgroup><article  id="properties-of-i-h">
+
+<p>\(I-H\) is also symmetric and idempotent.</p>
+
+<p><strong>symmetric + idempotent = orthogonal projection</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Residuals and Fitted Values are Orthogonal</h2></hgroup><article  id="residuals-and-fitted-values-are-orthogonal">
+
+<p>\[\begin{aligned}\langle \hat{y}, \hat{\epsilon} \rangle = &amp; \hat{y}^T\hat{\epsilon}\\ = &amp; (Hy)^T(I-H)y\\ =&amp; y^TH^T(I-H)y\\=&amp; y^TH(I-H)y\\=&amp;y^T(H-HH)y\\=&amp;y^T(H-H)y\\=&amp; y^T\mathbf{0}y\\=&amp; 0\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Covariance of Residuals and Fitted Values</h2></hgroup><article  id="covariance-of-residuals-and-fitted-values">
+
+</article></slide><slide class=""><hgroup><h2>Covariance of Residuals and Fitted Values</h2></hgroup><article  id="covariance-of-residuals-and-fitted-values-1">
+
+<p>\[\begin{aligned}
+Cov\left[\hat{y},\hat{\epsilon}|X\right] = &amp; Cov\left[Hy, (I-H)y|X\right]\\
+= &amp; H\ Cov\left[y, y|X\right](I-H)^T\\
+=&amp; H\ \sigma^2 (I-H)^T\\
+=&amp;  \sigma^2 H(I-H)^T\\
+=&amp;  \sigma^2 H(I-H)\\
+=&amp;  \sigma^2 (H-HH)\\
+=&amp; 0
+\end{aligned}\]</p>
+
+<p>Can you see, \[||y||^2 = ||\hat{y}||^2 + ||\hat{\epsilon}||^2\] \[Var(y) = Var(\hat{y}) + Var(\hat{\epsilon})\]</p>
+
+</article></slide><slide class=""><hgroup><h2>RSS</h2></hgroup><article  id="rss">
+
+<p>The residual or error sum of squares, RSS, may be written as</p>
+
+<p>\[RSS = \sum \hat{\epsilon}_i^2 = \hat{\epsilon}^T\hat{\epsilon} = y^T(I-H)y\]</p>
+
+<p>\[\begin{aligned}
+RSS = &amp; \hat{\epsilon}^T\hat{\epsilon} \\
+= &amp; \left((I-H)y\right)^T\left((I-H)y\right)\\
+=&amp; y^T(I-H)^T(I-H)y\\
+=&amp; y^T(I-H)(I-H)y &amp; (I-H) \text{ is symmetric}\\
+=&amp; y^T(I-H)y &amp; (I-H) \text{ is idempotent}
+\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of the OLS</h2></hgroup><article  id="properties-of-the-ols">
+
+<p>The ordinary least squares estimator \(\hat{\beta}\) is an unbiased estimator for \(\beta\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of the OLS</h2></hgroup><article  id="properties-of-the-ols-1">
+
+<p>The ordinary least squares estimator \(\hat{\beta}\) is an unbiased estimator for \(\beta\).</p>
+
+<p>\[\begin{aligned}
+E[\hat{\beta}] = &amp; E\left[(X^TX)^{-1}X^Ty \right]\\
+= &amp; (X^TX)^{-1}X^TE\left[y \right]\\
+= &amp; (X^TX)^{-1}X^TE\left[X\beta + \epsilon \right]\\
+= &amp; (X^TX)^{-1}X^T\left[X\beta + E(\epsilon) \right]\\
+= &amp; (X^TX)^{-1}X^TX\beta \\
+= &amp; \beta 
+\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of OLS</h2></hgroup><article  id="properties-of-ols">
+
+<p>Provided that \(Var(\epsilon)=\sigma^2I\), show that</p>
+
+<p>\[Var(\hat{\beta}) = \sigma^2(X^TX)^{-1}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of OLS</h2></hgroup><article  id="properties-of-ols-1">
+
+<p>Provided that \(Var(\epsilon)=\sigma^2I\), show that</p>
+
+<p>\[Var(\hat{\beta}) = \sigma^2(X^TX)^{-1}\]</p>
+
+<p><strong>Proof</strong> \[\begin{aligned}
+Var(\hat{\beta}) = &amp; Var \left((X^TX)^{-1}X^Ty\right)\\
+=&amp; (X^TX)^{-1}X^T Var(y)\left((X^TX)^{-1}X^T\right)^T\\
+=&amp; (X^TX)^{-1}X^T Var(X\beta + \epsilon)X(X^TX)^{-1}\\
+=&amp; (X^TX)^{-1}X^T Var(\epsilon)X(X^TX)^{-1}\\
+=&amp; (X^TX)^{-1}X^T \sigma^2IX(X^TX)^{-1}\\
+=&amp; \sigma^2(X^TX)^{-1}X^T X(X^TX)^{-1}\\
+=&amp; \sigma^2(X^TX)^{-1}
+\end{aligned}\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Properties of OLS</h2></hgroup><article  id="properties-of-ols-2">
+
+<p>The estimator \[\hat{\sigma}^2 = \frac{\hat{\epsilon}^T\hat{\epsilon}}{n-p}\] is an unbiased estimator of \(\sigma^2\).</p>
+
+<p>The estimated standard error of \(\hat{\beta}_{i-1}\) is</p>
+
+<p>\[\hat{se}\left(\hat{\beta}_{i-1}\right) = \hat{\sigma}\sqrt{\left(X^TX\right)^{-1}_{ii}}\] where \(\left(X^TX\right)^{-1}_{ii}\) is the element in the \(i\)th diagonal position of \((X^TX)^{-1}\).</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Example</h2></hgroup><article  id="example-1">
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Example</h2></hgroup><article  id="galapagos-example">
+
+<p>The data contained in <code>gala</code> in the <code>faraway</code> package in <code>R</code> are related to the number of plant species on the various Galapagos Islands. There are 30 cases (Islands) and seven variables in the data set. The variables are:</p>
+
+<ul>
+<li>Species – the number of plant species found on the island</li>
+<li>Endemics- the number of endemic species (not used)</li>
+<li>Area – the area of the island (km2)</li>
+<li>Elevation – the highest elevation of the island (m)</li>
+<li>Nearest (the distance from the nearest island (km)</li>
+<li>Scruz – the distance from Santa Cruz Island (km)</li>
+<li>Adjacent – the area of the adjacent island (km\(^2\))</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Galapagos Data</h2></hgroup><article  id="galapagos-data">
+
+<pre class = 'prettyprint lang-r'>data(gala, package = &#39;faraway&#39;)
+str(gala)</pre>
+
+<pre >## &#39;data.frame&#39;:    30 obs. of  7 variables:
+##  $ Species  : num  58 31 3 25 2 18 24 10 8 2 ...
+##  $ Endemics : num  23 21 3 9 1 11 0 7 4 2 ...
+##  $ Area     : num  25.09 1.24 0.21 0.1 0.05 ...
+##  $ Elevation: num  346 109 114 46 77 119 93 168 71 112 ...
+##  $ Nearest  : num  0.6 0.6 2.8 1.9 1.9 8 6 34.1 0.4 2.6 ...
+##  $ Scruz    : num  0.6 26.3 58.7 47.4 1.9 ...
+##  $ Adjacent : num  1.84 572.33 0.78 0.18 903.82 ...</pre>
+
+</article></slide><slide class=""><hgroup><h2>OLS Estimate</h2></hgroup><article  id="ols-estimate">
+
+<pre class = 'prettyprint lang-r'>X = gala[,c(&quot;Area&quot;, &quot;Elevation&quot;, &quot;Nearest&quot;, &quot;Scruz&quot;, &quot;Adjacent&quot;)]
+X$Const = rep(1, nrow(X))
+X &lt;- as.matrix(X)
+Y &lt;- gala$Species
+solve(t(X)%*%X)%*%t(X)%*%Y</pre>
+
+<pre >##                   [,1]
+## Area      -0.023938338
+## Elevation  0.319464761
+## Nearest    0.009143961
+## Scruz     -0.240524230
+## Adjacent  -0.074804832
+## Const      7.068220709</pre>
+
+</article></slide><slide class=""><hgroup><h2>Using Built-in function</h2></hgroup><article  id="using-built-in-function">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(lmod)$coefficients</pre>
+
+<pre >##                 Estimate  Std. Error      t value     Pr(&gt;|t|)
+## (Intercept)  7.068220709 19.15419782  0.369016796 7.153508e-01
+## Area        -0.023938338  0.02242235 -1.067610554 2.963180e-01
+## Elevation    0.319464761  0.05366280  5.953187968 3.823409e-06
+## Nearest      0.009143961  1.05413595  0.008674366 9.931506e-01
+## Scruz       -0.240524230  0.21540225 -1.116628222 2.752082e-01
+## Adjacent    -0.074804832  0.01770019 -4.226216850 2.970655e-04</pre>
+
+</article></slide><slide class=""><hgroup><h2>R-output (coefficients)</h2></hgroup><article  id="r-output-coefficients">
+
+<ul>
+<li>Each row of the summary table provides information for a specific regressor (whose name is given).</li>
+<li>The <code>Estimate</code> column provides the estimated regression coefficients for each regressor.</li>
+<li>The <code>Std. Error</code> column provides the estimated standard error of each estimated coefficient.</li>
+<li>The <code>t value</code> column provides the test statistic for the null hypothesis that the regression coefficient is zero, i.e., \(\hat{\beta}_j/\hat{se}(\hat{\beta}_j),\quad j=0,1,\dots,p-1\).</li>
+<li>The <code>Pr(&gt;|t|)</code> column provides the two-tailed p-value for the test that each coefficient is zero (assuming the other regressors are in the model).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>R-output (others)</h2></hgroup><article  id="r-output-others">
+
+<p>Numerous quantities related to our linear model can be extracted from our fitted model using certain functions:</p>
+
+<ul>
+<li>residuals extracts \(\hat{\epsilon}\)</li>
+<li>fitted extracts \(\hat{y}\)</li>
+<li>coef extracts \(\hat{\beta}\)</li>
+<li>sigma extracts \(\hat{\sigma}\)</li>
+<li>df.residual extracts \(n-p\)</li>
+<li>deviance extracts the RSS</li>
+</ul>
+
+<p>Other quantities can be extracted. To know what they are, look at the names in the model object and the summary object using the <code>str</code> or <code>names</code> functions.</p>
+
+</article></slide><slide class=""><hgroup><h2>R-output (others)</h2></hgroup><article  id="r-output-others-1">
+
+<p>Objects we can extract from model object</p>
+
+<pre class = 'prettyprint lang-r'>names(lmod)</pre>
+
+<pre >##  [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;effects&quot;       &quot;rank&quot;         
+##  [5] &quot;fitted.values&quot; &quot;assign&quot;        &quot;qr&quot;            &quot;df.residual&quot;  
+##  [9] &quot;xlevels&quot;       &quot;call&quot;          &quot;terms&quot;         &quot;model&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2>R-output (others)</h2></hgroup><article  id="r-output-others-2">
+
+<p>Objects we can extract from the summary object</p>
+
+<pre class = 'prettyprint lang-r'>names(summary(lmod))</pre>
+
+<pre >##  [1] &quot;call&quot;          &quot;terms&quot;         &quot;residuals&quot;     &quot;coefficients&quot; 
+##  [5] &quot;aliased&quot;       &quot;sigma&quot;         &quot;df&quot;            &quot;r.squared&quot;    
+##  [9] &quot;adj.r.squared&quot; &quot;fstatistic&quot;    &quot;cov.unscaled&quot;</pre>
+
+</article></slide><slide class=""><hgroup><h2>Quiz</h2></hgroup><article  id="quiz">
+
+<p><strong>What is the equation for the fitted model?</strong></p>
+
+<p><strong>What is the fitted value for the first observation?</strong></p>
+
+<p><strong>What is the residual for the first observation?</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Quiz</h2></hgroup><article  id="quiz-1">
+
+<p><strong>What is the equation for the fitted model?</strong></p>
+
+<p>\[\begin{aligned}Species = &amp; 7.068 - 0.024\ Area + 0.320 \ Elevation + 0.009 \ Nearest \\ &amp; - 0.24 Scruz - 0.075 Adjacent\end{aligned}\]</p>
+
+<p><strong>What is the fitted value for the first observation?</strong></p>
+
+<p><strong>What is the residual for the first observation?</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Quiz</h2></hgroup><article  id="quiz-2">
+
+<p><strong>What is the equation for the fitted model?</strong></p>
+
+<p>\[\begin{aligned}Species = &amp; 7.068 - 0.024\ Area + 0.320 \ Elevation + 0.009 \ Nearest \\ &amp; - 0.24 Scruz - 0.075 Adjacent\end{aligned}\]</p>
+
+<p><strong>What is the fitted value for the first observation?</strong></p>
+
+<pre class = 'prettyprint lang-r'>lmod$fitted.values[1]</pre>
+
+<pre >##   Baltra 
+## 116.7259</pre>
+
+<p><strong>What is the residual for the first observation?</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Quiz</h2></hgroup><article  id="quiz-3">
+
+<p><strong>What is the equation for the fitted model?</strong></p>
+
+<p>\[\begin{aligned}Species = &amp; 7.068 - 0.024\ Area + 0.320 \ Elevation + 0.009 \ Nearest \\ &amp; - 0.24 Scruz - 0.075 Adjacent\end{aligned}\]</p>
+
+<p><strong>What is the fitted value for the first observation?</strong></p>
+
+<pre class = 'prettyprint lang-r'>lmod$fitted.values[1]</pre>
+
+<pre >##   Baltra 
+## 116.7259</pre>
+
+<p><strong>What is the residual for the first observation?</strong></p>
+
+<pre class = 'prettyprint lang-r'>lmod$residuals[1]</pre>
+
+<pre >##    Baltra 
+## -58.72595</pre>
+
+</article></slide><slide class=""><hgroup><h2>Extract \(\sigma\)</h2></hgroup><article  id="extract-sigma">
+
+<pre class = 'prettyprint lang-r'>sqrt(deviance(lmod)/df.residual(lmod))</pre>
+
+<pre >## [1] 60.97519</pre>
+
+<pre class = 'prettyprint lang-r'>summary(lmod)$sigma</pre>
+
+<pre >## [1] 60.97519</pre>
+
+<pre class = 'prettyprint lang-r'>sqrt(sum(residuals(lmod)^2)/df.residual(lmod))</pre>
+
+<pre >## [1] 60.97519</pre>
+
+<pre class = 'prettyprint lang-r'>sqrt(sum(lmod$residuals^2)/lmod$df.residual)</pre>
+
+<pre >## [1] 60.97519</pre>
+
+</article></slide><slide class=""><hgroup><h2>Access individual columns of coefficients table</h2></hgroup><article  id="access-individual-columns-of-coefficients-table">
+
+<pre class = 'prettyprint lang-r'># Estimates
+summary(lmod)$coefficients[,1]</pre>
+
+<pre >##  (Intercept)         Area    Elevation      Nearest        Scruz     Adjacent 
+##  7.068220709 -0.023938338  0.319464761  0.009143961 -0.240524230 -0.074804832</pre>
+
+<pre class = 'prettyprint lang-r'># Std. Error
+summary(lmod)$coefficients[,2]</pre>
+
+<pre >## (Intercept)        Area   Elevation     Nearest       Scruz    Adjacent 
+## 19.15419782  0.02242235  0.05366280  1.05413595  0.21540225  0.01770019</pre>
+
+<pre class = 'prettyprint lang-r'># p-values
+summary(lmod)$coefficients[,4]</pre>
+
+<pre >##  (Intercept)         Area    Elevation      Nearest        Scruz     Adjacent 
+## 7.153508e-01 2.963180e-01 3.823409e-06 9.931506e-01 2.752082e-01 2.970655e-04</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Gauss-Markov Theorem</h2></hgroup><article  id="gauss-markov-theorem">
+
+</article></slide><slide class=""><hgroup><h2>Gauss-Markov Theorem</h2></hgroup><article  id="gauss-markov-theorem-1">
+
+<p>The estimator for \(\hat{\beta}\) that we derived certainly seems like a reasonable choice, but there are others. Why use this one?</p>
+
+<ul>
+<li>It makes sense geometrically. Specifically, the least squares estimator matches the geometric projection into the space spanned by the regressors.</li>
+<li>If the errors are i.i.d. and have a normal distribution, then the least squares estimator matches the maximum likelihood estimator.</li>
+<li>Most importantly, the Gauss-Markov Theorem is used to show that this estimator is the Best Linear Unbiased Estimator (BLUE) of \(\beta\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Gauss-Markov Theorem</h2></hgroup><article  id="gauss-markov-theorem-2">
+
+<p>Specifically, the in the context of linear regression, the Gauss-Markov theorem is used to prove that among all unbiased linear estimators of \(\beta\) (i.e., estimators of the form \(Ay\), where \(A\) is a constant matrix of size p×n), \(\hat{\beta}\) has the minimum variance, and this estimate is unique.</p>
+
+<p>The Gauss-Markov theorem assumes that:</p>
+
+<ul>
+<li>\(E(\epsilon|X)=0\)</li>
+<li>\(var(\epsilon|X)=\sigma^2 I\)</li>
+<li>\(E(Y|X)=X\beta\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Different Estimator?</h2></hgroup><article  id="different-estimator">
+
+<p>Other estimators may be better if the assumptions of the Gauss-Markov theorem are not satisfied.</p>
+
+<p>Other possibilities: - Generalized least squares should be used when the errors are correlated. - Robust estimators should be used for long-tailed distributions. - When the regressors are highly correlated, then alternative estimators such as ridge regression may be preferred.</p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit">
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-1">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-21-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-2">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-22-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-3">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-23-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-4">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-24-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-5">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-25-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Sum of Squares</h2></hgroup><article  id="sum-of-squares">
+
+<p>Total Sum of Squares (TSS) \[\sum(y_i-\overline{y})^2\] Residual Sum of Squares (RSS)</p>
+
+<p>\[\sum(y_i-\hat{y}_i)^2\]</p>
+
+<p>Regression Sum of Squares (\(SS_{reg}\)) \[\sum(\hat{y}_i-\overline{y})^2\]</p>
+
+<p><strong>\(TSS = RSS + SS_{reg}\)</strong></p>
+
+</article></slide><slide class=""><hgroup><h2>Sum of Squares</h2></hgroup><article  id="sum-of-squares-1">
+
+<p>TSS measures the amount of variability in our responses in comparison to the mean.</p>
+
+<ul>
+<li>This is the same as the RSS for the constant mean model (Y=β_0+ϵ).</li>
+</ul>
+
+<p>RSS measures the amount of variability in our responses that is not explained by our model.</p>
+
+<p>\(SS_{reg}\) measures the additional amount of variability in our responses explained by our model after accounting for a constant mean.</p>
+
+<ul>
+<li>The equals the reduction in the RSS when comparing our model to the constant mean model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-6">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-26-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-7">
+
+<p>A common measure of goodness of fit is \(R^2\), the <strong>coefficient of determination</strong> (or <strong>percentage of variance explained</strong>), given by</p>
+
+<p>\[R^2 = 1 - \frac{\sum (\hat{y}_i-y_i)^2}{\sum (y_i-\overline{y})^2} = 1 - \frac{RSS}{TSS} = \frac{SS_{reg}}{TSS}= cor^2(y,\hat{y})\]</p>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-8">
+
+<p>The range of \(R^2\) is [0, 1], with values closer to 1 indicating better fits (in general).</p>
+
+<p>A large \(R^2\) does not necessarily mean that useful prediction can be made or that the model is a good fit.</p>
+
+<ul>
+<li>There might be too much variability in the response for a useful prediction.</li>
+<li>Important aspects of the data might still not be captured.</li>
+</ul>
+
+<p>A small \(R^2\) does not mean that the regressors are unrelated to the response.</p>
+
+<ul>
+<li>The relationship might not be a straight line.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Goodness of Fit</h2></hgroup><article  id="goodness-of-fit-9">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-27-1.png" width="720" style="display: block; margin: auto;" /> Conceptually, \(R^2\) is 1 minus the ratio of the size of the blue arrow to the red arrow.</p>
+
+</article></slide><slide class=""><hgroup><h2>Guess \(R^2\)</h2></hgroup><article  id="guess-r2">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-28-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Guess \(R^2\)</h2></hgroup><article  id="guess-r2-1">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-30-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Extract \(R^2\)</h2></hgroup><article  id="extract-r2">
+
+<pre class = 'prettyprint lang-r'>summary(lm1)</pre>
+
+<pre >## 
+## Call:
+## lm(formula = y ~ x, data = dat[dat$model == 2, ])
+## 
+## Residuals:
+##        Min         1Q     Median         3Q        Max 
+## -0.0212456 -0.0042339 -0.0008513  0.0047407  0.0207738 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.001232   0.001581   -0.78    0.438    
+## x            1.002688   0.002731  367.14   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.007963 on 98 degrees of freedom
+## Multiple R-squared:  0.9993, Adjusted R-squared:  0.9993 
+## F-statistic: 1.348e+05 on 1 and 98 DF,  p-value: &lt; 2.2e-16</pre>
+
+</article></slide><slide class=""><hgroup><h2>Extract \(R^2\)</h2></hgroup><article  id="extract-r2-1">
+
+<pre class = 'prettyprint lang-r'>summary(lm1)$r.squared</pre>
+
+<pre >## [1] 0.9992735</pre>
+
+</article></slide><slide class=""><hgroup><h2>A Note on \(R^2\)</h2></hgroup><article  id="a-note-on-r2">
+
+<p>This definition of R^2 only makes sense if our model has an intercept in it since the null model in the denominator has an intercept. - If a model doesn’t have an intercept, the R^2 given by the formula will be misleadingly high. - <strong>If a model doesn’t have an intercept, R^2 should be calculated using the formula \(R^2=cor^2 (y,\hat{y})\)</strong>.</p>
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(lmod)$r.squared</pre>
+
+<pre >## [1] 0.7658469</pre>
+
+<pre class = 'prettyprint lang-r'>lmod_no_intercept = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent - 1, data = gala)
+summary(lmod_no_intercept)$r.squared</pre>
+
+<pre >## [1] 0.8501933</pre>
+
+<pre class = 'prettyprint lang-r'>cor(gala$Species, lmod_no_intercept$fitted.values)^2</pre>
+
+<pre >## [1] 0.7652718</pre>
+
+</article></slide><slide class=""><hgroup><h2>Reliability of \(R^2\)</h2></hgroup><article  id="reliability-of-r2">
+
+<p>Do not rely on R^2 alone for model fit.</p>
+
+<p>Anscombe’s quartet is a very famous data set where four data sets have the same least squares fit and coefficient of determination (essentially), but the data look completely different.</p>
+
+<p>For each data set, the least squares line has \(\hat{\beta}_0≈3\) and \(\hat{\beta}_1≈0.5\). Similarly, \(R^2\approx 0.67\).</p>
+
+<p>Though each model has an \(R^2\) of about 0.67, the fit to the data is very different!</p>
+
+</article></slide><slide class=""><hgroup><h2>Reliability of \(R^2\)</h2></hgroup><article  id="reliability-of-r2-1">
+
+<p><img src="chapter2_files/figure-html/unnamed-chunk-36-1.png" width="720" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>When \(R^2\) Useful?</h2></hgroup><article  id="when-r2-useful">
+
+<p>\(R^2\) is most useful if there is approximately a planar relationship in the data.</p>
+
+<p>If the plot of \(y\) versus \(\hat{y}\) is approximately a straight line, then \(R^2\) is a meaningful summary of model fit (otherwise it is not).</p>
+
+<p>For which of the following models is R^2 a useful measure of model fit?</p>
+
+</article></slide><slide class=""><hgroup><h2>When \(R^2\) Useful?</h2></hgroup><article  id="when-r2-useful-1">
+
+<p><img src="images/chap2_r2_variation.png" width="622" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Degrees of Freedom</h2></hgroup><article  id="degrees-of-freedom">
+
+<p>Every statistic has an associated degrees of freedom.</p>
+
+<ul>
+<li><p>Generally, this is n minus the number of parameters that were estimated in computing the statistic.</p></li>
+<li><p>TSS has \(n-1\) degrees of freedom since only the intercept \(\beta_0\) must be estimated.</p></li>
+<li><p>RSS has \(n-p\) degrees of freedom since \(p\) regression coefficients \((\beta_0,\beta_1,\dots ,\beta_(p-1))\) must be estimated.</p></li>
+<li><p>\(SS_{reg}\) has \(p-1\) degrees of freedom.</p></li>
+</ul>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Identifiability</h2></hgroup><article  id="identifiability">
+
+</article></slide><slide class=""><hgroup><h2>Identifiability</h2></hgroup><article  id="identifiability-1">
+
+<p>The least squares estimator is the solution to the normal equations \[X^T X\hat{\beta}=X^T y\], where \(X\) is an \(n\times p\) matrix of predictors.</p>
+
+<p>If \(X^T X\) is singular and cannot be inverted, there is no unique solution to the normal equations and \(\hat{\beta}\) is unidentifiable.</p>
+
+<ul>
+<li>Unidentifiable means that different parameter values can result in the same model.</li>
+</ul>
+
+<p>Unidentifiability will occur when \(X\) is not full rank (the columns of \(X\) are linearly dependent).</p>
+
+</article></slide><slide class=""><hgroup><h2>Identifiability</h2></hgroup><article  id="identifiability-2">
+
+<p>Problems with unidentifiability are rare for observational data, but more common with experiments. For observational data, we may have:</p>
+
+<ul>
+<li><p>A person’s weight is measured and entered in both pounds and kilos. One is just a multiple of the other.</p></li>
+<li><p>We record the number of years of pre-university education, university education, and total education. There is a perfect linear relationship between these variables.</p></li>
+<li><p>We have more variables than observations. When \(p=n\) we have a <strong>saturated model</strong>, we may be able to estimate some of the parameters. When \(p&gt;n\), we have a <strong>supersaturated model</strong>, and cannot uniquely estimate parameters. This happens with genetic data sometimes.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Identifiability</h2></hgroup><article  id="identifiability-3">
+
+<p>Removing one (or more) of the linearly dependent columns should correct the problem.</p>
+
+<p>This issue is more common in designed experiments. Consider a two-sample experiment where the treatment observations are \(y_1,\dots,y_n\) and the controls are \(y_{n+1},\dots ,y_{n+m}\).</p>
+
+<p>We model the overall mean μ and group effects α_1 and α_2:</p>
+
+<p>\[y_j=\mu+\alpha_i+\epsilon_j,\quad i=1,2,  \quad j=1,\dots,m+n,\] or more specifically,</p>
+
+<p>\[\begin{pmatrix}y_1\\\vdots\\y_n\\y_{n+1}\\\vdots\\y_{m+n}\end{pmatrix} = 
+\begin{pmatrix} 1 &amp; 1 &amp; 0\\ \vdots &amp; \vdots &amp; \vdots \\1 &amp; 1 &amp; 0\\1 &amp; 0 &amp; 1\\\vdots &amp; \vdots &amp; \vdots \\ 1 &amp; 0 &amp; 1\end{pmatrix}
+\begin{pmatrix}\mu \\\alpha_1\\\alpha_2\end{pmatrix} + \begin{pmatrix}\epsilon_1\\\vdots\\\epsilon_{m+n}\end{pmatrix}\]</p>
+
+<p>\(X\) only has rank two, so the model is not identifiable and the normal equations have infinitely many solutions.</p>
+
+</article></slide><slide class=""><hgroup><h2>Identifiability</h2></hgroup><article  id="identifiability-4">
+
+<p>We solve the problem by imposing some constraints, e.g., \(\alpha_1=0\) (set to zero/corner constraint) or \(\alpha_1+\alpha_2=0\) (sum to zero constraint).</p>
+
+<p><code>R</code> tries to fit the largest identifiable model by removing variables in reverse order of appearance in the model formula.</p>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-2">
+
+<p>Create a new variable Adiff in the Galapagos dataset—the difference in area between the island and its nearest neighbor.</p>
+
+<pre class = 'prettyprint lang-r'>gala$Adiff &lt;- gala$Area-gala$Adjacent</pre>
+
+<p>If we fit a model using this variable and the previous variables, we get a note about a singularity.</p>
+
+<ul>
+<li>The rank of the design matrix \(X\) is 6, which is less than the 7 columns.</li>
+<li>We can usually identify the source of linear dependence with a little thought, or if necessary, an Eigen decomposition of \(X^T X\).</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-3">
+
+<pre class = 'prettyprint lang-r'>lmod &lt;- lm(Species ~ Area+Elevation+Nearest+Scruz+Adjacent+Adiff,gala)
+sumary(lmod)</pre>
+
+<pre >## 
+## Coefficients: (1 not defined because of singularities)
+##              Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept)  7.068221  19.154198  0.3690 0.7153508
+## Area        -0.023938   0.022422 -1.0676 0.2963180
+## Elevation    0.319465   0.053663  5.9532 3.823e-06
+## Nearest      0.009144   1.054136  0.0087 0.9931506
+## Scruz       -0.240524   0.215402 -1.1166 0.2752082
+## Adjacent    -0.074805   0.017700 -4.2262 0.0002971
+## 
+## n = 30, p = 6, Residual SE = 60.97519, R-Squared = 0.77</pre>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-4">
+
+<p>Models can also be close to unidentifiable.</p>
+
+<ul>
+<li>Just add a little perturbation to Adiff and refit the model.</li>
+<li>All the parameters can be estimated, but the ones that are nearly linearly dependent have very large standard errors because we cannot estimate those coefficients in a stable way.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Example</h2></hgroup><article  id="example-5">
+
+<pre class = 'prettyprint lang-r'>set.seed(123)
+Adiffe &lt;- gala$Adiff+0.001*(runif(30)-0.5)
+lmod &lt;- lm(Species ~ Area+Elevation+Nearest+Scruz +Adjacent+Adiffe,gala)
+sumary(lmod)</pre>
+
+<pre >##                Estimate  Std. Error t value  Pr(&gt;|t|)
+## (Intercept)  3.2964e+00  1.9434e+01  0.1696    0.8668
+## Area        -4.5123e+04  4.2583e+04 -1.0596    0.3003
+## Elevation    3.1302e-01  5.3870e-02  5.8107 6.398e-06
+## Nearest      3.8273e-01  1.1090e+00  0.3451    0.7331
+## Scruz       -2.6199e-01  2.1581e-01 -1.2140    0.2371
+## Adjacent     4.5123e+04  4.2583e+04  1.0596    0.3003
+## Adiffe       4.5123e+04  4.2583e+04  1.0596    0.3003
+## 
+## n = 30, p = 7, Residual SE = 60.81975, R-Squared = 0.78</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Orthogonality of predictors</h2></hgroup><article  id="orthogonality-of-predictors">
+
+</article></slide><slide class=""><hgroup><h2>Orthogonality</h2></hgroup><article  id="orthogonality">
+
+<p>Orthogonal regressors make it easier to interpret the effect of each regressor on the response.</p>
+
+<p>Regressors \(x_i\) and \(x_j\) are <strong>orthogonal</strong> if \((x_i-\overline{x}_i)^T (x_j-\overline{x}_j)=0\).</p>
+
+<ul>
+<li>Alternatively, they are orthogonal if \(cov(x_i,x_j )=0\), intercept excluded.</li>
+<li>The intercept columns is orthogonal to a regressor \(x_j\) if \(\sum x_{ij}=0\).</li>
+</ul>
+
+<p>If a regressor is orthogonal to another regressor, it’s addition or deletion from the fitted model will not change the estimated regression coefficient for the other regressor (though the estimated standard error will change slightly).</p>
+
+<ul>
+<li>A similar property holds for the intercept.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Orthogonality</h2></hgroup><article  id="orthogonality-1">
+
+<p>Orthogonality typically only occurs when X is chosen by the experimenter.</p>
+
+<ul>
+<li>It is a feature of a good experimental design.</li>
+</ul>
+
+<p>Regressors are almost never orthogonal for observational data.</p>
+
+<ul>
+<li>The interpretation of coefficients for observational data is more difficult because the interpretation depends on what regressors are in the model.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Odor Example</h2></hgroup><article  id="odor-example">
+
+<p>Consider the relationship between column temperature, gas/liquid ratio, and packing height in reducing the unpleasant odor of a chemical product that was sold in household use.</p>
+
+<p>Each of the predictors has been rescaled to -1, 0, and 1.</p>
+
+<ul>
+<li>This is an example of <strong>central composite design</strong>.</li>
+</ul>
+
+<p>Note that even if we remove a regressor, the estimated coefficients are the same, but the test statistics and residual standard errors change slightly.</p>
+
+</article></slide><slide class=""><hgroup><h2>Odor Example</h2></hgroup><article  id="odor-example-1">
+
+<pre class = 'prettyprint lang-r'>data(odor, package = &#39;faraway&#39;)
+head(odor)</pre>
+
+<pre >##   odor temp gas pack
+## 1   66   -1  -1    0
+## 2   39    1  -1    0
+## 3   43   -1   1    0
+## 4   49    1   1    0
+## 5   58   -1   0   -1
+## 6   17    1   0   -1</pre>
+
+</article></slide><slide class=""><hgroup><h2>Odor Example</h2></hgroup><article  id="odor-example-2">
+
+<pre class = 'prettyprint lang-r'>x &lt;- model.matrix(~ temp + gas + pack, data = odor)
+cov(x) </pre>
+
+<pre >##             (Intercept)      temp       gas      pack
+## (Intercept)           0 0.0000000 0.0000000 0.0000000
+## temp                  0 0.5714286 0.0000000 0.0000000
+## gas                   0 0.0000000 0.5714286 0.0000000
+## pack                  0 0.0000000 0.0000000 0.5714286</pre>
+
+</article></slide><slide class=""><hgroup><h2>Odor Example</h2></hgroup><article  id="odor-example-3">
+
+<pre >##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  15.2000     9.2981  1.6347   0.1304
+## temp        -12.1250    12.7320 -0.9523   0.3614
+## gas         -17.0000    12.7320 -1.3352   0.2088
+## pack        -21.3750    12.7320 -1.6788   0.1213
+## 
+## n = 15, p = 4, Residual SE = 36.01155, R-Squared = 0.33</pre>
+
+</article></slide><slide class=""><hgroup><h2>Odor Example</h2></hgroup><article  id="odor-example-4">
+
+<pre >##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)   15.200      9.262  1.6411   0.1267
+## gas          -17.000     12.682 -1.3404   0.2049
+## pack         -21.375     12.682 -1.6854   0.1177
+## 
+## n = 15, p = 3, Residual SE = 35.87162, R-Squared = 0.28</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Exercise</h2></hgroup><article  id="exercise">
+
+</article></slide><slide class=""><hgroup><h2>Diabetes Example</h2></hgroup><article  id="diabetes-example">
+
+<p>403 African Americans were interviewed in a study to understand the prevalence of obesity, diabetes, and other cardiovascular risk factors in central Virginia. The diabetes data are in the <code>faraway</code> package.</p>
+
+<p>We will consider the relationship between cholesterol and several of the predictors.</p>
+
+</article></slide><slide class=""><hgroup><h2>Diabetes Example</h2></hgroup><article  id="diabetes-example-1">
+
+<p>Regress total cholesterol on Stabilized Glucose, high density lipoprotein, glycosolated hemoglobin, age, gender, height, weight, waist size, and hip size.</p>
+
+<ol>
+<li>Determine the equation for the fitted model.</li>
+<li>What is the fitted value for the third observation?</li>
+<li>Plot the residuals versus fitted values. Are there any unusual residuals?</li>
+<li>How much response variation does the model explain? Is this a meaningful measure of model fit?</li>
+<li>Are any of the regressors in the model orthogonal? How do you know?</li>
+<li>What is the estimated standard error of the estimated regression coefficient for the gender regressor?</li>
+<li>What is the impact of gender on estimated total cholesterol, on average?</li>
+</ol></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
